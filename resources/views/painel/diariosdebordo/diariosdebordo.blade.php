@@ -67,7 +67,7 @@
                             <label for="data" class="col-sm-1 control-label col-md-offset-1">Data</label>
                             <div class="col-sm-2 "> 
                                 <input id="date" type="date" value="<php? date(); ?>">
-                                <select id="data" name="data" required>
+<!--                                <select id="data" name="data" required>
                                     @if(!empty($lanc_pendentes))
                                     @foreach($lanc_pendentes as $key=>$value)
                                         <option <?php echo ($key == $diariodebordo->data) ? "selected" :" "; ?> 
@@ -75,7 +75,7 @@
                                             {{$key}} </option>
                                     @endforeach
                                     @endif
-                                </select>
+                                </select>-->
                             </div>
 
                             <label for="n_horas" class="col-sm-1 control-label">Horas</label>
