@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+           <title>| S | I | G | A |</title>
+
+        
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1" />
+        <!-- Latest compiled and minified CSS -->
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+    
+        <link rel='stylesheet' href="L:\Engenharia\siga\delta\bootstrap\css\bootstrap.min.css"/>
+        <link href="L:\Engenharia\bootstrap\css\bootstrap.min.css" rel="stylesheet">
+
+        <title> S I G A </title>
+
+        <!-- Fonts -->
+        <link href="https://fonts.googleapis.com/css?family=Raleway:100,600" rel="stylesheet" type="text/css">
+      
+        <!-- Styles -->
+        <style>
+            html, body {
+                background-color: #ffffff;
+                font-family: 'Raleway', sans-serif;
+                font-weight: 100;
+                height: 100%;
+                margin: 1;
+            }
+            
+            .position-ref {
+                position: relative;
+            }
+
+            .top-center{
+                text-align: center;
+                font-family: 'Raleway', sans-serif;
+                padding: 0px;
+            }
+
+            .top-right{
+               float: right;
+            }
+            
+            .content {
+             margin-left: 20px;
+             color: #ffffff;
+            }
+        /*--Configuration of SIGA title -->*/
+            .title {
+                
+                font-size: 60px;
+                font: 'Raleway', sans-serif; 
+            }
+
+            .links {
+                font: 'Raleway', sans-serif;
+                color: #ffffff;
+                font-size: 20px;
+                font-weight: 50;
+                letter-spacing: .9rem;
+                text-decoration: none;
+                text-transform: uppercase;
+            }
+            .link_2  {
+                
+                font: 'Raleway', sans-serif;
+                color: #636b6f;
+                font-size: 20px;
+                font-weight: 50;
+                letter-spacing: .1rem;
+                text-decoration: none;
+                text-transform: uppercase;
+            }
+             .label2{
+                font-size: 15px;
+                font: 'Raleway';
+                color: #636b6f;
+                font-weight: 50;
+                letter-spacing: .1rem;
+                text-decoration: none;
+                text-transform: uppercase;
+                }
+
+
+       /*--Configuration of IDEA image -->*/        
+            .img2{
+             width: 265px;
+             height: 110px;
+             float: right; 
+             }
+       /*--Configuration of carousel -->*/                 
+            .img3{
+             float: center; 
+             }
+
+       header {
+        background-color:#0066cc;
+        text-indent: 40px;
+        height: 110px;
+        padding-bottom: 10px;
+       }
+
+       </style>
+    </head>
+
+
+<body>
+
+    <header>
+       <img class="img2" src="L:\Engenharia\siga\delta\resources\views\IDEA_AZUL.PNG">   
+                  <div class="content">
+                    <div class="title">
+                      | S | I | G | A |
+                    </div>
+                  <div class="links"> 
+                  Sistema  Integrado  de  Gestão  e  Apoio        
+                  </div>
+                  </div>
+       </img>
+    </header>
+   
+  <!--Common Menu to all users -->
+
+  <!-- Usuário owner -->
+    <div>
+     <h1 class="top-center">
+     <div>
+       <p class="link_2"> "Nome do usuário"</p>
+       <p class="label2"> "ideaugbr123"</p>
+     </div>       
+     </h1> 
+    </div>
+
+
+   <!-- Menu Horizontal  -->
+ 
+<nav class="navbar nav-tabs">
+  <div class="container-fluid">
+
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
+        <span class="sr-only">Toggle navigation</span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+    </div>
+
+    <!-- Collect the nav links, forms, and other content for toggling -->
+    <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+      <ul class="nav nav-tabs">
+        <li><a href="#">Home<span class="sr-only">(current)</span></a></li>
+        <li class="dropdown">
+          <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false"> Horas e afins <span class="caret"></span></a>
+          <ul class="dropdown-menu">
+            <li><a href="#">Banco de Horas</a></li>
+            <li><a href="#">Ocorrência de ponto</a></li>
+            <li role="separator" class="divider"></li>
+            <li><a href="#">Solicitação de folga</a></li>
+            <li role="separator" class="divider"></li>
+            <li><a href="#">Solicitação de Férias</a></li>
+          </ul>
+        <li><a href="#"> Chamado T.I </a></li>  
+            <!-- Ao Clicar nesse "chamdao T.I", deverá abrir uma guia do site de chamados -->
+        <li><a href="#"> Sugestões </a></li>
+      <ul class="navbar-right">
+        <li> <a href="#"> 
+        <button class="btn btn-default"> Log out </button> </a> 
+        </li>
+      </ul>
+    </div><!-- /.navbar-collapse -->
+  </div><!-- /.container-fluid -->
+</nav>
+
+<!--Rodapé-->
+
+<script src="L:\Engenharia\siga\delta\resources\views\jquery\jquery-3.1.1.js"></script>
+<script src="L:\Engenharia\siga\delta\bootstrap\js\bootstrap.min.js"></script>
+<script src="L:\Engenharia\siga\delta\public\js\app.js"></script>
+<script src="L:\Engenharia\siga\delta\bootstrap\js\bootstrap.js"></script>
+<script src="L:\Engenharia\siga\delta\bootstrap\js\bootstrap.min.js"></script>
+<script src="L:\Engenharia\siga\delta\bootstrap\js\npm.js"</script>
+
+
+
+</body>
+
+</html>
