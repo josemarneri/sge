@@ -114,7 +114,7 @@ class Relatorio extends Model
         
         $spreadsheet = new Spreadsheet(); //instanciando uma nova planilha
         $sheet = $spreadsheet->getActiveSheet(); //retornando a aba ativa
-        $nlines = count($desenhos);
+        $nlines = (!empty($desenhos))? count($desenhos):0 ;
         
         //Dimensiona as colunas em autosize
         for($k=65; $k<90; $k++){

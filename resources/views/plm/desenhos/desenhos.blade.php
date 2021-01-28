@@ -27,6 +27,27 @@
                 </div>
 
                 <div class="box">
+                    <div class="form-group{{ $errors->has('filtroprojeto_id') ? ' has-error' : '' }}">
+                        <label for="filtroprojeto_id" class="col-md-4 control-label">Projeto: </label>
+
+                        <div class="col-md-6">
+                                <select id="filtroprojeto_id" name="filtroprojeto_id" >
+                                    <option value="" > </option>
+                                    @foreach($projetos as $projeto)
+                                        @if(!empty($projeto))
+                                        
+                                        <option <?php echo ($desenho->projeto_id == $projeto->id) ? "selected" :""; ?> 
+                                            value="{{$projeto->id}}" >
+                                            {{$projeto->codigo}}</option>
+                                        
+                                        @endif
+                                    @endforeach
+                                </select>
+                            </div>
+                    </div>       
+                </div>
+                        
+                <div class="box">
                     <div class="form-group{{ $errors->has('filtroalias') ? ' has-error' : '' }}">
                         <label for="filtroalias" class="col-md-4 control-label">Alias</label>
 
@@ -101,12 +122,13 @@
                 <img src="{{url('/assets/imagens/Add.png')}}" alt="Criar Desenho" />
             </a>
             <tr>
-                <th style="text-align: center">Id</th>
+<!--                <th style="text-align: center">Id</th>-->
                 <th style="text-align: center">Numero</th>
                 <th style="text-align: center">Alias</th>
                 <th style="text-align: center">Descrição</th>
                 <th style="text-align: center">Material</th>
                 <th style="text-align: center">Peso</th>
+                <th style="text-align: center">Projeto</th>
                 <th width="100" style="text-align: center">Anexos </th>
                 <th width="100" style="text-align: center">Ações</th>
             </tr>
@@ -115,12 +137,13 @@
             @if(!empty($desenhos))
                 @forelse($desenhos as $desenho)               
                 <tr>
-                    <td style="text-align: center">{{$desenho->id}}</td>
+<!--                    <td style="text-align: center">{{$desenho->id}}</td>-->
                     <td style="text-align: center">{{$desenho->numero}}</td>
                     <td style="text-align: center">{{$desenho->alias}}</td>
                     <td >{{$desenho->descricao}}</td>
                     <td style="text-align: center">{{$desenho->material}}</td>
                     <td style="text-align: center">{{$desenho->peso}}</td>
+                    <td style="text-align: center">{{$desenho->getCodigoProjeto($desenho->projeto_id)}}</td>
                     <td style="text-align: right">
                     <?php
                         $i=1;

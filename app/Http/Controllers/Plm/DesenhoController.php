@@ -41,7 +41,10 @@ class DesenhoController extends Controller
     	}
 
         $desenhos = $this->desenho->Filtrar($filtro);
-        rsort($desenhos);   //Função usada para ordenar os desenhos em ordem decrescente
+        if (!empty($desenhos)){
+            rsort($desenhos);   //Função usada para ordenar os desenhos em ordem decrescente
+        }
+        
 
         //dd($desenhos);
         $desenho = new Desenho();

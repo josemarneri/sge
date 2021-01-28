@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\DB;
 use App\Models\Conjunto;
+use App\Models\Projeto;
 
 
 class Desenho extends Model
@@ -28,6 +29,11 @@ class Desenho extends Model
         $this->fillable = $fillable;
     }
     
+    function getCodigoProjeto($projeto_id){
+        $projeto = Projeto::find($projeto_id);
+        return (!empty($projeto))? $projeto->codigo : null;
+    }
+    
     function getByNumero($numero) {
         $desenho = DB::table('desenhos')
                     ->where('numero', '=', $numero)->get()->first();
@@ -47,6 +53,7 @@ class Desenho extends Model
     public function Filtrar($filtro){
         
         $desenhos = DB::table('desenhos');
+        $projeto = new Projeto();
 
         $resultado;
         if(!empty($filtro['filtronumero'])){
@@ -63,10 +70,10 @@ class Desenho extends Model
         }
         if(!empty($filtro['filtromaterial'])){
             $desenhos->where('material','like','%'.$filtro['filtromaterial'].'%');
-        }
-        
-        if(!empty($filtro['maxresult'])){
-            $desenhos->take($filtro['maxresult']);             
+        }        
+        if(!empty($filtro['filtroprojeto_id'])){
+                $desenhos->where('projeto_id','=',$filtro['filtroprojeto_id']);           
+            //$desenhos->take($filtro['maxresult']);             
         }
         if(empty($filtro['filtroordem'])){
             $desenhos->inRandomOrder();
