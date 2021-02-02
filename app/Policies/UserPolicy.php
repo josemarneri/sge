@@ -35,7 +35,7 @@ class UserPolicy
        return false;
     }
     
-    public function changePassword(User $user ,User $otherUser){
+    public function updatePassword(User $user ,User $otherUser){
        if ($user->id == $otherUser->id){
            return true;
        }

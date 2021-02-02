@@ -404,14 +404,14 @@ table#func tr.dif td{
 .wrapperL {
     display: flex;
     flex-wrap: wrap;
-    width: 50%;
+    width: 30%;
     float: left;
 
 }
 .wrapperR {
     display: flex;
     flex-wrap: wrap;
-    width: 50%;
+    width: 70%;
     float: right;
     border-bottom: #e4edf0;
     border-bottom-style: dashed;
@@ -420,5 +420,5 @@ table#func tr.dif td{
     box-sizing: border-box;
     padding: 1%;
     margin: 1%;
-    width: calc((100% / 2) - 2%); /* calco para descontar a margem da largura do box se aumenta a marge tem que ajustar aqui tb */
+    width: calc((100% / 3) - 2%); /* calco para descontar a margem da largura do box se aumenta a marge tem que ajustar aqui tb */
 }

@@ -73,14 +73,12 @@ class FuncionarioPolicy
      * @param  \App\Funcionario  $funcionario
      * @return mixed
      */
-    public function changeSelf(User $user, Funcionario $funcionario)
-    {
-        
-        if ($user->id == $funcionario->user_id){
-            return true;
-        }else {
-            return false;
-        }
+    public function updateInformacoes(User $user, Funcionario $funcionario) {
+        //dd('aqui');
+      if ($user->id == $funcionario->user_id){
+           return true;
+       }
+       return false;
     }
     
     public function hasPermission(User $user, $permission, $other=null)

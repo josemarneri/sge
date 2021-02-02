@@ -158,39 +158,27 @@ class Relatorio extends Model
         $pos = strrpos($sheet2->calculateWorksheetDataDimension(), ':');
         //$n= substr($sheet2->calculateWorksheetDataDimension(),1, $pos-1)+1; 
         $lista;
+        //dd($desenhos);
         //Copia do array para a planilha
-        for ($i=0; $i<$nlines; $i++){
-            $desenho =$desenho->getById($desenhos[$i]->id);
-            $sheet->setCellValue('A'.($i+2),$desenhos[$i]->numero);                
-            //$sheet->setCellValue('B'.($i+2),$desenhos[$i]->pai);                
-            $sheet->setCellValue('B'.($i+2),$desenhos[$i]->alias);                
-            $sheet->setCellValue('C'.($i+2),$desenhos[$i]->descricao);                
-            $sheet->setCellValue('D'.($i+2),$desenhos[$i]->material);                
-            $sheet->setCellValue('E'.($i+2),$desenhos[$i]->peso);                
-            $sheet->setCellValue('F'.($i+2),$desenhos[$i]->tratamento);                
-            $sheet->setCellValue('G'.($i+2),$projeto->getCodigoById($desenhos[$i]->projeto_id));                
-            $sheet->setCellValue('H'.($i+2),$desenhos[$i]->observacoes);
-            
-//            $pais = $desenho->getPais();
-//            $filhos = $desenho->getFilhos();
-            $conjuntos = $desenho->getConjuntos();
-            foreach($conjuntos as $c){
-                $lista[$c->id] = ['pai_id'=>$c->pai_id, 'filho_id'=>$c->filho_id];
+        if (!empty($desenhos)){
+            for ($i=0; $i<$nlines; $i++){
+                $desenho =$desenho->getById($desenhos[$i]->id);
+                $sheet->setCellValue('A'.($i+2),$desenhos[$i]->numero);                
+                //$sheet->setCellValue('B'.($i+2),$desenhos[$i]->pai);                
+                $sheet->setCellValue('B'.($i+2),$desenhos[$i]->alias);                
+                $sheet->setCellValue('C'.($i+2),$desenhos[$i]->descricao);                
+                $sheet->setCellValue('D'.($i+2),$desenhos[$i]->material);                
+                $sheet->setCellValue('E'.($i+2),$desenhos[$i]->peso);                
+                $sheet->setCellValue('F'.($i+2),$desenhos[$i]->tratamento);                
+                $sheet->setCellValue('G'.($i+2),$projeto->getCodigoById($desenhos[$i]->projeto_id));                
+                $sheet->setCellValue('H'.($i+2),$desenhos[$i]->observacoes);
+
+                $conjuntos = $desenho->getConjuntos();
+                foreach($conjuntos as $c){
+                    $lista[$c->id] = ['pai_id'=>$c->pai_id, 'filho_id'=>$c->filho_id];
+                }
+
             }
-            
-            
-//            foreach($pais as $p){ 
-//                
-//                $sheet2->setCellValue('A'.($n),$desenho->getById($p->pai_id)->numero);
-//                $sheet2->setCellValue('B'.($n),$desenho->numero);
-//                $n++;
-//            }
-            //dd($n);
-//            foreach($filhos as $f){
-//                $sheet2->setCellValue('A'.($n),$desenho->numero);
-//                $sheet2->setCellValue('B'.($n),$desenho->getById($f->filho_id)->numero);
-//                $n++;
-//            }
         }
         //dd($lista);
         $n = 2; 
@@ -210,13 +198,7 @@ class Relatorio extends Model
         //Salva planilha       
         $writer = new \PhpOffice\PhpSpreadsheet\Writer\Xlsx($spreadsheet);
         $writer->save($filename);
-        //dd('gerou');
-        //dd(storage_path());
 
-
-        
-        //$mime = $file->getClientMimeType();
-        //dd(new Response($file, 200))->header('Content-Type', $arquivo->mime);
         return $filename;
         
         

@@ -25,10 +25,39 @@
                         </div>
                     </div>       
                 </div>
+                <div class="box">
+                    <div class="form-group{{ $errors->has('filtrodescricao') ? ' has-error' : '' }}">
+                        <label for="filtrodescricao" class="col-md-4 control-label">Descrição</label>
 
+                        <div class="col-md-6">
+                            <input id="filtrodescricao" type="text" class="form-control" name="filtrodescricao"  >
+
+                            @if ($errors->has('filtrodescricao'))
+                                <span class="help-block">
+                                    <strong>{{ $errors->first('filtrodescricao') }}</strong>
+                                </span>
+                            @endif
+                        </div>
+                    </div>       
+                </div>       
+                <div class="box">
+                    <div class="form-group{{ $errors->has('filtromaterial') ? ' has-error' : '' }}">
+                        <label for="filtromaterial" class="col-md-4 control-label">Material</label>
+
+                        <div class="col-md-6">
+                            <input id="filtromaterial" type="text" class="form-control" name="filtromaterial"  >
+
+                            @if ($errors->has('filtromaterial'))
+                                <span class="help-block">
+                                    <strong>{{ $errors->first('filtromaterial') }}</strong>
+                                </span>
+                            @endif
+                        </div>
+                    </div>       
+                </div>
                 <div class="box">
                     <div class="form-group{{ $errors->has('filtroprojeto_id') ? ' has-error' : '' }}">
-                        <label for="filtroprojeto_id" class="col-md-4 control-label">Projeto: </label>
+                        <label for="filtroprojeto_id" class="col-md-4 control-label">Projeto</label>
 
                         <div class="col-md-6">
                                 <select id="filtroprojeto_id" name="filtroprojeto_id" >
@@ -46,6 +75,37 @@
                             </div>
                     </div>       
                 </div>
+                <div class="box">
+                    <div class="form-group{{ $errors->has('filtropai') ? ' has-error' : '' }}">
+                        <label for="filtropai" class="col-md-4 control-label">Nº Pai</label>
+
+                        <div class="col-md-6">
+                            <input id="filtropai" type="text" class="form-control" name="filtropai"  >
+
+                            @if ($errors->has('filtropai'))
+                                <span class="help-block">
+                                    <strong>{{ $errors->first('filtropai') }}</strong>
+                                </span>
+                            @endif
+                        </div>
+                    </div>       
+                </div>
+                <div class="box">
+                    <div class="form-group{{ $errors->has('filtrofilho') ? ' has-error' : '' }}">
+                        <label for="filtrofilho" class="col-md-4 control-label">Nº Filho</label>
+
+                        <div class="col-md-6">
+                            <input id="filtrofilho" type="text" class="form-control" name="filtrofilho"  >
+
+                            @if ($errors->has('filtrofilho'))
+                                <span class="help-block">
+                                    <strong>{{ $errors->first('filtrofilho') }}</strong>
+                                </span>
+                            @endif
+                        </div>
+                    </div>       
+                </div>
+                        
                         
                 <div class="box">
                     <div class="form-group{{ $errors->has('filtroalias') ? ' has-error' : '' }}">
@@ -62,37 +122,9 @@
                         </div>
                     </div>       
                 </div>
-                <div class="box">
-                    <div class="form-group{{ $errors->has('filtrodescricao') ? ' has-error' : '' }}">
-                        <label for="filtrodescricao" class="col-md-4 control-label">Descrição</label>
+                
 
-                        <div class="col-md-6">
-                            <input id="filtrodescricao" type="text" class="form-control" name="filtrodescricao"  >
-
-                            @if ($errors->has('filtrodescricao'))
-                                <span class="help-block">
-                                    <strong>{{ $errors->first('filtrodescricao') }}</strong>
-                                </span>
-                            @endif
-                        </div>
-                    </div>       
-                </div>
-
-                <div class="box">
-                    <div class="form-group{{ $errors->has('filtromaterial') ? ' has-error' : '' }}">
-                        <label for="filtromaterial" class="col-md-4 control-label">Material</label>
-
-                        <div class="col-md-6">
-                            <input id="filtromaterial" type="text" class="form-control" name="filtromaterial"  >
-
-                            @if ($errors->has('filtromaterial'))
-                                <span class="help-block">
-                                    <strong>{{ $errors->first('filtromaterial') }}</strong>
-                                </span>
-                            @endif
-                        </div>
-                    </div>       
-                </div>
+                
                 <div class="box">
                     <div class="col-md-4">  
                         

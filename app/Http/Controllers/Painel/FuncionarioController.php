@@ -8,7 +8,7 @@ use Gate;
 use App\Models\Funcionario;
 use App\Http\Requests\FuncionariosRequest;
 use App\Others\PontoExcel;
-use App\User;
+use App\Models\User;
 use App\Models\Cargo;
 use App\Models\Funcao;
 
@@ -106,21 +106,23 @@ class FuncionarioController extends Controller
         return redirect('/painel/funcionarios/novo');
     }
         
-    public function AlterarDadosPessoais($id){
+    public function AlterarDadosPessoais($id){        
+        $user = User::find($id);
         $funcionario = new Funcionario();
         $funcionario = $funcionario->getFuncionarioByUserId($id);
-//        if (Gate::denies('change-self', $funcionario)){
-//    		abort(403, "Acesso não autorizado para o usuário: ". auth()->user()->login);
-//    	}
+        if (Gate::denies('update-informacoes', $funcionario)){
+    		abort(403, "Acesso não autorizado para o usuário: ". auth()->user()->login);
+    	}
+            //dd('2');
         return view('painel.funcionarios.alterardadospessoais', compact('funcionario'));
     }
     
     public function SalvarDadosPessoais(Request $request){
         $id = $request->get('id');
         $funcionario = Funcionario::find($id);
-//        if (Gate::denies('change-self', $funcionario)){
-//    		abort(403, "Acesso não autorizado para o usuário: ". auth()->user()->login);
-//    	}            
+        if (Gate::denies('update-informacoes', $funcionario)){
+    		abort(403, "Acesso não autorizado para o usuário: ". auth()->user()->login);
+    	}          
         $funcionario->fill($request->all()); 
         $funcionario->save();
         \Session::flash('mensagem_sucesso', $funcionario->nome.", seus dados foram atualizado com sucesso ");

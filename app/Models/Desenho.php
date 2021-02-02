@@ -80,7 +80,7 @@ class Desenho extends Model
         return $desenhos;
     }
     public function Filtrar($filtro){
-        
+        $desenho = new Desenho();
         $desenhos = DB::table('desenhos');
         $projeto = new Projeto();
 
@@ -89,8 +89,30 @@ class Desenho extends Model
             $desenhos->where('numero','=',$filtro['filtronumero']);
         }
         if(!empty($filtro['filtropai'])){
-            $desenhos->where('pai','=',$filtro['filtropai']);
+            $d = $desenho->getByNumero($filtro['filtropai']);
+            //dd($d);
+            if (!empty($d)){
+                $desenhos->join('conjuntos','conjuntos.pai_id','=', 'desenhos.id')
+                ->where('conjuntos.pai_id', '=', $d->id );
+            }else{
+                $desenhos->join('conjuntos','conjuntos.pai_id','=', 'desenhos.id')
+                ->where('conjuntos.pai_id', '=', 1234567891011121314);   // este numero é para evitar que o filtro 
+                //retorne todos quando um numero errado for digitado
+            }
         }
+        if(!empty($filtro['filtrofilho'])){
+            $d = $desenho->getByNumero($filtro['filtrofilho']);
+            //dd($d);
+            if (!empty($d)){
+                $desenhos->join('conjuntos','conjuntos.filho_id','=', 'desenhos.id')
+                ->where('conjuntos.filho_id', '=', $d->id );
+            }else{
+                $desenhos->join('conjuntos','conjuntos.filho_id','=', 'desenhos.id')
+                ->where('conjuntos.filho_id', '=', 1234567891011121314);   // este numero é para evitar que o filtro 
+                //retorne todos quando um numero errado for digitado
+            }
+        }
+
         if(!empty($filtro['filtroalias'])){
             $desenhos->where('alias','=',$filtro['filtroalias']);
         }
@@ -113,10 +135,22 @@ class Desenho extends Model
         } 
         
         $desenhos = $desenhos->get()->all(); 
+        //dd($desenhos);
+        
         foreach($desenhos as $d){
-           $resultado[$d->id]=$this->find($d->id); 
-           
+            $des = $this->getByNumero($d->numero);
+           $resultado[$des->id]=$des;
+            if (!empty($d->pai_id)){
+                $des = $this->getById($d->pai_id);
+                $resultado[$des->id]=$des;
+            }
+            if (!empty($d->filho_id)){
+                $des = $this->getById($d->filho_id);
+                $resultado[$des->id]=$des;
+            }
+            
         }
+        //dd($resultado);
         return (empty($resultado))? null : $resultado;
         //return $resultado;
         
