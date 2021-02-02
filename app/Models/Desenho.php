@@ -5,6 +5,8 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\DB;
+use PhpOffice\PhpSpreadsheet\Spreadsheet;//classe responsável pela manipulação da planilha
+use PhpOffice\PhpSpreadsheet\Writer\Xlsx; //classe que salvará a planilha em .xlsx
 use App\Models\Conjunto;
 use App\Models\Projeto;
 
@@ -35,10 +37,37 @@ class Desenho extends Model
     }
     
     function getByNumero($numero) {
-        $desenho = DB::table('desenhos')
-                    ->where('numero', '=', $numero)->get()->first();
-        //dd($desenho);
+        $desenho = Desenho::where('numero','=',$numero)->first();
         return $desenho;
+    }
+    function getById($id) {
+        $desenho = Desenho::where('id','=',$id)->first();
+        return $desenho;
+    }
+    function getNumeroById($id) {
+        $desenho = Desenho::where('id','=',$id)->first();
+        return $desenho->numero;
+    }
+    
+    function getPais() {
+        $conjuntos = DB::table('conjuntos')
+                    ->where('filho_id', '=', $this->id)->get()->all();;
+
+        return $conjuntos;
+    }
+    function getFilhos() {
+        $conjuntos = DB::table('conjuntos')
+                    ->where('pai_id', '=', $this->id)->get()->all();;
+
+        return $conjuntos;
+    }
+    function getConjuntos() {
+        $conjuntos = DB::table('conjuntos')
+                    ->where('pai_id', '=', $this->id)
+                    ->orWhere('filho_id','=',$this->id)
+                ->get()->all();
+
+        return $conjuntos;
     }
     
     public function getDesenhos($filtro) {
@@ -124,22 +153,81 @@ class Desenho extends Model
     }
     
     public function addfilhos($filhos) {       
-        if(count($filhos)==0){
+        if(empty($filhos)){
             return 0;
         }
-        foreach($filhos as $p){
-            if(!empty($p)){                
-                $conjunto = new Conjunto();
-                $filho = $this->getByNumero($p);
-                if(!empty($filho)){
-                    $conjunto->pai_id = $this->id; 
-                    $conjunto->filho_id = $filho->id;
-                    $conjunto->save();
-                }
-                 
-            }
-                           
+        foreach($filhos as $f){
+            $this->addfilho($f);                          
         }  
         return 1;
+    }
+    public function addfilho($f) {       
+        if(empty($f)){
+            return 0;
+        }               
+        $conjunto = new Conjunto();
+        $filho = $this->getByNumero($f);
+        if(!empty($filho)){
+            $existe = Conjunto::where('pai_id','=',$this->id)
+                    ->where('filho_id','=', $filho->id)->first();
+            if (empty($existe)){
+               $conjunto->pai_id = $this->id; 
+                $conjunto->filho_id = $filho->id;
+                $conjunto->save(); 
+            } else return 0;                
+        }                 
+        return 1;
+    }
+    public function addpais($pais) {       
+        if(empty($pais)){
+            return 0;
+        }
+        foreach($pais as $p){
+            $this->addpai($p);                     
+        }  
+        return 1;
+    }
+    public function addpai($p) {       
+        if(empty($p)){
+            return 0;
+        }
+        if(!empty($p)){                
+            $conjunto = new Conjunto();
+            $pai = $this->getByNumero($p);
+            if(!empty($pai)){
+                 $existe = Conjunto::where('pai_id','=',$pai->id)
+                        ->where('filho_id','=', $this->id)->first();
+                 if (empty($existe)){
+                    $conjunto->filho_id = $this->id; 
+                    $conjunto->pai_id = $pai->id;
+                    $conjunto->save();
+                 }  else return 0;                   
+            }                 
+        }                            
+        return 1;
+    }
+    
+     public function existFile($filename){
+        if (!file_exists($filename)) {
+                exit("Arquivo não encontrado");
+                return null;
+        }else{
+           // $objPHPExcel = PHPExcel_IOFactory::load($filename);
+            $objPHPExcel = \PhpOffice\PhpSpreadsheet\IOFactory::load($filename);
+            $c0 = $objPHPExcel->getSheet(0)->calculateWorksheetDataDimension();
+            $c1 = $objPHPExcel->getSheet(1)->calculateWorksheetDataDimension();
+            $campos[0] = $objPHPExcel->getSheet(0)->rangeToArray($c0);
+            $campos[1] = $objPHPExcel->getSheet(1)->rangeToArray($c1);
+            return $campos;
+        }
+        
+        //$spreadsheet = \PhpOffice\PhpSpreadsheet\IOFactory::load('phpcomexcel.xlsx');
+    }
+    
+    public function ImportarDesenhosExcel($filename){
+        $campos = $this->existFile($filename);
+        
+        
+        return $campos;
     }
 }

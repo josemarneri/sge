@@ -138,7 +138,28 @@
                                 </select>
                             </div>
                         </div>
-                        
+                        @foreach($pais as $p)
+                            @if(!empty($p))
+                                <div id="novopai" class="form-group{{ $errors->has('pai') ? ' has-error' : '' }}">
+                                    <label for="pai" class="col-md-4 control-label">Pai</label>
+
+                                    <div class="col-md-6">
+                                        <input id="pai" type="text" class="form-control" name="pai[]"
+                                               value="{{ $desenho->getNumeroById($p->pai_id) }}" >
+
+                                        @if ($errors->has('pai'))
+                                            <span class="help-block">
+                                                <strong>{{ $errors->first('pai') }}</strong>
+                                            </span>
+                                        @endif
+                                    </div>
+                                    <div>
+                                        <img  src="{{url('/assets/imagens/add.png')}}" style="cursor: pointer;" onclick="duplicarCampos('novopai','addpai','input');">
+                                        <img  src="{{url('/assets/imagens/delete.png')}}" style="cursor: pointer;" onclick="removerCampos('addpai');">
+                                    </div>  
+                                </div>
+                            @endif
+                        @endforeach
                         <div id="novopai" class="form-group{{ $errors->has('pai') ? ' has-error' : '' }}">
                             <label for="pai" class="col-md-4 control-label">Pai</label>
 
@@ -160,6 +181,29 @@
                         <div id="addpai">
                         </div>
                         
+                        @foreach($filhos as $f)
+                            @if(!empty($f))
+                                <div id="novofilho" class="form-group{{ $errors->has('filho') ? ' has-error' : '' }}">
+                                    <label for="filho" class="col-md-4 control-label">Filho</label>
+
+                                    <div class="col-md-6">
+                                        <input id="filho" type="text" class="form-control" name="filho[]"
+                                               value="{{ $desenho->getNumeroById($f->filho_id) }}" >
+
+                                        @if ($errors->has('filho'))
+                                            <span class="help-block">
+                                                <strong>{{ $errors->first('filho') }}</strong>
+                                            </span>
+                                        @endif
+                                    </div>
+                                    <div>
+                                        <img  src="{{url('/assets/imagens/add.png')}}" style="cursor: pointer;" onclick="duplicarCampos('novofilho','addfilho','input');">
+                                        <img  src="{{url('/assets/imagens/delete.png')}}" style="cursor: pointer;" onclick="removerCampos('addfilho');">
+                                    </div>
+                                </div>
+                            
+                            @endif
+                        @endforeach
                         <div id="novofilho" class="form-group{{ $errors->has('filho') ? ' has-error' : '' }}">
                             <label for="filho" class="col-md-4 control-label">Filho</label>
 

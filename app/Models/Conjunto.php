@@ -12,4 +12,6 @@ class Conjunto extends Model
     protected $fillable = [
         'id','pai_id','filho_id' ];
     
+    
+    
 }

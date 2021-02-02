@@ -11,3 +11,8 @@ Homestead.json
 Homestead.yaml
 npm-debug.log
 yarn-error.log
+/.settings/org.eclipse.wst.common.project.facet.core.xml
+/.settings/org.eclipse.wst.validation.prefs
+/.settings/org.eclipse.php.core.prefs
+/.project
+/.buildpath

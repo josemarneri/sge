@@ -8,8 +8,8 @@ use App\Models\Desenho;
 use App\Models\Projeto;
 use Gate;
 use App\Models\Relatorio;
-//use Request as Req;
-use App\Others\PontoExcel;
+use App\Models\Conjunto;
+
 
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Http\Response;
@@ -70,8 +70,10 @@ class DesenhoController extends Controller
     		abort(403, "Acesso não autorizado para o usuário: ". auth()->user()->login);
     	}        
         $projetos = Projeto::all();
+        $pais = $desenho->getPais();
+        $filhos = $desenho->getFilhos();
         
-        return view('plm.desenhos.novodesenho', compact('desenho', 'projetos'));
+        return view('plm.desenhos.novodesenho', compact('desenho', 'projetos', 'pais','filhos'));
     }
     
     public function Novo(){
@@ -81,8 +83,10 @@ class DesenhoController extends Controller
         $desenho = new Desenho();
         $desenho->numero = $this->desenho->gerarNumero();
         $projetos = Projeto::all();
+        $pais = $desenho->getPais();
+        $filhos = $desenho->getFilhos();
         
-        return view('plm.desenhos.novodesenho', compact('desenho','projetos'));
+        return view('plm.desenhos.novodesenho', compact('desenho','projetos','pais','filhos'));
     }
     
    
@@ -103,8 +107,10 @@ class DesenhoController extends Controller
         if (Gate::denies('save-desenho')){
     		abort(403, "Acesso não autorizado para o usuário: ". auth()->user()->login);
     	}
-        if (Desenho::find($request->get('id'))){ 
-            $desenho = Desenho::find($request->get('id'));            
+        $desenho = Desenho::find($request->get('id'));
+        if (!empty($desenho)){ 
+            $desenho->addfilhos($request['filho']);
+            $desenho->addpais($request['pai']);
             $desenho->fill($request->all()); 
             $desenho->save();
             \Session::flash('mensagem_sucesso', "Desenho ".$desenho->nome." atualizado com sucesso ");
@@ -112,11 +118,14 @@ class DesenhoController extends Controller
               $desenho = new Desenho();
               $request['id']=$desenho->id;
               $request['alias'] = $request['numero'];         
-              $request['user_id'] = $user->id;        
-
+              $request['user_id'] = $user->id;               
               //dd($request);
               $desenho->fill($request->all());
+              $numero = $desenho->numero;
               $desenho->save();
+              $desenhoNovo = $desenho->getByNumero($numero);
+              $desenhoNovo->addfilhos($request['filho']);
+              $desenhoNovo->addpais($request['pai']);
               //$desenho->user_id = $user->id;
               
             \Session::flash('mensagem_sucesso', 'Desenho cadastrado com sucesso');
@@ -136,7 +145,7 @@ class DesenhoController extends Controller
     public function ReadPlanilha(Request $request){
         $projeto = new Projeto();
         $user = auth()->user();
-        $planilha = new PontoExcel;
+        $planilha = new Desenho();
 
         $file = $request->file('filefield');
         //$ext = pathinfo($file, PATHINFO_EXTENSION);
@@ -148,11 +157,14 @@ class DesenhoController extends Controller
             return redirect('/plm/desenhos/novo');
         }
         //dd($file);
-        $tabelaDesenhos = $planilha->ImportarDesenhosExcel($file->getPathname());
+        $ws = $planilha->ImportarDesenhosExcel($file->getPathname());
+        $tabelaDesenhos = $ws[0];
+        $tabelaConjuntos = $ws[1];
+        //dd($tabelaConjuntos);
         $nlines = count($tabelaDesenhos);
         $ncols = count($tabelaDesenhos[0]);
         $mensagem = "Desenhos cadastrados com sucesso:  ";
-        if ($tabelaDesenhos[0][0] != 'NÚMERO'){
+        if ($tabelaDesenhos[0][0] != 'NÚMERO' || $tabelaConjuntos[0][0] != 'PAI'){
             $mensagem = "Lamento, os desenhos não foram criados, pois"
                     . " o arquivo escolhido não está no padrão de importação, procure o administrador do sistema!";
             \Session::flash('mensagem_sucesso', $mensagem);
@@ -174,17 +186,17 @@ class DesenhoController extends Controller
                     $desenho = Desenho::find($d->id);
                 }
                 
-                if (!empty($tabelaDesenhos[$i][2])){
-                    $desenho->alias = $tabelaDesenhos[$i][2];  
+                if (!empty($tabelaDesenhos[$i][1])){
+                    $desenho->alias = $tabelaDesenhos[$i][1];  
                 }
 
-                $desenho->descricao = $tabelaDesenhos[$i][3];
-                $desenho->material = $tabelaDesenhos[$i][4];
-                $desenho->peso = $tabelaDesenhos[$i][5];
-                $desenho->tratamento = $tabelaDesenhos[$i][6];
-                $desenho->projeto_id = ($projeto->getProjetoByCodigo($tabelaDesenhos[$i][7])==null)? null : 
-                        $projeto->getProjetoByCodigo($tabelaDesenhos[$i][7])->id;
-                $desenho->observacoes = $tabelaDesenhos[$i][8];
+                $desenho->descricao = $tabelaDesenhos[$i][2];
+                $desenho->material = $tabelaDesenhos[$i][3];
+                $desenho->peso = $tabelaDesenhos[$i][4];
+                $desenho->tratamento = $tabelaDesenhos[$i][5];
+                $desenho->projeto_id = ($projeto->getProjetoByCodigo($tabelaDesenhos[$i][6])==null)? null : 
+                        $projeto->getProjetoByCodigo($tabelaDesenhos[$i][6])->id;
+                $desenho->observacoes = $tabelaDesenhos[$i][7];
                 $desenho->user_id = $user->id;
                 
                 $desenho->save();
@@ -194,16 +206,16 @@ class DesenhoController extends Controller
             }else{
                 $dados['numero'] = $desenho->numero;
                 $dados['alias'] = $desenho->alias;
-                if (!empty($tabelaDesenhos[$i][2])){
-                    $dados['alias'] = $tabelaDesenhos[$i][2];  
+                if (!empty($tabelaDesenhos[$i][1])){
+                    $dados['alias'] = $tabelaDesenhos[$i][1];  
                 }
-                $dados['descricao'] = $tabelaDesenhos[$i][3];
-                $dados['material'] = $tabelaDesenhos[$i][4];
-                $dados['peso'] = $tabelaDesenhos[$i][5];
-                $dados['tratamento'] = $tabelaDesenhos[$i][6];
-                $dados['projeto_id'] = ($projeto->getProjetoByCodigo($tabelaDesenhos[$i][7])==null)? null : 
-                        $projeto->getProjetoByCodigo($tabelaDesenhos[$i][7])->id;
-                $dados['observacoes'] = $tabelaDesenhos[$i][8];
+                $dados['descricao'] = $tabelaDesenhos[$i][2];
+                $dados['material'] = $tabelaDesenhos[$i][3];
+                $dados['peso'] = $tabelaDesenhos[$i][4];
+                $dados['tratamento'] = $tabelaDesenhos[$i][5];
+                $dados['projeto_id'] = ($projeto->getProjetoByCodigo($tabelaDesenhos[$i][6])==null)? null : 
+                        $projeto->getProjetoByCodigo($tabelaDesenhos[$i][6])->id;
+                $dados['observacoes'] = $tabelaDesenhos[$i][7];
                 $dados['user_id'] = $user->id;
 
                 $desenho->fill($dados);
@@ -211,6 +223,24 @@ class DesenhoController extends Controller
                 $mensagem .= "Desenho criado $desenho->numero: $desenho->descricao  - ";
             }            
         }
+        
+        $nlConj = count($tabelaConjuntos);
+         for ($j=1; $j<$nlConj; $j++){
+            $conjunto = new Conjunto();
+            $desenho = new Desenho();
+            
+             if (!empty($tabelaConjuntos[$j][0]) && !empty($tabelaConjuntos[$j][1])){
+                //dd($tabelaDesenhos[$i][0]);
+                //dd($tabelaDesenhos);
+                $pai = $desenho->getByNumero($tabelaConjuntos[$j][0]);
+                
+                if (!empty($pai)){
+                    $pai->addFilho($tabelaConjuntos[$j][1]);
+                }
+             }
+         }
+             
+        
         \Session::flash('mensagem_sucesso', $mensagem);
         return redirect('/plm/desenhos/novo');
         
