@@ -54,6 +54,46 @@
                             </div>
                         </div>
                         
+                        <div class="form-group{{ $errors->has('cpf') ? ' has-error' : '' }}">
+                            <label for="cpf" class="col-md-4 control-label">CPF</label>
+
+                            <div class="col-md-6">
+                                <input id="cpf" type="text" class="form-control" name="cpf" value="{{ $funcionario->cpf ? $funcionario->cpf : old('cpf') }}">
+
+                                @if ($errors->has('cpf'))
+                                    <span class="help-block">
+                                        <strong>{{ $errors->first('cpf') }}</strong>
+                                    </span>
+                                @endif
+                            </div>
+                        </div>
+                        <div class="form-group{{ $errors->has('rg') ? ' has-error' : '' }}">
+                            <label for="rg" class="col-md-4 control-label">RG</label>
+
+                            <div class="col-md-6">
+                                <input id="rg" type="text" class="form-control" name="rg" value="{{ $funcionario->rg ? $funcionario->rg : old('rg') }}">
+
+                                @if ($errors->has('rg'))
+                                    <span class="help-block">
+                                        <strong>{{ $errors->first('rg') }}</strong>
+                                    </span>
+                                @endif
+                            </div>
+                        </div>
+                        <div class="form-group{{ $errors->has('regCliente') ? ' has-error' : '' }}">
+                            <label for="regCliente" class="col-md-4 control-label">Registro (Cliente)</label>
+
+                            <div class="col-md-6">
+                                <input id="regCliente" type="text" class="form-control" name="regCliente" value="{{ $funcionario->regCliente ? $funcionario->regCliente : old('regCliente') }}">
+
+                                @if ($errors->has('regCliente'))
+                                    <span class="help-block">
+                                        <strong>{{ $errors->first('regCliente') }}</strong>
+                                    </span>
+                                @endif
+                            </div>
+                        </div>
+                        
                         <div class="form-group{{ $errors->has('endereco') ? ' has-error' : '' }}">
                             <label for="endereco" class="col-md-4 control-label">Endereço</label>
 

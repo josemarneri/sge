@@ -2,6 +2,7 @@
 
 @section('content')
 <div class="area-util">
+    <script language="JavaScript" src="{{url('js/neri.js')}}"></script>
     <div class="title-2">
         Lista de funcionario        
     </div>
@@ -15,6 +16,9 @@
             <tr>
                 <th style="text-align: center">Registro</th>
                 <th style="text-align: center">Nome</th>
+                <th style="text-align: center">CPF</th>
+                <th style="text-align: center">RG</th>
+                <th style="text-align: center">Reg Cliente</th>
                 <th style="text-align: center">Endereço</th>
                 <th style="text-align: center">Email</th>
                 <th style="text-align: center">Usuário</th>
@@ -26,6 +30,9 @@
             <tr>                
                 <td >{{$funcionario->id}}</td>
                 <td >{{$funcionario->nome}}</td>
+                <td >{{$funcionario->cpf}}</td>
+                <td >{{$funcionario->rg}}</td>
+                <td >{{$funcionario->regCiente}}</td>
                 <td >{{$funcionario->endereco}}</td>
                 <td >{{$funcionario->email}}</td>
                 <td >{{$funcionario->getUserLogin($funcionario->user_id)}}</td>
@@ -37,9 +44,14 @@
                     <a href="{{url("/painel/funcionarios/atualizar/".$funcionario->id)}}" title="alterar dados do funcionario">
                         <img src="{{url('/assets/imagens/edit.png')}}" alt="alterar dados do $funcionario" /> 
                     </a>
-                    <a href="{{url("/painel/funcionarios/apagar/$funcionario->id")}}" title="Remover funcionario">
+<!--                    <a href="{{url("/painel/funcionarios/apagar/$funcionario->id")}}" title="Remover funcionario">
+                        <img src="{{url('/assets/imagens/delete.png')}}" alt="Remover funcionario" />
+                    </a>-->
+                    <a  href="javascript:func()" title="Remover funcionario"
+                       onclick="confirmacao('/painel/funcionarios/apagar/','{{$funcionario->id}}')">
                         <img src="{{url('/assets/imagens/delete.png')}}" alt="Remover funcionario" />
                     </a>
+
                 </td>
             </tr>
             @empty
