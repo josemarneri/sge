@@ -148,7 +148,8 @@ class ComessaController extends Controller
         $livres = $carga->getLivres();
         $ocupados = $carga->getOcupados();
         $habilitados = $comessa->getFuncionarios();
-        $cargas = $carga->all();
+        $cargas = $carga->getCargas($comessa->id);
+        //dd($cargas);
         //dd($cargas);
         //dd($comessa,$inclusos,$exclusos);
         

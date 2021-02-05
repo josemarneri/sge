@@ -162,7 +162,7 @@
                                                     >
                                             </div>
                                             <div class="checkbox_text">
-                                                {{$carga->getFuncionario()->nome}}
+                                                {{$carga->nome}}
                                             </div>                                        
                                         </div>
                                     <br>

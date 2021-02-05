@@ -34,6 +34,15 @@ class Carga extends Model
                 })->get();
         return $cargas;
     }
+    public function getCargas($comessa_id) {
+        $carga = new Carga();
+        $lista = DB::table('cargas')
+                ->join('funcionarios', 'funcionarios.id', '=','cargas.funcionario_id' )
+                ->orderBy('funcionarios.nome', 'asc')
+                ->select('cargas.*', 'funcionarios.nome')
+                ->get();
+        return $lista;
+    }
     
     public function getByFuncionario($funcionario_id) {
         $carga = $this->where('funcionario_id','=', $funcionario_id)
