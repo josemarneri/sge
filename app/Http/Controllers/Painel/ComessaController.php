@@ -145,11 +145,14 @@ class ComessaController extends Controller
     		//abort(403, "Acesso não autorizado para o usuário: ". auth()->user()->login);
     	}
         $inclusos = $carga->getByComessa($comessa_id);
-        $exclusos = $carga->getLivre();
+        $livres = $carga->getLivres();
+        $ocupados = $carga->getOcupados();
         $habilitados = $comessa->getFuncionarios();
+        $cargas = $carga->all();
+        //dd($cargas);
         //dd($comessa,$inclusos,$exclusos);
         
-        return view('painel.cargas.novaequipe', compact('comessa','inclusos','exclusos','habilitados'));
+        return view('painel.cargas.novaequipe', compact('comessa','inclusos','livres','habilitados','ocupados','cargas'));
     }
     
     public function SalvarEquipe(Request $request){
@@ -163,18 +166,24 @@ class ComessaController extends Controller
         $inclusos = $request['inclusos'];
         $habilitados = $request['habilitados'];
         $exclusos_I = $request['exclusos_I'];
+        $equipe_I = $request['equipe_I'];
+        $equipe_H = $request['equipe_H'];
         $exclusos_H = $request['exclusos_H'];
-        //dd($exclusos_H);
+        //dd($equipe_H, $equipe_I);
         $comessa->limpaEquipe();
         $carga->limpaEquipe($comessa_id);
+
         //dd($comessa_id,$inclusos,$exclusos);
-        $carga->addEquipe($comessa_id, $inclusos);
-        $comessa->addEquipe($comessa_id, $inclusos);
-        $comessa->addEquipe($comessa_id, $habilitados);
-        //dd($comessa_id,$inclusos,$exclusos);
-        $carga->addEquipe($comessa_id, $exclusos_I);
-        $comessa->addEquipe($comessa_id, $exclusos_H);
-        $comessa->addEquipe($comessa_id, $exclusos_I);
+//        $carga->addEquipe($comessa_id, $inclusos);
+//        $comessa->addEquipe($comessa_id, $inclusos);
+//        $comessa->addEquipe($comessa_id, $habilitados);
+//        //dd($comessa_id,$inclusos,$exclusos);
+//        $carga->addEquipe($comessa_id, $exclusos_I);
+//        $comessa->addEquipe($comessa_id, $exclusos_H);
+//        $comessa->addEquipe($comessa_id, $exclusos_I);
+        $carga->addEquipe($comessa_id, $equipe_I);
+        $comessa->addEquipe($comessa_id, $equipe_H);
+        $comessa->addEquipe($comessa_id, $equipe_I);
 
         //dd($comessa,$inclusos,$exclusos);
         

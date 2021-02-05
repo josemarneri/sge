@@ -41,10 +41,17 @@ class Comessa extends Model
                 ->get();
         return $funcionarios;
     }
+    public function isHabilitado($funcionario_id){        
+        $funcionarios = DB::table('comessa_funcionarios')
+                ->where('comessa_id', '=', $this->id )
+                ->where('funcionario_id', '=', $funcionario_id)
+                ->first();
+        return (empty($funcionarios))? false: true;
+    }
 
     public function limpaEquipe() {
         $cfs = ComessaFuncionario::where('comessa_id', '=', $this->id)->get(); 
-        if(count($cfs)<1){
+        if(empty($cfs)){
             return 0;
         }        
         foreach ($cfs as $cf) {
@@ -61,13 +68,12 @@ class Comessa extends Model
         foreach($funcionarios_id as $funcionario_id){
             $existe = count(ComessaFuncionario::where('comessa_id','=',$comessa_id)
                     ->where('funcionario_id','=',$funcionario_id)->get());
-            if($existe<1){
+            if(empty($existe)){
                 $cf = new ComessaFuncionario();
                 $cf->funcionario_id = $funcionario_id; 
                 $cf->comessa_id = $comessa_id;
                 $cf->save();
-            }
-            
+            }            
         }  
         return 1;
     }

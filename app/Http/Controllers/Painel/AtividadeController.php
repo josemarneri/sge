@@ -37,9 +37,9 @@ class AtividadeController extends Controller
         //$atividade->prev_inicio = $this->atividade->formatDateToDMY($atividade->prev_inicio);
         //$atividade->prev_fim = $this->atividade->formatDateToDMY($atividade->prev_fim);
         $comessa = Comessa::find($atividade->comessa_id);
-        //$funcionarios = $comessa->getFuncionarios();
+        $funcionarios = $comessa->getFuncionarios();
         $funcionario = new Funcionario();
-        $funcionarios = $funcionario->all();
+        //$funcionarios = $funcionario->all();
         $coordenadores = $funcionario->all();
         //$coordenador = $coordenador->getFuncionarioByUserId(auth()->user()->id);
         //$comessas = $comessa->getByCoordenador($coordenador->id);

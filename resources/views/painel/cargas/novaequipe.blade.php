@@ -70,8 +70,9 @@
                                 @if(!empty($inclusos))
                                     @foreach($inclusos as $incluso)
                                         <div  >
-                                            <input type="checkbox" name="inclusos[]" value="{{$incluso->id}}"
-                                                   checked >{{$incluso->nome}}
+<!--                                            <input type="checkbox" name="inclusos[]" value="{{$incluso->id}}"
+                                                   checked >-->
+                                            {{$incluso->nome}}
                                         </div> 
 
                                     @endforeach 
@@ -81,8 +82,9 @@
                                 @if(!empty($habilitados))
                                     @foreach($habilitados as $habilitado)
                                         <div  >
-                                            <input type="checkbox" name="habilitados[]" value="{{$habilitado->id}}"
-                                                   checked >{{$habilitado->nome}}
+<!--                                            <input type="checkbox" name="habilitados[]" value="{{$habilitado->id}}"
+                                                   checked >-->
+                                            {{$habilitado->nome}}
                                         </div> 
 
                                     @endforeach 
@@ -90,7 +92,7 @@
                             </div>
                             <div style="border-top: #e4edf0 solid 1px" class="listadx">
                                 <label  style="text-align: center">Disponíveis (I=Incluir H=Habilitar)</label> <br>
-                                <div style="width: 100%; float: left"  >
+<!--                                <div style="width: 100%; float: left"  >
                                         <div class="checkbox_sx">
                                             <label title="Incluir" style="text-align: center">I</label>
                                         </div>                                        
@@ -99,20 +101,68 @@
                                         </div>                                       
                                     </div>
                                 <br>
-                                @if(!empty($exclusos))
-                                    @foreach($exclusos as $excluso) 
+                                @if(!empty($livres))
+                                    @foreach($livres as $livre) 
                                     <div style="width: 100%; float: left"  >
                                             <div class="checkbox_sx">
                                                 <input type="checkbox" name="exclusos_I[]" 
-                                                    value="{{$excluso->id}}" >
+                                                       value="{{$livre->id}}" >
                                             </div>
 
                                             <div class="checkbox_dx">
                                                 <input type="checkbox" name="exclusos_H[]" 
-                                                    value="{{$excluso->id}}" >
+                                                    value="{{$livre->id}}" >
                                             </div>
                                             <div class="checkbox_text">
-                                                {{$excluso->nome}}
+                                                {{$livre->nome}}
+                                            </div>                                        
+                                        </div>
+                                    <br>
+                                    @endforeach
+                                @endif
+                                @if(!empty($ocupados))
+                                    @foreach($ocupados as $ocupado) 
+                                    <div style="width: 100%; float: left"  >
+                                            <div class="checkbox_sx">
+                                                <input type="checkbox" name="exclusos_I[]" 
+                                                       value="{{$ocupado->id}}" disabled>
+                                            </div>
+
+                                            <div class="checkbox_dx">
+                                                <input type="checkbox" name="exclusos_H[]" 
+                                                    value="{{$ocupado->id}}" >
+                                            </div>
+                                            <div class="checkbox_text">
+                                                {{$ocupado->nome}}
+                                            </div>                                        
+                                        </div>
+                                    <br>
+                                    @endforeach
+                                @endif-->
+                                @if(!empty($cargas))
+                                    @foreach($cargas as $carga) 
+                                    <div style="width: 100%; float: left"  >
+                                            <div class="checkbox_sx">
+                                                <input type="checkbox" name="equipe_I[]" 
+                                                       value="{{$carga->funcionario_id}}" 
+                                                       @if($comessa->id == $carga->comessa_id)
+                                                            checked
+                                                       @elseif($carga->livre == 0)
+                                                            disabled
+                                                       @endif
+                                                       >
+                                            </div>
+
+                                            <div class="checkbox_dx">
+                                                <input type="checkbox" name="equipe_H[]" 
+                                                    value="{{$carga->funcionario_id}}" 
+                                                    @if($comessa->isHabilitado($carga->funcionario_id))
+                                                            checked
+                                                    @endif
+                                                    >
+                                            </div>
+                                            <div class="checkbox_text">
+                                                {{$carga->getFuncionario()->nome}}
                                             </div>                                        
                                         </div>
                                     <br>

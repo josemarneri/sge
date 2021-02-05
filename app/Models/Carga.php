@@ -53,10 +53,24 @@ class Carga extends Model
         return $funcionarios->orderBy('nome', 'asc')->get();
     }
     
-    public function getLivre() {
+    public function getLivres() {
         $funcionarios = new Funcionario();
         $cargas = Carga::where('livre', '=', 1)->get();
-        if(count($cargas)<1){
+        if(empty($cargas)){
+            return null;
+        }
+        foreach ($cargas as $carga) {
+            $funcionarios = $funcionarios->orwhere('id','=',$carga->funcionario_id );
+        }
+        return $funcionarios->orderBy('nome', 'asc')->get();
+    }
+    
+    
+    
+    public function getOcupados() {
+        $funcionarios = new Funcionario();
+        $cargas = Carga::where('livre', '=', 0)->get();
+        if(empty($cargas)){
             return null;
         }
         foreach ($cargas as $carga) {

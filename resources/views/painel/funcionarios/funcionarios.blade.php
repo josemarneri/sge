@@ -44,9 +44,6 @@
                     <a href="{{url("/painel/funcionarios/atualizar/".$funcionario->id)}}" title="alterar dados do funcionario">
                         <img src="{{url('/assets/imagens/edit.png')}}" alt="alterar dados do $funcionario" /> 
                     </a>
-<!--                    <a href="{{url("/painel/funcionarios/apagar/$funcionario->id")}}" title="Remover funcionario">
-                        <img src="{{url('/assets/imagens/delete.png')}}" alt="Remover funcionario" />
-                    </a>-->
                     <a  href="javascript:func()" title="Remover funcionario"
                        onclick="confirmacao('/painel/funcionarios/apagar/','{{$funcionario->id}}')">
                         <img src="{{url('/assets/imagens/delete.png')}}" alt="Remover funcionario" />
