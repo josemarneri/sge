@@ -4,7 +4,7 @@
 <script language="JavaScript" src="{{url('js/neri.js')}}"></script>
 <div class="area-util">
     <div class="title-2">
-        Lista de lançamentos        
+        Lista de lançamentos       
     </div>
     <table class="table table-hover table-condensed " style="text-align: center">
         

@@ -25,6 +25,7 @@
                         {{ csrf_field() }}
                         
                         <input type="hidden" id="ativo" name="ativo" value="{{$funcionario->ativo}}"/>
+                        <input type="hidden" id="keepId" name="keepId" value="{{$keepId}}"/>
 
                         <div class="form-group{{ $errors->has('id') ? ' has-error' : '' }}">
                             <label for="id" class="col-md-4 control-label">Registro</label>

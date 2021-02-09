@@ -8,6 +8,7 @@ use Illuminate\Support\Facades\DB;
 use App\Models\Diariodebordo;
 use App\Models\Comessa;
 use Gate;
+use Hamcrest\Type\IsDouble;
 
 class DiariosdebordoController extends Controller
 {
@@ -46,14 +47,21 @@ class DiariosdebordoController extends Controller
         if (Gate::denies('create-diariodebordo',$diariodebordo)){            
             abort(403, "Acesso não autorizado para o usuário: ". auth()->user()->login);
     	}
-        $lanc_pendentes = $this->diariodebordo->getLancamentosPendetes();
+//        $lanc_pendentes = $this->diariodebordo->getLancamentosPendetes();
+//        
+//        if(empty($lanc_pendentes)){
+//            $lanc_pendentes=null;
+//            $horas = null;
+//        }else{
+//           $horas = $this->diariodebordo->getHorasPendentes(pos($lanc_pendentes)); 
+//        }
+        $lanc_pendentes = null;
+        //$horas = date("H:i:s");
+        $horas = "08:30";
+//        $df = \DateTime::createFromFormat("H:i", $horas);
+//        $horas = $df->format('H:i');
+//        //dd($horas);
         
-        if(empty($lanc_pendentes)){
-            $lanc_pendentes=null;
-            $horas = null;
-        }else{
-           $horas = $this->diariodebordo->getHorasPendentes(pos($lanc_pendentes)); 
-        }
         $comessas = $diariodebordo->getComessas();
         $diariosdebordo = $this->diariodebordo->getByUser();                
         return view('painel.diariosdebordo.listdiariosdebordo', 
@@ -75,10 +83,10 @@ class DiariosdebordoController extends Controller
     		abort(403, "Acesso não autorizado para o usuário: ". auth()->user()->login);
     	}
         $diariodebordo = $this->diariodebordo->find($id);  
-        $request['data'] = $diariodebordo->data;
-        $request['n_horas'] = $diariodebordo->n_horas;
-        $request['horas_pendentes'] = 0;
-        $diariodebordo->AtualizarPendencia($request);        
+        //$request['data'] = $diariodebordo->data;
+        //$request['n_horas'] = $diariodebordo->n_horas;
+        //$request['horas_pendentes'] = 0;
+        //$diariodebordo->AtualizarPendencia($request);        
         $diariodebordo->delete();
         return redirect('/painel/diariosdebordo');
     }
@@ -88,13 +96,22 @@ class DiariosdebordoController extends Controller
         $diariodebordo = Diariodebordo::find($id);
         if(empty($id)){
             $diariodebordo = new Diariodebordo();
+            //dd(1);
             $diariodebordo->funcionario_id = $request['funcionario_id'];
+            //dd(2);
         }
         
         if (Gate::denies('save-diariodebordo',$diariodebordo)){
     		abort(403, "Acesso não autorizado para o usuário: ". auth()->user()->login);
     	}
         
+//            if(!is_double($request['n_horas'])){
+//                //dd($request['n_horas']);
+//                return back()->withErrors(['n_horas' => 'formato inválido']);
+//                //return redirect()->back();//->withErrors('message','Horas no formato errado!');
+//                
+//            }
+            //dd($request['n_horas']);
         \Session::flash('mensagem_sucesso',
                 $diariodebordo->Salvar($request));
         

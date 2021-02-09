@@ -149,9 +149,6 @@ class ComessaController extends Controller
         $ocupados = $carga->getOcupados();
         $habilitados = $comessa->getFuncionarios();
         $cargas = $carga->getCargas($comessa->id);
-        //dd($cargas);
-        //dd($cargas);
-        //dd($comessa,$inclusos,$exclusos);
         
         return view('painel.cargas.novaequipe', compact('comessa','inclusos','livres','habilitados','ocupados','cargas'));
     }

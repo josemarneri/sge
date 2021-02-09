@@ -79,7 +79,7 @@
                                             Selecione </option>
                                         @foreach($funcionarios as $funcionario)
                                             @if(!empty($funcionario))
-                                            <option <?php echo ($atividade->funcionario_id == $funcionario->id) ? "selected" :""; ?> 
+                                                <option <?php echo ($atividade->funcionario_id == $funcionario->id) ? "selected" :""; ?> 
                                                 value="{{$funcionario->id}}" > 
                                                 {{$funcionario->nome}}</option>
                                             @endif

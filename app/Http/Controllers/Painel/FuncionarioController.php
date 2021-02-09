@@ -31,14 +31,19 @@ class FuncionarioController extends Controller
     }
     
     public function Atualizar($idfuncionario){
+        $keepId = $idfuncionario;
+        $func = new Funcionario();
         $funcionario = Funcionario::find($idfuncionario);
+        if (empty($funcionario)){
+            $funcionario = $func->getByNome($Nome);
+        }
         $users = auth()->user()->all();
         if (Gate::denies('update-funcionario')){
     		abort(403, "Acesso não autorizado para o usuário: ". auth()->user()->login);
     	}
         $cargos = Cargo::all();
         $funcoes = Funcao::all();
-        return view('painel.funcionarios.novofuncionario', compact('funcionario','users','cargos','funcoes'));
+        return view('painel.funcionarios.novofuncionario', compact('funcionario','users','cargos','funcoes','keepId'));
     }
     
     public function Novo(){
@@ -48,9 +53,10 @@ class FuncionarioController extends Controller
     	}
         $cargos = Cargo::all();
         $funcoes = Funcao::all();
-        $funcionario = new Funcionario(); 
+        $funcionario = new Funcionario();
+        $keepId=$funcionario->id;
         
-        return view('painel.funcionarios.novofuncionario', compact('funcionario','users','cargos','funcoes'));
+        return view('painel.funcionarios.novofuncionario', compact('funcionario','users','cargos','funcoes','keepId'));
     }
     
     public function Apagar($idfuncionario){
@@ -73,11 +79,12 @@ class FuncionarioController extends Controller
     }
     
     public function Salvar(FuncionariosRequest $request){
+        //dd($request);
         if (Gate::denies('save-funcionario')){
     		abort(403, "Acesso não autorizado para o usuário: ". auth()->user()->login);
     	}
-        if (Funcionario::find($request->get('id'))){ 
-            $funcionario = Funcionario::find($request->get('id')); 
+        $funcionario = Funcionario::find($request['keepId']);
+        if (!empty($funcionario)){ 
             if(empty($request['cargo_id'])){
                  $request['cargo_id'] = null;
               }

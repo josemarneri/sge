@@ -100,28 +100,56 @@ class Diariodebordo extends Model
 
 
     public function getHorasPendentes($data){
+        
         $funcionario = $this->getFuncionarioByUser();
-        $horas_pendentes = DB::table('lancamentos_pendentes')
+        $horas_lancadas = DB::table('diariosdebordo')
                 ->where('funcionario_id','=',$funcionario->id)
                 ->where('data','=',$data)
-                ->get()->first(); 
-        if(!empty($horas_pendentes)){
-            return $horas_pendentes->horas_pendentes;
-        }
-        
-        return 0;
+                ->get()->all();
+        $today = "08:30";
+//        dd($horas_lancadas);
+        $n_horas = 0;
+        $n_min = 0;
+        if(!empty($horas_lancadas)){
+            foreach($horas_lancadas as $hl){
+                $pos1 = strrpos($hl->n_horas, ':',1);
+                $sub1= substr($hl->n_horas, 0,$pos1);
+                $pos2 = strrpos($sub1, ':',1);
+                $sub2 = substr($sub1, 0,$pos2);
+                
+                $sub1= substr($hl->n_horas, $pos2+1,$pos1-$pos2-1);
+                dd($sub2, $pos2, $sub1, $pos1);
+                
+                $horas = substr($hl->n_horas, 0,2);
+                $min = substr($hl->n_horas, 3,2);
+                //dd($horas.':'.$min);
+                $n_horas += intval($horas);
+                //dd($n_horas);
+                $n_min += intval($min) +10;
+                
+            }
+            dd($n_horas.':'.$n_min);
+            $n_min += $n_horas * 60;
+            $min_pendentes = (8 * 60 + 30) - $n_min;
+            $h_pendentes = intval($min_pendentes / 60);
+            $min_pendentes = abs($min_pendentes % 60);
+            $min_p = $min_pendentes < 10 ? '0'. $min_pendentes : $min_pendentes;
+
+            return $h_pendentes.':'.$min_p;
+        }  
+        return $today;
     }
     
     public function Salvar($request){
         if (!empty($this->id)){  
             $this->fill($request->toArray()); 
             $this->save();   
-            $this->AtualizarPendencia($request); 
+//            $this->AtualizarPendencia($request); 
             $mensagem = "Diariodebordo ".$this->id." atualizado com sucesso ";
         }else {
             $request['id']=$this->id;
             $this->create($request->toArray());
-            $this->AtualizarPendencia($request);            
+//            $this->AtualizarPendencia($request);            
             $mensagem = 'Diariodebordo cadastrado com sucesso';
         }
         return $mensagem;
