@@ -1,7 +1,7 @@
 @extends('layouts.master')
 
 @section('content')
-<div class="area-util">
+<div class="area-trabalho">
     <script language="JavaScript" src="{{url('js/neri.js')}}"></script>
     <div class="title-2">
         Lista de funcionario        

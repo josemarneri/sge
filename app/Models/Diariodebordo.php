@@ -80,8 +80,65 @@ class Diariodebordo extends Model
     
     public function getByUser(){
        $funcionario = $this->getFuncionarioByUser();
-       $dbs = $this->where('funcionario_id','=',$funcionario->id)->get();
-        return $dbs;
+       $diariosdebordo = $this->where('funcionario_id','=',$funcionario->id)               
+               ->paginate(30);
+       
+        return $diariosdebordo;
+    }
+    
+    //Separa um periodo em meses
+    //
+    public function separarPeriodos($periodo){
+        $firstYear = date("Y", strtotime($periodo['de']));
+        $firstMonth = date("m", strtotime($periodo['de']));
+        $firstDay = date("d", strtotime($periodo['de']));
+        $lastYear = date("Y", strtotime($periodo['ate']));
+        $lastMonth = date("m", strtotime($periodo['ate']));
+        $lastDay = date("d", strtotime($periodo['ate']));
+        $de = date("Ymd", strtotime($periodo['de']));
+        $ate = date("Ymd", strtotime($periodo['ate']));
+        $intervalos;
+//        dd($firstYear,$firstMonth,$firstDay,'-',$lastYear,$lastMonth,$lastDay, $ate, $de, $intervalo);
+        $inicioMes = date("Y-m-d", strtotime($periodo['de']));
+        $lastDayMonth = cal_days_in_month(CAL_GREGORIAN, $firstMonth, $firstYear); 
+        if (($firstYear == $lastYear) && ($firstMonth == $lastMonth)){
+            $lastDayMonth = $lastDay;
+        }
+        
+        $endMonth = date("Y-m-d", strtotime($firstYear.'-'.$firstMonth.'-'.$lastDayMonth));
+        while (($ate - $de) > 0){
+            $de = date("Y-m-d", strtotime($firstYear.'-'.$firstMonth.'-'.$firstDay));            
+            $intervalos[$de] = $endMonth;
+            if ($firstMonth < 12){
+                $firstMonth += 1;
+            } else{
+                $firstMonth = 1;
+                $firstYear +=1;
+            }
+            $firstDay = 1;
+            $de = date("Ymd", strtotime($firstYear.'-'.$firstMonth.'-'.$firstDay));
+            $lastDayMonth = cal_days_in_month(CAL_GREGORIAN, $firstMonth, $firstYear); 
+            $endMonth = date("Y-m-d", strtotime($firstYear.'-'.$firstMonth.'-'.$lastDayMonth));
+        }
+        return $intervalos;
+    }
+
+
+    public function getPorPeriodo($periodo ){
+        $periodos = $this->separarPeriodos($periodo);
+        $funcionario = $this->getFuncionarioByUser();
+        $lista;
+        foreach ($periodos as $de=>$ate){
+            $mes = date("Ym", strtotime($ate));
+            $lista[$mes] = DB::table('diariosdebordo')
+                    ->where('funcionario_id','=',$funcionario->id)
+                    ->where('data', '>', $de)
+                    ->where('data', '<', $ate)
+                    ->get();
+//            $lista[$mes]['de']=[$de];
+//            $lista[$mes]['ate']=[$ate];
+        }  
+        return $lista;
     }
     
     public function getLancamentosPendetes(){
@@ -97,45 +154,46 @@ class Diariodebordo extends Model
         }        
         return $pendencias;
     }
+    
+    //Pega uma string horas 00:00 e onverte para um inteiro minutos 
+    public function horasToMin($horas){
+        $pos1 = strpos($horas, ':');
+        $hora= substr($horas, 0,$pos1);
+        $min = substr($horas, $pos1+1,$pos1+3);
+        $n_horas = intval($hora);
+        $n_min = intval($min);
+        $n_min += $n_horas * 60;
+        return $n_min;
+    }
+    //converte um inteiro minutos para uma string horas 00:00 
+    public function minToHoras($minutos){
+        $sinal = (($minutos / 60) < 0) ? '-':'';
+        $horas = abs(intval($minutos / 60));
+        $min = abs($minutos % 60);
+        $minutos_string = $min < 10 ? '0'. $min : $min;
+        $horas_string = $horas < 10 ? '0'. $horas : $horas;
+        return $sinal . $horas_string . ':' . $minutos_string;
+    }
+    
 
 
-    public function getHorasPendentes($data){
-        
+    public function getHorasPendentes($data, $horas_deste_lanc = "00:00"){        
         $funcionario = $this->getFuncionarioByUser();
         $horas_lancadas = DB::table('diariosdebordo')
                 ->where('funcionario_id','=',$funcionario->id)
                 ->where('data','=',$data)
                 ->get()->all();
         $today = "08:30";
-//        dd($horas_lancadas);
-        $n_horas = 0;
+        
         $n_min = 0;
         if(!empty($horas_lancadas)){
+//            dd($horas_lancadas);
             foreach($horas_lancadas as $hl){
-                $pos1 = strrpos($hl->n_horas, ':',1);
-                $sub1= substr($hl->n_horas, 0,$pos1);
-                $pos2 = strrpos($sub1, ':',1);
-                $sub2 = substr($sub1, 0,$pos2);
-                
-                $sub1= substr($hl->n_horas, $pos2+1,$pos1-$pos2-1);
-                dd($sub2, $pos2, $sub1, $pos1);
-                
-                $horas = substr($hl->n_horas, 0,2);
-                $min = substr($hl->n_horas, 3,2);
-                //dd($horas.':'.$min);
-                $n_horas += intval($horas);
-                //dd($n_horas);
-                $n_min += intval($min) +10;
-                
+                $n_min += $this->horasToMin($hl->n_horas); 
             }
-            dd($n_horas.':'.$n_min);
-            $n_min += $n_horas * 60;
-            $min_pendentes = (8 * 60 + 30) - $n_min;
-            $h_pendentes = intval($min_pendentes / 60);
-            $min_pendentes = abs($min_pendentes % 60);
-            $min_p = $min_pendentes < 10 ? '0'. $min_pendentes : $min_pendentes;
-
-            return $h_pendentes.':'.$min_p;
+            $min_pendentes = $this->horasToMin($today) - $n_min + $this->horasToMin($horas_deste_lanc);
+            $hora = $this->minToHoras($min_pendentes);
+            return $hora;
         }  
         return $today;
     }

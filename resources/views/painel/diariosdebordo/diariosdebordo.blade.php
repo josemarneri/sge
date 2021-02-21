@@ -2,7 +2,7 @@
 
 @section('content')
 
-<div class="area-util"> 
+<div class="area-trabalho"> 
     
     <script language="JavaScript" src="{{url('js/neri.js')}}"></script>
     <script language="JavaScript" src="{{url('js/jquery-1.6.4.js')}}"></script>
@@ -19,21 +19,15 @@
         
     });
     
-    function maxValue(campo1,campo2){
-        var c1 =  parseFloat(campo1.value);
-        var c2 =  parseFloat(campo2.value);
-            if (c2 > c1){  
-                ext = c2 - c1;
-                window.alert("Você está lançando  = "+ ext +" horas extras");
-                
-                //campo2.value = campo1.value;
-            }
+    
+    function changeFocus(campo2){                
+        campo2.focus = true;
     }
     </script>
     
 
     <div class="row">
-        <div class="col-md-10 col-md-offset-2">
+        <div class="col-md-9 col-md-offset-2">
             <div class="panel panel-default">
                
                 @if(!empty($errors->all()))
@@ -67,7 +61,9 @@
                         <div class="form-group{{ $errors->has('data') ? ' has-error' : '' }}">  
                             <label for="data" class="col-sm-1 control-label col-md-offset-1">Data</label>
                             <div class="col-sm-2 "> 
-                                <input id="data" name="data" type="date" >
+                                <input id="data" name="data" type="date" 
+                                       value="{{ $diariodebordo->data ? $diariodebordo->data : old('data') }}" 
+                                       required>
                             </div>
 
                             <label for="n_horas" class="col-sm-1 control-label">Horas</label>
@@ -75,7 +71,7 @@
                                 <input id="n_horas" type="time"   name="n_horas" 
                                        value="{{ $diariodebordo->n_horas ? $diariodebordo->n_horas : old('n_horas') }}" 
                                        required 
-                                       onkeyup="maxValue(document.form1.horas_pendentes,this)">
+                                       onblur ="maxValue(document.form1.horas_pendentes,this)">
 
                                 @if ($errors->has('n_horas'))
                                     <span class="help-block">
@@ -88,7 +84,8 @@
                             <div  id="hs_pendentes" class="col-md-1">
                                 @if(!empty($horas))
                                 <input id="horas_pendentes" type="text" class="form-control" name="horas_pendentes"  
-                                       style="width: 70px; border:none; background:none; color: red" readonly value="{{$horas}}">
+                                       style="width: 70px; border:none; background:none; color: red" readonly 
+                                       value="{{$horas_pendentes}}" >
                                 @endif
                             </div>
                         </div>

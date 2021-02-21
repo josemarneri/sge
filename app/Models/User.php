@@ -49,6 +49,11 @@ class User extends Authenticatable
     	return $this->belongsToMany(\App\Models\Role::class);
     }
     
+    public function getAtributos(){
+    	return $this->fillable;
+    }   
+    
+    
     public function getFuncionario($iduser){
         $funcionario = Funcionario::where('user_id','=',$iduser)->get()->first();
     	return $funcionario;

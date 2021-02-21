@@ -1,7 +1,7 @@
 @extends('layouts.master')
 
 @section('content')
-<div class="area-util">
+<div class="area-trabalho">
     <div class="row">
         <div class="col-md-8 col-md-offset-2">
             <div class="panel panel-default">

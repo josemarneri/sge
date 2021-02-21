@@ -159,7 +159,7 @@ Route::group(['prefix' => 'plm'], function(){
 Route::get('desenhos',[App\Http\Controllers\Plm\DesenhoController::class,'index'])->name('desenhos');
     Route::get('desenhos/novo', [App\Http\Controllers\Plm\DesenhoController::class,'Novo'])->name('desenhos/novo');
     Route::post('desenhos/salvar', [App\Http\Controllers\Plm\DesenhoController::class,'Salvar'])->name('desenhos/salvar');
-    Route::post('desenhos/filtrar', [App\Http\Controllers\Plm\DesenhoController::class,'Filtrar'])->name('desenhos/filtrar');
+    Route::any('desenhos/filtrar', [App\Http\Controllers\Plm\DesenhoController::class,'Filtrar'])->name('desenhos/filtrar');
     Route::get('desenhos/atualizar/{id}', [App\Http\Controllers\Plm\DesenhoController::class,'Atualizar'])->name('desenhos/atualizar/{id}');
     Route::get('desenhos/apagar/{id}', [App\Http\Controllers\Plm\DesenhoController::class,'Apagar'])->name('desenhos/apagar/{id}');  
     Route::get('desenhos/novo/importarplanilha', [App\Http\Controllers\Plm\DesenhoController::class,'ImportarPlanilha'])->name('desenhos/novo/importarplanilha');  
@@ -190,6 +190,14 @@ Route::group(['prefix' => 'rdp'], function(){
     Route::get('apagar/{id}', [App\Http\Controllers\Util\ArquivoController::class,'Apagar'])->name('apagar/{id}');  
 });
 
+//RelatorioController
+Route::group(['prefix' => 'relatorio'], function(){    
+    Route::get('relatorio',[App\Http\Controllers\Util\RelatorioController::class,'index'])->name('relatorio');
+    Route::get('gerarrelatorio',[App\Http\Controllers\Util\RelatorioController::class,'GerarRelatorio'])->name('gerarrelatorio');
+    Route::post('gerarPdf', [App\Http\Controllers\Util\RelatorioController::class,'gerarPDF'])->name('gerarPDF');
+      
+});
+
 Route::group(['prefix' => 'error'], function(){    
     Route::get('/',[App\Http\Controllers\Painel\RdpController::class,'index'])->name('/');
  
@@ -198,25 +206,19 @@ Route::group(['prefix' => 'error'], function(){
 
 Route::group(['prefix' => 'post'], function(){
     //Exibir os posts
-    Route::get('/', [App\Http\Controllers\Painel\PostController::class,'index'])->name('/');
-    
+    Route::get('/', [App\Http\Controllers\Painel\PostController::class,'index'])->name('/');    
     //inserir posts
-    Route::get('novo',[App\Http\Controllers\Painel\PostController::class,'Novo'])->name('novo');
-    
-    
+    Route::get('novo',[App\Http\Controllers\Painel\PostController::class,'Novo'])->name('novo'); 
     //apagar posts
-    Route::get('apagar/{id}',[App\Http\Controllers\Painel\PostController::class,'Apagar'])->name('apagar/{id}');
-    
+    Route::get('apagar/{id}',[App\Http\Controllers\Painel\PostController::class,'Apagar'])->name('apagar/{id}');    
     //atualizar posts
-    Route::get('atualizar/{id}',[App\Http\Controllers\Painel\PostController::class,'Atualizar'])->name('atualizar/{id}');
-    
+    Route::get('atualizar/{id}',[App\Http\Controllers\Painel\PostController::class,'Atualizar'])->name('atualizar/{id}');    
     //salvar
     Route::post('salvar/',[App\Http\Controllers\Painel\PostController::class,'Salvar'])->name('salvar/');
     
 });
 
 //Route::auth();
-
 Route::get('/excel', [App\Http\Controllers\Util\ExcelController::class,'index'])->name('/excel');
 Route::get('/rdp', [App\Http\Controllers\Painel\RdpController::class,'index'])->name('/rdp');
 Route::get('/func/{id?}', [App\Http\Controllers\Painel\UserController::class,'getFuncionario'])->name('func/{id?}');
@@ -224,8 +226,6 @@ Route::get('/test/{id?}', [App\Http\Controllers\Util\ExcelController::class,'tes
 
 
 //Auth::routes();
-
 Auth::routes();
-
 Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
 Route::get('/', [App\Http\Controllers\SiteController::class, 'index'])->name('/');

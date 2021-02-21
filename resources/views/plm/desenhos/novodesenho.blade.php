@@ -1,7 +1,7 @@
 @extends('layouts.master')
 
 @section('content')
-<div class="area-util">
+<div class="area-trabalho">
     <script language="JavaScript" src="{{url('js/neri.js')}}"></script>
     <div class="row">
         <div class="col-md-8 col-md-offset-2">
@@ -30,7 +30,8 @@
                             <label for="numero" class="col-md-4 control-label">Número</label>
 
                             <div class="col-md-6">
-                                <input id="numero" type="text" readonly="true" class="form-control" name="numero" value="{{ $desenho->numero ? $desenho->numero : old('numero') }}" required>
+                                <input id="numero" type="text" readonly="true" class="form-control" name="numero" 
+                                       value="{{ $desenho->numero ? $desenho->numero : old('numero') }}" required>
 
                                 @if ($errors->has('numero'))
                                     <span class="help-block">

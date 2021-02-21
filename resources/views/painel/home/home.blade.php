@@ -1,7 +1,7 @@
 @extends('layouts.master')
 
 @section('content')
-<div class="area-util">
+<div class="area-trabalho">
     @forelse($posts as $post)
     	@can('view_post',$post)
 	    	<h1>{{$post->title}}</h1>

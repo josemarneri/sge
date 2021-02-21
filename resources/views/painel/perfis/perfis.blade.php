@@ -1,7 +1,7 @@
 @extends('layouts.master')
 
 @section('content')
-<div class="area-util">
+<div class="area-trabalho">
     <div class="title-2">
         Lista de perfil de Acesso        
     </div>

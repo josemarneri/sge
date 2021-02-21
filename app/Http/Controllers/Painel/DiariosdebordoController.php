@@ -27,45 +27,37 @@ class DiariosdebordoController extends Controller
         if (Gate::denies('update-diariodebordo',$diariodebordo)){
     		abort(403, "Acesso não autorizado para o usuário: ". auth()->user()->login);
     	}
-        $data = $this->diariodebordo->formatDateToDMY($diariodebordo->data);
-        $pendencias[$data] = $diariodebordo->data;
-        $lanc_pendentes = $pendencias;
-        $horas = $this->diariodebordo->getHorasPendentes($diariodebordo->data) + $diariodebordo->n_horas;
-        $diariodebordo->data = $this->diariodebordo->formatDateToDMY($diariodebordo->data);
+        //$data = $this->diariodebordo->formatDateToDMY($diariodebordo->data);
+        //dd($diariodebordo);
+        $data = $diariodebordo->data;
+        $horas = $diariodebordo->n_horas;
+        $horas_pendentes = $diariodebordo->getHorasPendentes($diariodebordo->data,$horas);
+//        dd($horas_pendentes,$horas);
+        //$diariodebordo->data = $this->diariodebordo->formatDateToDMY($diariodebordo->data);
         $comessas = $diariodebordo->getComessas();
         $atividades = $diariodebordo->getAtividades($diariodebordo->comessa_id);
         $diariosdebordo = $this->diariodebordo->getByUser();     
         return view('painel.diariosdebordo.listdiariosdebordo', 
-                compact('diariodebordo','lanc_pendentes','comessas','diariosdebordo', 'atividades','horas'));
+                compact('diariodebordo','horas_pendentes','comessas','diariosdebordo', 'atividades','horas'));
     }
     
     public function Novo($comessa_id = 0){
-        $diariodebordo = new Diariodebordo(); 
+        $diariodebordo = new Diariodebordo();
         if($comessa_id != 0){
             $diariodebordo->comessa_id = $comessa_id;
         }
         if (Gate::denies('create-diariodebordo',$diariodebordo)){            
             abort(403, "Acesso não autorizado para o usuário: ". auth()->user()->login);
     	}
-//        $lanc_pendentes = $this->diariodebordo->getLancamentosPendetes();
-//        
-//        if(empty($lanc_pendentes)){
-//            $lanc_pendentes=null;
-//            $horas = null;
-//        }else{
-//           $horas = $this->diariodebordo->getHorasPendentes(pos($lanc_pendentes)); 
-//        }
-        $lanc_pendentes = null;
-        //$horas = date("H:i:s");
-        $horas = "08:30";
-//        $df = \DateTime::createFromFormat("H:i", $horas);
-//        $horas = $df->format('H:i');
-//        //dd($horas);
+        $diariodebordo->data = date("Y-m-d");
+        $horas = "00:00";
+        $horas_pendentes = $diariodebordo->getHorasPendentes($diariodebordo->data);
         
         $comessas = $diariodebordo->getComessas();
-        $diariosdebordo = $this->diariodebordo->getByUser();                
+        $diariosdebordo = $this->diariodebordo->getByUser(); 
+        //dd($diariosdebordo);
         return view('painel.diariosdebordo.listdiariosdebordo', 
-                compact('diariodebordo','lanc_pendentes','comessas','diariosdebordo','horas'));
+                compact('diariodebordo','horas_pendentes','comessas','diariosdebordo','horas'));
     }
     
     public function getAtividades($comessa_id){
@@ -105,15 +97,20 @@ class DiariosdebordoController extends Controller
     		abort(403, "Acesso não autorizado para o usuário: ". auth()->user()->login);
     	}
         
-//            if(!is_double($request['n_horas'])){
-//                //dd($request['n_horas']);
-//                return back()->withErrors(['n_horas' => 'formato inválido']);
-//                //return redirect()->back();//->withErrors('message','Horas no formato errado!');
-//                
-//            }
-            //dd($request['n_horas']);
-        \Session::flash('mensagem_sucesso',
-                $diariodebordo->Salvar($request));
+        
+        
+        if (!empty($id)){ 
+            $diariodebordo->fill($request->all());
+            $diariodebordo->save();
+            \Session::flash('mensagem_sucesso', " Diario de bordo atualizado com sucesso ");
+        }else {
+            $diariodebordo->fill($request->all());
+            $diariodebordo->save();
+            \Session::flash('mensagem_sucesso', " Diario de bordo inserido com sucesso ");
+        }  
+        
+        
+//        \Session::flash('mensagem_sucesso',$diariodebordo->Salvar($request));
         
         return redirect('/painel/diariosdebordo/novo/');
     }

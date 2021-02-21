@@ -1,7 +1,7 @@
 @extends('layouts.master')
 
 @section('content')
-<div class="area-util">
+<div class="area-trabalho">
     <div class = "wrapper">        
               
         <div class="title-2 wrapperL" >

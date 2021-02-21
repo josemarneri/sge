@@ -109,3 +109,32 @@ function mascaraData( campo, e ){
             }
     }
 }
+
+    function HoraToMin(valor){
+        var pos = valor.indexOf (":");
+        var hora = valor.substring(0,pos);
+        var s = valor.substring(0,1);
+        var sinal = (s != '-')? 1 : -1;
+        var min = valor.substring(pos+1, pos+3);
+        var saldo = Math.abs(parseFloat(hora)) * 60 + Math.abs(parseFloat(min))
+        return sinal * saldo;
+    }
+    
+    function MinToHora(valor){
+        var hora = Math.abs(parseInt(valor / 60));
+        var min = Math.abs(valor % 60)<10 ? '0' + Math.abs(valor % 60) : Math.abs(valor % 60);
+        var horas = hora + ':' + min
+        return horas;
+    }
+    
+    function maxValue(campo1,campo2){
+        var c1 =  campo1.value;
+        var c2 =  campo2.value;
+        var min1 = HoraToMin(c1);
+        var min2 = HoraToMin(c2);
+        var saldo = min1 - min2;
+        if (saldo < 0){
+            window.alert("Você está fazendo:" + MinToHora(saldo) + " horas extras nesta data  \n\
+                        Está correto?" );
+        }
+    }

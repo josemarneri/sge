@@ -2,7 +2,7 @@
 
 @section('content')
 
-<div class="area-util"> 
+<div class="area-trabalho"> 
     <script language="JavaScript" src="{{url('js/neri.js')}}"></script>
     <script language="JavaScript" src="{{url('js/jquery-1.6.4.js')}}"></script>
     

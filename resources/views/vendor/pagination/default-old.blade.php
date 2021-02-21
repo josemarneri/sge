@@ -4,7 +4,7 @@
         @if ($paginator->onFirstPage())
             <li class="disabled"><span>&laquo;</span></li>
         @else
-            <li><a href="{{ $paginator->previousPageUrl() }}" rel="prev">&laquo;</a> </li>
+            <li><a href="{{ $paginator->previousPageUrl() }}" rel="prev">&laquo;</a></li>
         @endif
 
         {{-- Pagination Elements --}}

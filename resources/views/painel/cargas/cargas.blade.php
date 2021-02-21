@@ -2,7 +2,7 @@
 
 @section('content')
 <script language="JavaScript" src="{{url('js/neri.js')}}"></script>
-<div class="area-util">
+<div class="area-trabalho">
     <div class="title-2">
         Carga de trabalho por funcionário       
     </div>

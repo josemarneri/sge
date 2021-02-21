@@ -1,7 +1,7 @@
 @extends('layouts.master')
 
 @section('content')
-<div class="area-util">
+<div class="area-trabalho">
     <div class = "wrapper">        
               
         <div class="title-2 wrapperL" >
@@ -15,7 +15,7 @@
                         <label for="filtronumero" class="col-md-4 control-label">Número</label>
 
                         <div class="col-md-6">
-                            <input id="filtronumero" type="text" class="form-control" name="filtronumero"  >
+                            <input id="filtronumero" type="text" class="form-control" name="filtronumero" >
 
                             @if ($errors->has('filtronumero'))
                                 <span class="help-block">
@@ -147,12 +147,17 @@
         </div>    
         
     
-    
     <table class="table table-hover table-condensed" >
         <thead>
         <a href="{{url("/plm/desenhos/novo")}}" title="Criar Desenho">
                 <img src="{{url('/assets/imagens/Add.png')}}" alt="Criar Desenho" />
             </a>
+        @if( $pag)
+            <div style="float: right">
+                {{ $desenhos->links() }}
+            </div>
+            
+        @endif
             <tr>
 <!--                <th style="text-align: center">Id</th>-->
                 <th style="text-align: center">Numero</th>
@@ -167,20 +172,20 @@
         </thead>
         <tbody>
             @if(!empty($desenhos))
-                @forelse($desenhos as $desenho)               
+                @forelse($desenhos as $des)               
                 <tr>
 <!--                    <td style="text-align: center">{{$desenho->id}}</td>-->
-                    <td style="text-align: center">{{$desenho->numero}}</td>
-                    <td style="text-align: center">{{$desenho->alias}}</td>
-                    <td >{{$desenho->descricao}}</td>
-                    <td style="text-align: center">{{$desenho->material}}</td>
-                    <td style="text-align: center">{{$desenho->peso}}</td>
+                    <td style="text-align: center">{{$des->numero}}</td>
+                    <td style="text-align: center">{{$des->alias}}</td>
+                    <td >{{$des->descricao}}</td>
+                    <td style="text-align: center">{{$des->material}}</td>
+                    <td style="text-align: center">{{$des->peso}}</td>
                     <td style="text-align: center">{{$desenho->getCodigoProjeto($desenho->projeto_id)}}</td>
                     <td style="text-align: right">
                     <?php
                         $i=1;
                         echo "[ ";
-                        foreach($desenho->getAnexos($desenho->id) as $anexo){
+                        foreach($desenho->getAnexos($des->id) as $anexo){
                             echo "<a href=\"".url("/arquivos/baixar/".$anexo->id)."\" title=$anexo->nomearquivo>";
                                echo "$i </a>";
                                $i++;
@@ -203,11 +208,16 @@
                 @empty
                     <p> Nenhum desenho cadastrado!!!</p>
                 @endforelse
+                
             @endif
         </tbody>
         
     </table>
-    
+    @if(  $pag)
+        <div style="float: right">
+            {{ $desenhos->links() }}
+        </div>
+    @endif
     
 </div>
 @endsection

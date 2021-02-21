@@ -27,32 +27,39 @@ class DesenhoController extends Controller
         if (Gate::denies('list-desenho')){
     		abort(403, "Acesso não autorizado para o usuário: ". auth()->user()->login);
     	}
-        $desenhos = $this->desenho->all()->sortByDesc('id');
+        $pag = true;
+        //$desenhos = $this->desenho->all()->sortByDesc('id')->paginate(30);
+        $filtro;
+        $desenhos = $this->desenho->paginate(30);
         $desenho = new Desenho();
         $projetos = Projeto::all();
         $relatorio = new Relatorio();
         $hasPlanilha = $relatorio->existPlanilha();
-        return view('plm.desenhos.desenhos', compact('desenhos','desenho','projetos','hasPlanilha'));
+        return view('plm.desenhos.desenhos', compact('desenhos','desenho','projetos','hasPlanilha','pag'));
     }
     
     public function Filtrar(Request $filtro){
         if (Gate::denies('list-desenho')){
     		abort(403, "Acesso não autorizado para o usuário: ". auth()->user()->login);
     	}
-
-        $desenhos = $this->desenho->Filtrar($filtro);
-        if (!empty($desenhos)){
-            rsort($desenhos);   //Função usada para ordenar os desenhos em ordem decrescente
-        }
+        $pag = false;
+        $resultado = $this->desenho->Filtrar($filtro);
+        //dd($resultado);
+        $plan = $resultado['all'];
+        //$desenhos = $resultado['pag'];
+        $desenhos = $resultado['all'];
+//        if (!empty($desenhos)){
+//            rsort($desenhos);   //Função usada para ordenar os desenhos em ordem decrescente
+//        }
         
 
         //dd($desenhos);
         $desenho = new Desenho();
         $projetos = Projeto::all(); // Busca a lista de projetos cadastrados
         $relatorio = new Relatorio();
-        $planilha = $relatorio->gerarListaDesenhosExcel($desenhos);               
+        $planilha = $relatorio->gerarListaDesenhosExcel($plan);               
         $hasPlanilha = $relatorio->existPlanilha();                
-        return view('plm.desenhos.desenhos', compact('desenhos','desenho','projetos','hasPlanilha'));
+        return view('plm.desenhos.desenhos', compact('desenhos','desenho','projetos','hasPlanilha','pag'));
     }
     
     public function BaixarPlanilha(){

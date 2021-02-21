@@ -26,7 +26,7 @@
 </head>
 <body >  
   
-    <div id="app">
+    <div id="app" class="area-principal">
         <div id="header" class="head-2">
                 <nav class="navbar navbar-default navbar-static-top" >            
                     
@@ -183,6 +183,8 @@
                                 <li>
                                     @can('list-orcamento')
                                     <a href="#">Orçamentos</a>
+                                    <li><a href="{{ route('relatorio')}}">Relatório</a></li>
+                                    <li><a href="{{ route('gerarrelatorio')}}">Gerar Relatorio</a></li>
                                     @endcan                                    
                                 </li>
                                 <li>
@@ -260,7 +262,7 @@
             </div>
             
         </nav>
-        <div > 
+        <div class="area-principal"> 
             <div class="area-util">                
                 <div class="menu-lateral">
                 </div>
@@ -270,12 +272,14 @@
                 </div>
             </div>
                            
-            <div id="rodapé" class="rodape">
-                Desenvolvido por Josemar Neri
-            </div>            
-        </div>   
+                       
+        </div> 
+        
 
     </div>
+    <div id="rodapé" class="rodape">
+                Desenvolvido por Josemar Neri
+            </div> 
 
     <!-- Scripts -->
     <script src="/js/app.js"></script>

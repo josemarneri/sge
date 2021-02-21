@@ -1,7 +1,7 @@
 @extends('layouts.master')
 
 @section('content')
-<div class="area-util">
+<div class="area-trabalho">
     
     @if(Session::has('mensagem_sucesso'))
         <div class="alert alert-success">{{Session::get('mensagem_sucesso')}}</div>    
