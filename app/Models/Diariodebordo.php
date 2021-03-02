@@ -15,7 +15,17 @@ class Diariodebordo extends Model
     protected $table = 'diariosdebordo';
     
     protected $fillable = [
-        'id','funcionario_id','comessa_id','atividade_id','data','descricao','n_horas'];
+        'id','funcionario_id','comessa_id','atividade_id','data','descricao','n_horas', 
+        'n_horas_consultivadas' ,'consultivado', 'faturado', 'nf'];
+    
+    public function getDDB($request){
+        $ddb = DB::table('diariosdebordo')
+                ->where('comessa_id','=',$request['comessa_id'])
+                ->where('atividade_id','=',$request['atividade_id'])
+                ->where('data', '=', $request['data'])
+                ->get()->first();
+        return $ddb;
+    }
     
     public function formatDateToYMD($date){
         $df = \DateTime::createFromFormat('d/m/Y', $date); 
@@ -55,6 +65,15 @@ class Diariodebordo extends Model
         return $owner;
     }
     
+    public function getAtividadeCodigo() {
+        $atividade = Atividade::find($this->atividade_id);
+        $resumo = null;
+        if (!empty($atividade)){
+            $resumo = $atividade->codigo;;
+        }
+        
+        return $resumo;
+    }
     public function getAtividade() {
         $atividade = Atividade::find($this->atividade_id);
         return $atividade;
@@ -75,12 +94,16 @@ class Diariodebordo extends Model
                 ->where('comessa_id','=',$comessa_id)
                 ->where('funcionario_id','=',$funcionario->id)
                 ->select('atividades.*')->get();
+        if (count($atividades)<1){
+            $atividades = null;
+        }
         return $atividades;
     }
     
     public function getByUser(){
        $funcionario = $this->getFuncionarioByUser();
-       $diariosdebordo = $this->where('funcionario_id','=',$funcionario->id)               
+       $diariosdebordo = $this->where('funcionario_id','=',$funcionario->id)
+               ->orderBy('created_at', 'desc')
                ->paginate(30);
        
         return $diariosdebordo;
@@ -103,11 +126,17 @@ class Diariodebordo extends Model
         $lastDayMonth = cal_days_in_month(CAL_GREGORIAN, $firstMonth, $firstYear); 
         if (($firstYear == $lastYear) && ($firstMonth == $lastMonth)){
             $lastDayMonth = $lastDay;
-        }
-        
+            
+        }        
         $endMonth = date("Y-m-d", strtotime($firstYear.'-'.$firstMonth.'-'.$lastDayMonth));
+        
         while (($ate - $de) > 0){
-            $de = date("Y-m-d", strtotime($firstYear.'-'.$firstMonth.'-'.$firstDay));            
+            $de = date("Y-m-d", strtotime($firstYear.'-'.$firstMonth.'-'.$firstDay));
+            if (($firstYear >= $lastYear) && ($firstMonth >= $lastMonth) ){
+                $lastDayMonth = $lastDay;
+                $endMonth = date("Y-m-d", strtotime($firstYear.'-'.$firstMonth.'-'.$lastDayMonth));
+                //dd($lastDayMonth);
+            }            
             $intervalos[$de] = $endMonth;
             if ($firstMonth < 12){
                 $firstMonth += 1;
@@ -117,28 +146,40 @@ class Diariodebordo extends Model
             }
             $firstDay = 1;
             $de = date("Ymd", strtotime($firstYear.'-'.$firstMonth.'-'.$firstDay));
-            $lastDayMonth = cal_days_in_month(CAL_GREGORIAN, $firstMonth, $firstYear); 
+            $lastDayMonth = cal_days_in_month(CAL_GREGORIAN, $firstMonth, $firstYear);
+            
             $endMonth = date("Y-m-d", strtotime($firstYear.'-'.$firstMonth.'-'.$lastDayMonth));
         }
         return $intervalos;
     }
 
 
-    public function getPorPeriodo($periodo ){
+    public function getPorPeriodo($periodo,$funcionario_id){
         $periodos = $this->separarPeriodos($periodo);
-        $funcionario = $this->getFuncionarioByUser();
+        $funcionario = Funcionario::find($funcionario_id);
+        $empresa = 'NSD';
+        $cliente = 'FCA';
+        $responsavel = '-';
         $lista;
+        $cabecalho = ['nome' => $funcionario->nome,
+                                'empresa' => $empresa,
+                                'cliente' => $cliente,
+                                'responsavel' => $responsavel,
+                                'de' => $periodo['de'],
+                                'ate' => $periodo['ate']
+                ];
         foreach ($periodos as $de=>$ate){
-            $mes = date("Ym", strtotime($ate));
-            $lista[$mes] = DB::table('diariosdebordo')
+            $lista[$de. ' > '. $ate] = DB::table('diariosdebordo')
                     ->where('funcionario_id','=',$funcionario->id)
-                    ->where('data', '>', $de)
-                    ->where('data', '<', $ate)
+                    ->where('data', '>=', $de)
+                    ->where('data', '<=', $ate)
                     ->get();
 //            $lista[$mes]['de']=[$de];
 //            $lista[$mes]['ate']=[$ate];
-        }  
-        return $lista;
+        } 
+        $dados['cabecalho']=$cabecalho;
+        $dados['infor']=$lista;
+        return $dados;
     }
     
     public function getLancamentosPendetes(){
@@ -155,7 +196,7 @@ class Diariodebordo extends Model
         return $pendencias;
     }
     
-    //Pega uma string horas 00:00 e onverte para um inteiro minutos 
+    //Pega uma string horas 00:00 e converte para um inteiro minutos 
     public function horasToMin($horas){
         $pos1 = strpos($horas, ':');
         $hora= substr($horas, 0,$pos1);

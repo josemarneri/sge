@@ -97,6 +97,10 @@
                         @can('menu-financeiro')
                         <li>
                             <a href="#">Financeiro</a>
+                            <ul>
+                                <li><a href="{{ route('consultivar')}}">Consultivar Horas</a></li>  
+                                <li><a href="{{ route('faturar') }}">Faturar</a></li>
+                            </ul>
                             
                         </li>
                         @endcan
@@ -183,7 +187,7 @@
                                 <li>
                                     @can('list-orcamento')
                                     <a href="#">Orçamentos</a>
-                                    <li><a href="{{ route('relatorio')}}">Relatório</a></li>
+                                    <li><a href="{{ route('relatorios')}}">Relatório</a></li>
                                     <li><a href="{{ route('gerarrelatorio')}}">Gerar Relatorio</a></li>
                                     @endcan                                    
                                 </li>
@@ -207,7 +211,7 @@
                                     </ul>
                                 </li>
                                 <li>
-                                    <a href="#">Horas</a>
+                                    <li><a href="{{ route('relatoriohoras')}}">Horas</a></li>
                                 </li>
                                 <li>
                                     
@@ -228,7 +232,7 @@
                         @else
                             <li >
                                 <a href="#" >
-                                    {{ Auth::user()->login }} 
+                                    {{ Auth::user()->getFirstName() }} 
                                 </a>
 
                                 <ul >

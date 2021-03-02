@@ -51,12 +51,41 @@ function enableSalvar(campo1, campo2){
         campo2.disabled = true;
     }
 }
+function marcarTodos(campo1, nome){
+    var campo2 = document.getElementById(nome);
+//    var campo2 = document.getElementByName(nome);
+    if(campo1.checked == true){        
+        campo2.checked = true;
+        
+        var proximo  = campo2.previousSibling;
+        window.alert(proximo.previousSibling);
+        while (proximo.nextSibling){
+            proximo.checked = true;
+            proximo  = proximo.nextSibling;
+        }
+    }else{
+        campo2.checked = false;
+    }
+}
 function enableSalvar2(campo1, campo2, campo3){
     if((campo1.value != 0) && (campo2.value != 0)){
         campo3.disabled = false;
     }else{
         campo3.title=campo1.id + " e/ou " + campo2.id + " estão vazios! campo1:" +campo1.value + " campo2:" + campo2.value;
         campo3.disabled = true;
+    }
+}
+function preencherDescricao(campo1, campo2, campo3){
+    if((campo1.value != 0) && (campo2.value != 0)){
+        var comessa = campo1.selectedOptions[0].textContent;
+        var atividade = campo2.selectedOptions[0].textContent;
+        pos1 = comessa.indexOf('-');
+        comessa = comessa.substring(pos1+2,comessa.length);
+        pos2 = atividade.indexOf('-');
+        atividade = atividade.substring(pos2+2,atividade.length);
+        campo3.value = comessa + " - " + atividade;
+    }else {
+        campo3.value = campo1.title;
     }
 }
 

@@ -19,64 +19,6 @@ Route::group(['prefix' => 'painel'], function(){
     //PainelController
     Route::get('/', [App\Http\Controllers\Painel\PainelController::class,'index'])->name('painel');
     
-    //UserController
-    Route::get('usuarios',[App\Http\Controllers\Painel\UserController::class,'index'])->name('usuarios');
-    Route::get('usuarios/novo', [App\Http\Controllers\Painel\UserController::class,'Novo'])->name('usuarios/novo');
-    Route::post('usuarios/salvar', [App\Http\Controllers\Painel\UserController::class,'Salvar'])->name('usuarios/salvar');
-    Route::get('usuarios/ativar/{id}', [App\Http\Controllers\Painel\UserController::class,'AtivarDesativar'])->name('usuarios/ativar/{id}');
-    Route::post('usuarios/salvarnovasenha', [App\Http\Controllers\Painel\UserController::class,'SalvarNovaSenha'])->name('usuarios/salvarnovasenha');
-    Route::get('usuarios/atualizar/{id}', [App\Http\Controllers\Painel\UserController::class,'Atualizar'])->name('usuarios/atualizar/{id}');
-    Route::get('usuarios/apagar/{id}', [App\Http\Controllers\Painel\UserController::class,'Apagar'])->name('usuarios/apagar/{id}');
-    Route::get('usuarios/alterarsenha/{id}', [App\Http\Controllers\Painel\UserController::class,'AlterarSenha'])->name('usuarios/alterarsenha/{id}');
-    
-    
-    //ClienteController
-    Route::get('clientes',[App\Http\Controllers\Painel\ClienteController::class,'index'])->name('clientes');
-    Route::get('clientes/novo', [App\Http\Controllers\Painel\ClienteController::class,'Novo'])->name('clientes/novo');
-    Route::post('clientes/salvar', [App\Http\Controllers\Painel\ClienteController::class,'Salvar'])->name('clientes/salvar');
-    Route::get('clientes/atualizar/{id}', [App\Http\Controllers\Painel\ClienteController::class,'Atualizar'])->name('clientes/atualizar/{id}');
-    Route::get('clientes/apagar/{id}', [App\Http\Controllers\Painel\ClienteController::class,'Apagar'])->name('clientes/apagar/{id}');
-    
-    //RoleController
-    Route::get('perfis',[App\Http\Controllers\Painel\RoleController::class,'index'])->name('perfis');
-    Route::get('perfis/novo', [App\Http\Controllers\Painel\RoleController::class,'Novo'])->name('perfis/novo');
-    Route::post('perfis/salvar', [App\Http\Controllers\Painel\RoleController::class,'Salvar'])->name('perfis/salvar');
-    Route::get('perfis/atualizar/{id}', [App\Http\Controllers\Painel\RoleController::class,'Atualizar'])->name('perfis/atualizar/{id}');
-    Route::get('perfis/apagar/{id}', [App\Http\Controllers\Painel\RoleController::class,'Apagar'])->name('perfis/apagar/{id}');
-    Route::get('perfis/addusuarioperfil/{id}', [App\Http\Controllers\Painel\RoleController::class,'addUsuario'])->name('perfis/addusuarioperfil/{id}');
-    Route::post('perfis/salvarperfiladd', [App\Http\Controllers\Painel\RoleController::class,'SalvarPerfilAdd'])->name('perfis/salvarperfiladd');
-
-    
-    //PermissionController
-    Route::get('permissoes',[App\Http\Controllers\Painel\PermissionController::class,'index'])->name('permissoes');
-    Route::get('permissoes/novo', [App\Http\Controllers\Painel\PermissionController::class,'Novo'])->name('permissoes/novo');
-    Route::post('permissoes/salvar', [App\Http\Controllers\Painel\PermissionController::class,'Salvar'])->name('permissoes/salvar');
-    Route::get('permissoes/atualizar/{id}', [App\Http\Controllers\Painel\PermissionController::class,'Atualizar'])->name('permissoes/atualizar/{id}');
-    Route::get('permissoes/apagar/{id}', [App\Http\Controllers\Painel\PermissionController::class,'Apagar'])->name('permissoes/apagar/{id}');
-    
-    //ComessaController
-    Route::get('comessas',[App\Http\Controllers\Painel\ComessaController::class,'index'])->name('comessas');
-    Route::get('comessas/novo/{orcamento_id?}', [App\Http\Controllers\Painel\ComessaController::class,'Novo'])->name('comessas/novo/{orcamento_id');
-    Route::post('comessas/salvar', [App\Http\Controllers\Painel\ComessaController::class,'Salvar'])->name('comessas/salvar');
-    Route::get('comessas/atualizar/{id}', [App\Http\Controllers\Painel\ComessaController::class,'Atualizar'])->name('comessas/atualizar/{id}');
-    Route::get('comessas/apagar/{id}', [App\Http\Controllers\Painel\ComessaController::class,'Apagar'])->name('comessas/apagar/{id}');
-    Route::get('comessas/ativardesativar/{id}', [App\Http\Controllers\Painel\ComessaController::class,'AtivarDesativar'])->name('comessas/ativardesativar/{id}');
-    
-    
-    //Equipe
-    Route::get('comessas/equipe/{id}', [App\Http\Controllers\Painel\ComessaController::class,'NovaEquipe'])->name('comessas/equipe/{id}');
-    Route::post('equipe/salvar', [App\Http\Controllers\Painel\ComessaController::class,'SalvarEquipe'])->name('equipe/salvar');    
-    
-        //CargaController
-    Route::get('cargas',[App\Http\Controllers\Painel\CargaController::class,'index'])->name('cargas');
-    Route::get('cargas/novo', [App\Http\Controllers\Painel\CargaController::class,'Novo'])->name('cargas/novo');
-    Route::post('cargas/salvar', [App\Http\Controllers\Painel\CargaController::class,'Salvar'])->name('cargas/salvar');
-    Route::get('cargas/atualizar/{id}', [App\Http\Controllers\Painel\CargaController::class,'Atualizar'])->name('cargas/atualizar/{id}');
-    Route::get('cargas/apagar/{id}', [App\Http\Controllers\Painel\CargaController::class,'Apagar'])->name('cargas/apagar/{id}');
-    Route::get('cargas/livre/{id}', [App\Http\Controllers\Painel\CargaController::class,'Livre'])->name('cargas/livre/{id}');
-    
-    
-    
     //AtividadeController
     Route::get('atividades',[App\Http\Controllers\Painel\AtividadeController::class,'index'])->name('atividades');
     Route::get('atividades/novo/{comessa_id?}', [App\Http\Controllers\Painel\AtividadeController::class,'Novo'])->name('atividades/novo/{comessa_id?}');
@@ -90,13 +32,36 @@ Route::group(['prefix' => 'painel'], function(){
     Route::get('atividades/funcionarioshabilitados/{id}', [App\Http\Controllers\Painel\AtividadeController::class,'getFuncionarios'])->name('atividades/funcionarioshabilitados/{id}');
     //Route::post('atividades/selectfuncionarios', [App\Http\Controllers\Painel\AtividadeController::class,'getFuncionarios');
     
+    //ClienteController
+    Route::get('clientes',[App\Http\Controllers\Painel\ClienteController::class,'index'])->name('clientes');
+    Route::get('clientes/novo', [App\Http\Controllers\Painel\ClienteController::class,'Novo'])->name('clientes/novo');
+    Route::post('clientes/salvar', [App\Http\Controllers\Painel\ClienteController::class,'Salvar'])->name('clientes/salvar');
+    Route::get('clientes/atualizar/{id}', [App\Http\Controllers\Painel\ClienteController::class,'Atualizar'])->name('clientes/atualizar/{id}');
+    Route::get('clientes/apagar/{id}', [App\Http\Controllers\Painel\ClienteController::class,'Apagar'])->name('clientes/apagar/{id}');
+    
+    //CargaController
+    Route::get('cargas',[App\Http\Controllers\Painel\CargaController::class,'index'])->name('cargas');
+    Route::get('cargas/novo', [App\Http\Controllers\Painel\CargaController::class,'Novo'])->name('cargas/novo');
+    Route::post('cargas/salvar', [App\Http\Controllers\Painel\CargaController::class,'Salvar'])->name('cargas/salvar');
+    Route::get('cargas/atualizar/{id}', [App\Http\Controllers\Painel\CargaController::class,'Atualizar'])->name('cargas/atualizar/{id}');
+    Route::get('cargas/apagar/{id}', [App\Http\Controllers\Painel\CargaController::class,'Apagar'])->name('cargas/apagar/{id}');
+    Route::get('cargas/livre/{id}', [App\Http\Controllers\Painel\CargaController::class,'Livre'])->name('cargas/livre/{id}');
+    
     //ChecklistController
     Route::get('checklists',[App\Http\Controllers\Painel\ChecklistController::class,'index'])->name('checklists');
     Route::get('checklists/novo', [App\Http\Controllers\Painel\ChecklistController::class,'Novo'])->name('checklists/novo');
     Route::post('checklists/salvar', [App\Http\Controllers\Painel\ChecklistController::class,'Salvar'])->name('checklists/salvar');
     Route::get('checklists/atualizar/{id}', [App\Http\Controllers\Painel\ChecklistController::class,'Atualizar'])->name('checklists/atualizar/{id}');
     Route::get('checklists/apagar/{id}', [App\Http\Controllers\Painel\ChecklistController::class,'Apagar'])->name('checklists/apagar/{id}');
-    Route::get('checklists/apagarpergunta/{id}', [App\Http\Controllers\Painel\ChecklistController::class,'ApagarPergunta'])->name('checklists/apagarpergunta/{id}');
+    Route::get('checklists/apagarpergunta/{id}', [App\Http\Controllers\Painel\ChecklistController::class,'ApagarPergunta'])->name('checklists/apagarpergunta/{id}');    
+    
+     //ComessaController
+    Route::get('comessas',[App\Http\Controllers\Painel\ComessaController::class,'index'])->name('comessas');
+    Route::get('comessas/novo/{orcamento_id?}', [App\Http\Controllers\Painel\ComessaController::class,'Novo'])->name('comessas/novo/{orcamento_id');
+    Route::post('comessas/salvar', [App\Http\Controllers\Painel\ComessaController::class,'Salvar'])->name('comessas/salvar');
+    Route::get('comessas/atualizar/{id}', [App\Http\Controllers\Painel\ComessaController::class,'Atualizar'])->name('comessas/atualizar/{id}');
+    Route::get('comessas/apagar/{id}', [App\Http\Controllers\Painel\ComessaController::class,'Apagar'])->name('comessas/apagar/{id}');
+    Route::get('comessas/ativardesativar/{id}', [App\Http\Controllers\Painel\ComessaController::class,'AtivarDesativar'])->name('comessas/ativardesativar/{id}');
     
     //DiariosdebordoController
     Route::get('diariosdebordo',[App\Http\Controllers\Painel\DiariosdebordoController::class,'index'])->name('diariosdebordo');
@@ -105,11 +70,24 @@ Route::group(['prefix' => 'painel'], function(){
     Route::get('diariosdebordo/atualizar/{id}', [App\Http\Controllers\Painel\DiariosdebordoController::class,'Atualizar'])->name('diariosdebordo/atualizar/{id}');
     Route::get('diariosdebordo/apagar/{id}', [App\Http\Controllers\Painel\DiariosdebordoController::class,'Apagar'])->name('diariosdebordo/apagar/{id}');
     Route::get('diariosdebordo/atividades/{id}', [App\Http\Controllers\Painel\DiariosdebordoController::class,'getAtividades'])->name('diariosdebordo/atividades/{id}');
+    Route::get('diariosdebordo/descricao/{id}', [App\Http\Controllers\Painel\DiariosdebordoController::class,'getDescricao'])->name('diariosdebordo/descricao/{id}');
+    Route::get('diariosdebordo/descricaoatividade/{id}', [App\Http\Controllers\Painel\DiariosdebordoController::class,'getDescricaoAtividade'])->name('diariosdebordo/descricaoatividade/{id}');
     Route::get('diariosdebordo/horaspendentes/{data}', [App\Http\Controllers\Painel\DiariosdebordoController::class,'getHorasPendentes'])->name('diariosdebordo/horaspendentes/{data');
     
 
+    //Equipe
+    Route::get('comessas/equipe/{id}', [App\Http\Controllers\Painel\ComessaController::class,'NovaEquipe'])->name('comessas/equipe/{id}');
+    Route::post('equipe/salvar', [App\Http\Controllers\Painel\ComessaController::class,'SalvarEquipe'])->name('equipe/salvar');    
     
-    
+    //FuncionarioController
+    Route::get('funcionarios',[App\Http\Controllers\Painel\FuncionarioController::class,'index'])->name('funcionarios');
+    Route::get('funcionarios/novo', [App\Http\Controllers\Painel\FuncionarioController::class,'Novo'])->name('funcionarios/novo');
+    Route::get('funcionarios/ativar/{id}', [App\Http\Controllers\Painel\FuncionarioController::class,'AtivarDesativar'])->name('funcionarios/ativar/{id}');
+    Route::post('funcionarios/salvar', [App\Http\Controllers\Painel\FuncionarioController::class,'Salvar'])->name('funcionarios/salvar');
+    Route::get('funcionarios/atualizar/{id}', [App\Http\Controllers\Painel\FuncionarioController::class,'Atualizar'])->name('funcionarios/atualizar/{id}');
+    Route::get('funcionarios/apagar/{id}', [App\Http\Controllers\Painel\FuncionarioController::class,'Apagar'])->name('funcionarios/apagar/{id}');
+    Route::get('funcionarios/alterardadospessoais/{id}', [App\Http\Controllers\Painel\FuncionarioController::class,'AlterarDadosPessoais'])->name('funcionarios/alterardadospessoais/{id}');
+    Route::post('funcionarios/salvardadospessoais', [App\Http\Controllers\Painel\FuncionarioController::class,'SalvarDadosPessoais'])->name('funcionarios/salvardadospessoais');
     
     //OrcamentoController
     Route::get('orcamentos',[App\Http\Controllers\Painel\OrcamentoController::class,'index'])->name('orcamentos');
@@ -122,16 +100,38 @@ Route::group(['prefix' => 'painel'], function(){
     Route::get('orcamentos/novaproposta/{id}', [App\Http\Controllers\Painel\OrcamentoController::class,'NovaProposta'])->name('orcamentos/novaproposta/{id}');
     Route::post('orcamentos/salvarproposta', [App\Http\Controllers\Painel\OrcamentoController::class,'SalvarProposta'])->name('orcamentos/salvarproposta');
     
+    //PermissionController
+    Route::get('permissoes',[App\Http\Controllers\Painel\PermissionController::class,'index'])->name('permissoes');
+    Route::get('permissoes/novo', [App\Http\Controllers\Painel\PermissionController::class,'Novo'])->name('permissoes/novo');
+    Route::post('permissoes/salvar', [App\Http\Controllers\Painel\PermissionController::class,'Salvar'])->name('permissoes/salvar');
+    Route::get('permissoes/atualizar/{id}', [App\Http\Controllers\Painel\PermissionController::class,'Atualizar'])->name('permissoes/atualizar/{id}');
+    Route::get('permissoes/apagar/{id}', [App\Http\Controllers\Painel\PermissionController::class,'Apagar'])->name('permissoes/apagar/{id}');
     
-    //FuncionarioController
-    Route::get('funcionarios',[App\Http\Controllers\Painel\FuncionarioController::class,'index'])->name('funcionarios');
-    Route::get('funcionarios/novo', [App\Http\Controllers\Painel\FuncionarioController::class,'Novo'])->name('funcionarios/novo');
-    Route::get('funcionarios/ativar/{id}', [App\Http\Controllers\Painel\FuncionarioController::class,'AtivarDesativar'])->name('funcionarios/ativar/{id}');
-    Route::post('funcionarios/salvar', [App\Http\Controllers\Painel\FuncionarioController::class,'Salvar'])->name('funcionarios/salvar');
-    Route::get('funcionarios/atualizar/{id}', [App\Http\Controllers\Painel\FuncionarioController::class,'Atualizar'])->name('funcionarios/atualizar/{id}');
-    Route::get('funcionarios/apagar/{id}', [App\Http\Controllers\Painel\FuncionarioController::class,'Apagar'])->name('funcionarios/apagar/{id}');
-    Route::get('funcionarios/alterardadospessoais/{id}', [App\Http\Controllers\Painel\FuncionarioController::class,'AlterarDadosPessoais'])->name('funcionarios/alterardadospessoais/{id}');
-    Route::post('funcionarios/salvardadospessoais', [App\Http\Controllers\Painel\FuncionarioController::class,'SalvarDadosPessoais'])->name('funcionarios/salvardadospessoais');
+    //RelatorioController
+    Route::get('relatorios',[App\Http\Controllers\Util\RelatorioController::class,'index'])->name('relatorios');
+    Route::get('gerarrelatoriodehoras',[App\Http\Controllers\Util\RelatorioController::class,'GerarRelatorioHora'])->name('gerarrelatoriodehoras');
+    
+    //RoleController
+    Route::get('perfis',[App\Http\Controllers\Painel\RoleController::class,'index'])->name('perfis');
+    Route::get('perfis/novo', [App\Http\Controllers\Painel\RoleController::class,'Novo'])->name('perfis/novo');
+    Route::post('perfis/salvar', [App\Http\Controllers\Painel\RoleController::class,'Salvar'])->name('perfis/salvar');
+    Route::get('perfis/atualizar/{id}', [App\Http\Controllers\Painel\RoleController::class,'Atualizar'])->name('perfis/atualizar/{id}');
+    Route::get('perfis/apagar/{id}', [App\Http\Controllers\Painel\RoleController::class,'Apagar'])->name('perfis/apagar/{id}');
+    Route::get('perfis/addusuarioperfil/{id}', [App\Http\Controllers\Painel\RoleController::class,'addUsuario'])->name('perfis/addusuarioperfil/{id}');
+    Route::post('perfis/salvarperfiladd', [App\Http\Controllers\Painel\RoleController::class,'SalvarPerfilAdd'])->name('perfis/salvarperfiladd');
+    
+    //UserController
+    Route::get('usuarios',[App\Http\Controllers\Painel\UserController::class,'index'])->name('usuarios');
+    Route::get('usuarios/novo', [App\Http\Controllers\Painel\UserController::class,'Novo'])->name('usuarios/novo');
+    Route::post('usuarios/salvar', [App\Http\Controllers\Painel\UserController::class,'Salvar'])->name('usuarios/salvar');
+    Route::get('usuarios/ativar/{id}', [App\Http\Controllers\Painel\UserController::class,'AtivarDesativar'])->name('usuarios/ativar/{id}');
+    Route::post('usuarios/salvarnovasenha', [App\Http\Controllers\Painel\UserController::class,'SalvarNovaSenha'])->name('usuarios/salvarnovasenha');
+    Route::get('usuarios/atualizar/{id}', [App\Http\Controllers\Painel\UserController::class,'Atualizar'])->name('usuarios/atualizar/{id}');
+    Route::get('usuarios/apagar/{id}', [App\Http\Controllers\Painel\UserController::class,'Apagar'])->name('usuarios/apagar/{id}');
+    Route::get('usuarios/alterarsenha/{id}', [App\Http\Controllers\Painel\UserController::class,'AlterarSenha'])->name('usuarios/alterarsenha/{id}');
+
+    
+    
     
     //PostControler
     Route::get('posts', [App\Http\Controllers\Painel\PostController::class,'index'])->name('posts');
@@ -176,10 +176,31 @@ Route::get('projetos',[App\Http\Controllers\Plm\ProjetoController::class,'index'
 });
 
 //UtilController
-Route::group(['prefix' => 'util'], function(){    
+Route::group(['prefix' => 'util'], function(){ 
+    
     Route::get('/',[App\Http\Controllers\Util\UtilController::class,'index'])->name('/'); 
     Route::post('importarfuncionariosdoexcel', [App\Http\Controllers\Util\UtilController::class,'CreateFuncionarioFromExcel'])->name('importarfuncionariosdoexcel');
     Route::post('importarusuariosdoexcel', [App\Http\Controllers\Util\UtilController::class,'CreateUserFromExcel'])->name('importarusuariosdoexcel');
+    
+    //RelatorioController
+    Route::get('relatorios',[App\Http\Controllers\Util\RelatorioController::class,'index'])->name('relatorios');
+    Route::get('gerarrelatorio',[App\Http\Controllers\Util\RelatorioController::class,'GerarRelatorio'])->name('gerarrelatorio');
+    Route::post('relatorios/gerarrelatoriohoras',[App\Http\Controllers\Util\RelatorioController::class,'GerarRelatorioHoras'])->name('relatorios/gerarrelatoriohoras');
+    Route::get('relatorios/funcionarioshabilitados/{id}', [App\Http\Controllers\Util\RelatorioController::class,'getFuncionarios'])->name('relatorios/funcionarioshabilitados/{id}');
+    Route::get('relatoriohoras',[App\Http\Controllers\Util\RelatorioController::class,'RelatorioHoras'])->name('relatoriohoras');
+    Route::post('gerarPdf', [App\Http\Controllers\Util\RelatorioController::class,'gerarPDF'])->name('gerarPDF');
+    
+});
+//UtilController
+Route::group(['prefix' => 'financeiro'], function(){ 
+
+    //RelatorioController
+    Route::get('consultivar',[App\Http\Controllers\Financeiro\FinanceiroController::class,'consultivarHoras'])->name('consultivar');    
+    Route::post('consultivar/filtrar',[App\Http\Controllers\Financeiro\FinanceiroController::class,'Filtrar'])->name('consultivar/filtrar');    
+    Route::get('consultivar/salvar',[App\Http\Controllers\Financeiro\FinanceiroController::class,'Salvar'])->name('consultivar/salvar');    
+    Route::get('consultivar/funcionarioshabilitados/{id}', [App\Http\Controllers\Financeiro\FinanceiroController::class,'getFuncionarios'])->name('consultivar/funcionarioshabilitados/{id}');
+    Route::get('faturar',[App\Http\Controllers\Financeiro\FinanceiroController::class,'faturar'])->name('faturar');
+    
 });
 
 //RdpController
@@ -190,13 +211,6 @@ Route::group(['prefix' => 'rdp'], function(){
     Route::get('apagar/{id}', [App\Http\Controllers\Util\ArquivoController::class,'Apagar'])->name('apagar/{id}');  
 });
 
-//RelatorioController
-Route::group(['prefix' => 'relatorio'], function(){    
-    Route::get('relatorio',[App\Http\Controllers\Util\RelatorioController::class,'index'])->name('relatorio');
-    Route::get('gerarrelatorio',[App\Http\Controllers\Util\RelatorioController::class,'GerarRelatorio'])->name('gerarrelatorio');
-    Route::post('gerarPdf', [App\Http\Controllers\Util\RelatorioController::class,'gerarPDF'])->name('gerarPDF');
-      
-});
 
 Route::group(['prefix' => 'error'], function(){    
     Route::get('/',[App\Http\Controllers\Painel\RdpController::class,'index'])->name('/');

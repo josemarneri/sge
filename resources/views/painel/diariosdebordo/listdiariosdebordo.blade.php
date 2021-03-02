@@ -32,7 +32,7 @@
             <tr>                
                 <td >{{$ddb->formatDateToDMY($ddb->data)}}</td>
                 <td >{{$ddb->getComessa($ddb->comessa_id)->codigo}}</td>
-                <td >{{$ddb->atividade_id}}</td>
+                <td >{{$ddb->getAtividadeCodigo()}}</td>
                 <td >{{$ddb->n_horas}}</td>
                 <td style="text-align: left" >{{$ddb->descricao}}</td>
                 

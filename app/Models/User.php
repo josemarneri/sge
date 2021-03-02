@@ -49,6 +49,12 @@ class User extends Authenticatable
     	return $this->belongsToMany(\App\Models\Role::class);
     }
     
+    public function getFirstName(){
+        $pos1 = strpos($this->name, ' ');
+        $firstName = substr($this->name, 0,$pos1);
+        return $firstName;
+    }
+    
     public function getAtributos(){
     	return $this->fillable;
     }   

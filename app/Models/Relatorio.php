@@ -15,6 +15,8 @@ use Illuminate\Support\Facades\Storage;
 use Illuminate\Http\Response;
 use App\Models\Desenho;
 use App\Models\Others\Math;
+use App\Models\Comessa;
+use App\Models\Atividade;
 
 
 use Dompdf\Dompdf;
@@ -71,16 +73,23 @@ class Relatorio extends Model
      return $campos;   
     }
     
-    public function getPeriodo($anomes){
-        $year = substr($anomes, 0,4);
-        $mes = substr($anomes, 4,2);
-        $de = date("d/m/Y", strtotime($year.'-'.$mes.'-01'));
-
-        $lastDayMonth = cal_days_in_month(CAL_GREGORIAN, $mes, $year);
-        $ate = date("d/m/Y", strtotime($year.'-'.$mes.'-'.$lastDayMonth));
-        $periodo = ['de'=> $de, 'ate'=>$ate];
+    
+    public function getPeriodo($periodo){
+        $ano = substr($periodo, 0,4);
+        $mes = substr($periodo, 5,2);
+        //$lastDay = cal_days_in_month(CAL_GREGORIAN, $mes, $ano);
+        $lastDay = 31;
+        $fds;
+        for ($i=1; $i<=$lastDay; $i++){
+            $fds[$i] = date("D", strtotime($ano.'-'.$mes.'-'.$i));
+        }
+//        dd($ano,$mes,$fds);
+        $strDe = substr($periodo, 0,10);
+        $strAte = substr($periodo, 13,10);
+        $periodo = ['de'=> $strDe, 'ate'=>$strAte, 'fds'=>$fds];
         return $periodo;
     }
+
     
     public function gerarListaDesenhosExcel($desenhos){
         $desenho = new Desenho();
@@ -367,9 +376,14 @@ class Relatorio extends Model
         
     }
     public function getRelatorioHoras($dados, $formato){
-        $filename = 'storage/Relatorio - '. auth()->user()->name . '.'. $formato;
+        $dir = 'storage';
+        $filename = 'Relatorio - '. $dados['cabecalho']['nome'] . '.'. $formato;
+        $saveName = $filename;
+//        $saveName = $dir.'/'.$filename;
+        $mime;
         //$filename = 'storage/Filtro de desenhos - '. auth()->user()->name . '.pdf';
         $projeto = new Projeto();
+        $math = new Math();
         
         //instanciando uma nova planilha
         $spreadsheet = new Spreadsheet(); 
@@ -408,6 +422,27 @@ class Relatorio extends Model
                         ],
                     ],
                 ];
+        $styleArrayFDS = [
+                    'font' => [
+                        'bold' => true,
+                        //'color' => array('rgb' => 'FFFFFFFF'),
+                        'size'  => 12,
+                        'name'  => 'Arial',
+                    ],
+                    'alignment' => [
+                        'horizontal' => \PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER,
+                    ],
+                    'borders' => [
+                        'outline' => [
+                            'borderStyle' => \PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THICK,
+                        ],
+                    ],
+                    'fill' => [
+                            'fillType' => \PhpOffice\PhpSpreadsheet\Style\Fill::FILL_PATTERN_LIGHTUP,
+                            'rotation' => 90,  
+                            'color' => array('rgb' =>'D3D3D3')
+                        ],
+                ];
         $styleArrayCorpo = [
                     'font' => [
                         'bold' => false,
@@ -433,12 +468,13 @@ class Relatorio extends Model
         $numSheets = count($dados['infor']);
         if (!empty($dados)){
             $aba=0;
-            foreach($dados['infor'] as $mes=>$infor){
+            foreach($dados['infor'] as $periodo=>$infor){
                 $invalidCharacters = $spreadsheet->getSheet(0)->getInvalidCharacters();
-                $mes = str_replace($invalidCharacters, '', $mes);
-                $sh = $spreadsheet->getSheet($aba)->setTitle($mes); //retornando a aba 1
+                $periodo = str_replace($invalidCharacters, '', $periodo);
+                $sh = $spreadsheet->getSheet($aba)->setTitle($periodo); //retornando a aba 1
+                $periodoFormatado =   $this->getPeriodo($periodo);
                 
-//                dd($mes,$infor);
+//                dd($periodo,$infor);
                 //Preenchimento da aba
                 
                 //Mesclar as celulas 
@@ -499,21 +535,27 @@ class Relatorio extends Model
                 $sh->setCellValue('J3','RESPONSÁVEL:');
                 $sh->setCellValue('N3',$dados['cabecalho']['responsavel']);
                 $sh->setCellValue('AA3','DE:');
-                $sh->setCellValue('AB3',$this->getPeriodo($mes)['de']);
+                $sh->setCellValue('AB3',$periodoFormatado['de']);
                 $sh->setCellValue('AE3','ATÉ:');
-                $sh->setCellValue('AF3',$this->getPeriodo($mes)['ate']);            
-                $sh->setCellValue('A5','COMESSA');
+                $sh->setCellValue('AF3',$periodoFormatado['ate']);            
+                $sh->setCellValue('A5','CÓDIGO');
                 $sh->getStyle('A5')->getAlignment()->setHorizontal(\PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER);
                 $sh->setCellValue('B5','ATIVIDADES');
                 $sh->getStyle('B5')->getAlignment()->setHorizontal(\PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER);
 
-                //Escreve de 1 a 31, no cabeçalho da planilha 66 é 'B' em ascII        
+                //Escreve de 1 a 31, no cabeçalho da planilha 66 é 'B' em ascII e marca os finais de semana        
                 for ($m=1; $m<=24; $m++){
+                    if (($periodoFormatado['fds'][$m] == 'Sat') || ($periodoFormatado['fds'][$m] == 'Sun')){
+                        $sh->getStyle(chr($m+66).'5')->applyFromArray($styleArrayFDS);
+                    }
                     $sh->setCellValue(chr($m+66).'5',$m);
                     $sh->getColumnDimension(chr($m+66))->setWidth(7);
                     $sh->getStyle(chr($m+66).'5')->getAlignment()->setHorizontal(\PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER);
                 }            
                 for ($m=1; $m<=7; $m++){
+                    if (($periodoFormatado['fds'][$m+24] == 'Sat') || ($periodoFormatado['fds'][$m+24] == 'Sun')){
+                        $sh->getStyle('A'.chr($m+64).'5')->applyFromArray($styleArrayFDS);
+                    }
                     $sh->setCellValue('A'.chr($m+64).'5',$m+24);
                     $sh->getColumnDimension('A'.chr($m+64))->setWidth(7);
                     $sh->getStyle('A'.chr($m+64).'5')->getAlignment()->setHorizontal(\PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER);
@@ -524,68 +566,78 @@ class Relatorio extends Model
 
     //            $sh->getDefaultRowDimension()->setRowHeight(15);
 
-                $lastRow = 30;
+                $lastRow = 30;            
+                
+                $comessas = [];      //usado para evitar duplicação de linhas na planilha
+                $ln = 6;            //Linha atual
+                $lnComessa = $ln;   //Linha da comessa
+                $comessa = new Comessa();
+                $atividade = new Atividade();
+                foreach ($infor as $inf){
+                    $comessa = $comessa->find($inf->comessa_id);
+                    $codigo = $comessa->codigo;
+                    if (!empty($inf->atividade_id)){
+                        $atividade = $atividade->find($inf->atividade_id);
+                        $codigo = $atividade->codigo;
+                    }
 
-                $math = new Math();
-
-                $hora = '5:30';
-                $h = $math->horasToDec($hora);
-
-
-                for ($t=1; $t<20; $t++){
-                    $sh->setCellValueByColumnAndRow($t+2, 6,$h+$t/2);
-                }
-
-    //            for ($t=3; $t<28; $t++){
-    //                $sh->setCellValueByColumnAndRow($t, $lastRow+1, '=sum('.chr($t+64).'6:'. chr($t+64) . $lastRow .')');
-    //            }
-
-
+                    if (empty($comessas[$codigo])){
+                        $comessas[$codigo] = $ln;
+                        $lnComessa = $ln;
+                        $ln++;
+                        $lastRow = ($ln > $lastRow)? $ln + 1 : $lastRow;
+                    }
+                    $lnComessa = $comessas[$codigo];
+                    //Colunas vão da C(67) a AG('A'.chr(G)
+                    $dia = $strDe = substr($inf->data, 8,2);
+                    $col = (($dia + 66)<=90)? chr($dia + 66): 'A'.chr($dia + 66 - 26);
+                    
+                    //Colocar a descrição da atividade
+                    $sh->getStyle('B'.$lnComessa)->getAlignment()->setWrapText(true);                    
+                    $sh->setCellValue('B'.$lnComessa,$inf->descricao);
+                    
+                    //Colocar a comessa
+                    $sh->getStyle('B'.$lnComessa)->getAlignment()->setWrapText(true);                    
+                    $sh->setCellValue('A'.$lnComessa,$codigo);
+                    
+                    //Numero de horas do dia
+                    $jaLancado = $sh->getCell($col.$lnComessa)->getValue();
+                    $lancar = $math->horasToDec($inf->n_horas) + $jaLancado;
+                    $sh->setCellValue($col.$lnComessa,$lancar);
+//                        dd($inf,$dia,$col.$lnComessa);                         
+                } 
+                //dd($comessas);
+                
                 // 2 For para colocar as os somatórios da ultima linha
                 for ($m=1; $m<=24; $m++){
                     $sh->setCellValue(chr($m+66).($lastRow+1),'=sum('.chr($m+66).'6:'. chr($m+66) . $lastRow .')');
                     $sh->getStyle(chr($m+66).($lastRow+1))->getAlignment()->setHorizontal(\PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER);
                 }            
                 for ($m=1; $m<=8; $m++){
-                    $sh->setCellValue('A'.chr($m+64).($lastRow+1),'=sum('.chr($m+64).'6:'. chr($m+64) . $lastRow .')');
+                    $sh->setCellValue('A'.chr($m+64).($lastRow+1),'=sum(A'.chr($m+64).'6:A'. chr($m+64) . $lastRow .')');
                     $sh->getStyle('A'.chr($m+64).($lastRow+1))->getAlignment()->setHorizontal(\PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER);
                 } 
                 // For para colocar as os somatórios da coluna AH
                 for($j=6; $j<=$lastRow; $j++){               
-                    $sh->setCellValue('AH'.$j,'=sum(C'. $j.':AG'.$j.')');                
-                }
-
-
-                for($j=6; $j<=$lastRow; $j++){
-                    $sh->getStyle('B'.$j)->getAlignment()->setWrapText(true);                
-                    $sh->setCellValue('B'.$j,'Vamos escrever qualquer coisa, só para testar o recuo automático se cria nova linha ');                
-                }
-
-//                    for ($i=0; $i<$nlines; $i++){
-//                        $linha = $dados['infor'][$i];
-//
-//                        if (!empty($linha)){
-//                            $k=65;
-//                            foreach($linha as $l){
-//                                $sh->setCellValue(chr($k).($i+3),$l);
-//                                $k++;
-//                            }
-//                        }
-//                    }
+                    $sh->setCellValue('AH'.$j,'=sum(C'. $j.':AH'.$j.')');                
+                }  
+                
+                    
 
 
                 //Define o estilo do corpo
                 $sh->getStyle("A5:AH5")->applyFromArray($styleArrayCorpo); 
-                $sh->getStyle("A6:AH".$lastRow)->applyFromArray($styleArrayCorpo); 
+                $sh->getStyle("A6:AH".$lastRow)->applyFromArray($styleArrayCorpo);
+                $sh->getStyle('A'.($lastRow + 1).':AH'.($lastRow + 1))->applyFromArray($styleArrayCorpo);
 
                 //Configuração das sheets
                 $sh->getPageSetup()->setOrientation(\PhpOffice\PhpSpreadsheet\Worksheet\PageSetup::ORIENTATION_LANDSCAPE);
                 $sh->getPageSetup()->setFitToWidth(1);
                 $sh->getPageSetup()->setFitToHeight(1);
-                $sh->getPageMargins()->setTop(1);
-                $sh->getPageMargins()->setRight(0.75);
-                $sh->getPageMargins()->setLeft(0.75);
-                $sh->getPageMargins()->setBottom(1);
+                $sh->getPageMargins()->setTop(.25);
+                $sh->getPageMargins()->setRight(0.15);
+                $sh->getPageMargins()->setLeft(0.15);
+                $sh->getPageMargins()->setBottom(.25);
                 $sh->setShowGridlines(false);
         //        $sh->getPageSetup()->setPrintArea('A1:E5');
                 
@@ -599,13 +651,7 @@ class Relatorio extends Model
                 
                 
                 //Fim do preenchimento da aba
-                
-                
-                
-                
-                
-                
-                
+    
         }   
                 
         
@@ -624,19 +670,21 @@ class Relatorio extends Model
         //Escolhendo formato para salvamento        
         switch ($formato) {
             case 'pdf':
+                $mime = "application/pdf";
                 //$writer = new \PhpOffice\PhpSpreadsheet\Writer\Pdf\Mpdf($spreadsheet);
                 $writer = \PhpOffice\PhpSpreadsheet\IOFactory::createWriter($spreadsheet, 'Mpdf');
                 $writer->writeAllSheets();
 //                $writer->setSheetIndex(0);
-                $writer->save($filename);
+                $writer->save($saveName);
                 break;
             case 'xlsx':
+                $mime = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
                 $writer = new \PhpOffice\PhpSpreadsheet\Writer\Xlsx($spreadsheet);
-                $writer->save($filename);
+                $writer->save($saveName);
                 break;
         }
-
-        return $filename;
+        $retorno = ['filename' => $filename, 'mime' => $mime];
+        return $retorno;
         
     }
     

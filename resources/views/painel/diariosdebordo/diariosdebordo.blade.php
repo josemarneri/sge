@@ -10,7 +10,9 @@
     <script type="text/javascript">
     $(document).ready(function(){
         $('#comessa_id').change(function(){
-            $('#atividade').load('/painel/diariosdebordo/atividades/'+$('#comessa_id').val());
+            $('#div_atividade').load('/painel/diariosdebordo/atividades/'+$('#comessa_id').val());
+            $('#div_descricao').load('/painel/diariosdebordo/descricao/'+$('#comessa_id').val());
+            
         });
         
         $('#data').change(function(){
@@ -48,7 +50,6 @@
                     <form name="form1" class="form-horizontal" role="form" method="POST" 
                           action="{{ url('/painel/diariosdebordo/salvar') }}">
                         {{ csrf_field() }}
-           
                         <div>
                             <input type="hidden" id="id" name="id" value="{{$diariodebordo->id}}"/>
                             <input type="hidden" id="funcionario_id" name="funcionario_id" value="{{$diariodebordo->funcionario_id}}"/>
@@ -93,40 +94,44 @@
 
                             <label for="Comessa_id" class="col-sm-1 control-label col-md-offset-1">Comessa  </label>
                             <div class="col-sm-2 ">
-                                <select id="comessa_id" name="comessa_id" >
-                                    <option value="0" onclick="getCodigo(this,'',document.form1.btnSalvar)">
+                                <select id="comessa_id"  name="comessa_id">
+                                    <option value="0" >
                                         Selecione </option>
                                     @foreach($comessas as $comessa)
                                         <option <?php echo ($comessa->id == $diariodebordo->comessa_id) ? "selected" :" "; ?> 
-                                            value="{{$comessa->id}}" > 
-                                            {{$comessa->codigo}} </option>
+                                            value="{{$comessa->id}}"  > 
+                                            {{$comessa->codigo .' - '. $comessa->descricao}} </option>
                                     @endforeach
 
                                 </select>
                             </div>
-
-                            <label for="atividade_id" style="width: 115px" class="col-md-1 control-label">Atividade</label>
-
-                            <div id="atividade" class="col-md-2" > 
-                                @if(!empty($atividades))
-                                <select style="max-width: 150px" id="atividade_id" name="atividade_id" >
+                        </div>
+                        
+                        <div  id="div_atividade" class="form-group{{ $errors->has('Atividade') ? ' has-error' : '' }}"> 
+                            <label for="atividade_id" class="col-sm-1 control-label col-md-offset-1">Atividade</label>                           
+                            <div  class="col-md-2" > 
+                                <select  id="atividade_id" name="atividade_id" onchange="preencherDescricao(document.form1.comessa_id, this,document.form1.descricao)">
+                                @if(!empty($atividades))                                
                                     @foreach($atividades as $atividade)
                                         @if(!empty($atividade))
                                         <option <?php echo ($diariodebordo->atividade_id == $atividade->id) ? "selected" :""; ?> 
-                                            value="{{$atividade->id}}" > 
-                                            {{$atividade->codigo}}</option>
+                                            value="{{$atividade->id}}"  > 
+                                            {{$atividade->codigo .' - '. $atividade->titulo}}</option>
                                         @endif
                                     @endforeach
-                                </select>
+                                @else
+                                    <option value="">Nenhuma atividade cadastrada para esta Comessa</option>                                
                                 @endif
+                                </select>
                             </div>
                         </div>
 
-                        <div  class="border_bottom form-group{{ $errors->has('descricao') ? ' has-error' : '' }}">
+                        <div id='div_descricao' class="border_bottom form-group{{ $errors->has('descricao') ? ' has-error' : '' }}">
                             <label for="descricao" class="col-md-1 control-label col-md-offset-1">Descrição</label>
 
-                            <div class="col-md-9">
-                                <textarea required id="descricao" ROWS=4  class="form-control" name="descricao">{{ $diariodebordo->descricao ? $diariodebordo->descricao : old('descricao') }}</textarea>
+                            <div  class="col-md-9">
+                                <input  id="descricao" name="descricao"  class="form-control" required readonly
+                                         value="{{ $descricao ? $descricao : '' }}">
 
                                 @if ($errors->has('descricao'))
                                     <span class="help-block">
@@ -139,7 +144,7 @@
                         <div class="form-group" style="margin-top: 15px">
                             <div class="col-md-6 col-md-offset-4">
                                 <button onmouseover="enableSalvar(document.form1.comessa_id, this)" name="btnSalvar" type="submit" 
-                                        class="btn btn-primary" disabled="true" >
+                                        class="btn btn-primary" disabled >
                                     Salvar
                                 </button>
                             </div>

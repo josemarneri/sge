@@ -9,6 +9,7 @@ use App\Models\Diariodebordo;
 use App\Models\Comessa;
 use Gate;
 use Hamcrest\Type\IsDouble;
+use App\Models\Others\Math;
 
 class DiariosdebordoController extends Controller
 {
@@ -32,13 +33,12 @@ class DiariosdebordoController extends Controller
         $data = $diariodebordo->data;
         $horas = $diariodebordo->n_horas;
         $horas_pendentes = $diariodebordo->getHorasPendentes($diariodebordo->data,$horas);
-//        dd($horas_pendentes,$horas);
-        //$diariodebordo->data = $this->diariodebordo->formatDateToDMY($diariodebordo->data);
+        $descricao = $diariodebordo->descricao;
         $comessas = $diariodebordo->getComessas();
         $atividades = $diariodebordo->getAtividades($diariodebordo->comessa_id);
         $diariosdebordo = $this->diariodebordo->getByUser();     
         return view('painel.diariosdebordo.listdiariosdebordo', 
-                compact('diariodebordo','horas_pendentes','comessas','diariosdebordo', 'atividades','horas'));
+                compact('diariodebordo','horas_pendentes','comessas','diariosdebordo', 'atividades','horas', 'descricao'));
     }
     
     public function Novo($comessa_id = 0){
@@ -54,15 +54,39 @@ class DiariosdebordoController extends Controller
         $horas_pendentes = $diariodebordo->getHorasPendentes($diariodebordo->data);
         
         $comessas = $diariodebordo->getComessas();
-        $diariosdebordo = $this->diariodebordo->getByUser(); 
+        $diariosdebordo = $this->diariodebordo->getByUser();
+        $descricao='';
         //dd($diariosdebordo);
         return view('painel.diariosdebordo.listdiariosdebordo', 
-                compact('diariodebordo','horas_pendentes','comessas','diariosdebordo','horas'));
+                compact('diariodebordo','horas_pendentes','comessas','diariosdebordo','horas', 'descricao'));
     }
     
-    public function getAtividades($comessa_id){
-        $atividades = $this->diariodebordo->getAtividades($comessa_id);
+    public function getAtividades($comessa_id){        
+        $comessa = Comessa::find($comessa_id);        
+        $atividades = $this->diariodebordo->getAtividades($comessa_id);        
+        
         return view('painel.diariosdebordo.selectatividades', compact('atividades'));
+    }
+    
+    public function getDescricao($comessa_id){        
+        $comessa = Comessa::find($comessa_id);
+        $descricao = $comessa->descricao;         
+        $atividades = $this->diariodebordo->getAtividades($comessa_id);        
+         if (!empty($atividades)){
+            $descricao .= ' - '. $atividades[0]->titulo;
+        }
+        return view('painel.diariosdebordo.preencherdescricao', compact('atividades','descricao'));
+    }
+    
+    public function getDescricaoAtividade($atividade_id){ 
+        dd('22222');
+        $atividade = Atividade::find($atividade_id);
+        dd('22222');
+        $comessa = Comessa::find($atividade->comessa_id);
+        
+        $descricao = ' - '. $atividade->titulo;
+        dd($descricao);
+        return view('painel.diariosdebordo.preencherdescricao', compact('descricao'));
     }
     
     public function getHorasPendentes($data){
@@ -88,6 +112,15 @@ class DiariosdebordoController extends Controller
         $diariodebordo = Diariodebordo::find($id);
         if(empty($id)){
             $diariodebordo = new Diariodebordo();
+            $ddb = $diariodebordo->getDDB($request);
+            if (empty($ddb)){
+                $diariodebordo = new Diariodebordo();
+            }else{
+                $diariodebordo = Diariodebordo::find($ddb->id);
+                $math = new Math();
+                $request['n_horas'] = $math->somaHoras($request['n_horas'], $ddb->n_horas);
+                $request['id'] = $ddb->id;
+            }
             //dd(1);
             $diariodebordo->funcionario_id = $request['funcionario_id'];
             //dd(2);
