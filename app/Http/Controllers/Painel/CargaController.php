@@ -46,11 +46,18 @@ class CargaController extends Controller
     
     public function Livre($id){
         $carga = Carga::find($id);
+        $funcionarios_id[]=$carga->funcionario_id;
+        $comessa = new Comessa();
         if (Gate::denies('update-carga',$carga)){
     		abort(403, "Acesso não autorizado para o usuário: ". auth()->user()->login);
     	}
-        
-        $carga->livre = ($carga->livre==1) ? 0 : 1; 
+        if($carga->livre==1){
+            $carga->livre = 0;            
+        }else{
+            $carga->livre = 1;
+            $comessa->addEquipe($carga->comessa_id, $funcionarios_id);
+        }
+
         $carga->save();
         return redirect('/painel/cargas');
     }
@@ -91,6 +98,9 @@ class CargaController extends Controller
     
     public function Salvar(Request $request){
         $id = $request->get('id');
+        $funcionarios_id[]=$request->get('funcionario_id');
+        $comessa_id=$request->get('comessa_id');
+        $comessa = new Comessa();
         $carga = Carga::find($id);
         if (Gate::denies('save-carga',$carga)){
     		abort(403, "Acesso não autorizado para o usuário: ". auth()->user()->login);
@@ -103,16 +113,17 @@ class CargaController extends Controller
 //        $request['data_fim'] = $df;
         $request['livre'] = empty($request['livre']) ? 0 : 1;
         
-        if (!Empty($carga)){           
+        if (!Empty($carga)){            
             $carga->fill($request->all()); 
-            $carga->save();
+            $carga->save();           
             \Session::flash('mensagem_sucesso', "Carga ".$carga->id." atualizada com sucesso ");
         }else {
             $carga = new Carga();
             $request['id']=$carga->id;
-            $carga->create($request->all());
+            $carga->create($request->all());            
             \Session::flash('mensagem_sucesso', 'Carga cadastrada com sucesso');
-        }  
+        } 
+        $comessa->addEquipe($comessa_id, $funcionarios_id);
         return redirect('/painel/cargas');
     }
     

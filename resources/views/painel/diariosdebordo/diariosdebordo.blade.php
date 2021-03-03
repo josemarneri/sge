@@ -94,7 +94,8 @@
 
                             <label for="Comessa_id" class="col-sm-1 control-label col-md-offset-1">Comessa  </label>
                             <div class="col-sm-2 ">
-                                <select id="comessa_id"  name="comessa_id">
+                                <select id="comessa_id"  name="comessa_id" title="Comessa"
+                                        onchange="enableSalvar(this, document.form1.btnSalvar)">
                                     <option value="0" >
                                         Selecione </option>
                                     @foreach($comessas as $comessa)

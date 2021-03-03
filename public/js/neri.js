@@ -47,7 +47,7 @@ function enableSalvar(campo1, campo2){
     if(campo1.value != 0){
         campo2.disabled = false;
     }else{
-        campo2.title = campo1.id + " está vazio!";
+        campo2.title = " O campo: " + campo1.title + " está vazio!";
         campo2.disabled = true;
     }
 }
