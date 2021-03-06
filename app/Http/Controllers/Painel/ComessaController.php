@@ -62,7 +62,8 @@ class ComessaController extends Controller
         $coordenadores = $funcionario->getByFuncao('coordenador','gerente');
         //$coordenadores = $funcionario->all();
         $orcamentos = Orcamento::all();
-        return view('painel.comessas.novacomessa', compact('comessa','gerentes','coordenadores','orcamentos'));
+        $codigo = $comessa->codigo;
+        return view('painel.comessas.novacomessa', compact('comessa','gerentes','coordenadores','orcamentos','codigo'));
     }
     
     public function AtivarDesativar($idComessa){
@@ -98,7 +99,8 @@ class ComessaController extends Controller
             return view('errors.10001', compact('mensagemErro'));        
         }
         $orcamentos = Orcamento::all();
-        return view('painel.comessas.novacomessa', compact('comessa','gerentes','coordenadores','orcamentos'));
+        $codigo=null;
+        return view('painel.comessas.novacomessa', compact('comessa','gerentes','coordenadores','orcamentos','codigo'));
     }
     
     public function Apagar($id){
@@ -186,5 +188,11 @@ class ComessaController extends Controller
         //dd($comessa,$inclusos,$exclusos);
         
         return redirect('/painel/comessas');
+    }
+    
+    public function getCodigo($orcamento_id){        
+        $comessa = new Comessa();
+        $codigo = $comessa->getCodigo($orcamento_id);
+        return view('painel.comessas.inputCodigo', compact('codigo'));
     }
 }

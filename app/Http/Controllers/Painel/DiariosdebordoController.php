@@ -120,7 +120,7 @@ class DiariosdebordoController extends Controller
                 $math = new Math();
                 $request['n_horas'] = $math->somaHoras($request['n_horas'], $ddb->n_horas);
                 $request['id'] = $ddb->id;
-            }
+                }
             //dd(1);
             $diariodebordo->funcionario_id = $request['funcionario_id'];
             //dd(2);

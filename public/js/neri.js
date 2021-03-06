@@ -8,6 +8,7 @@ function getCodigo(campo1,sigla,campo2) {
         campo2.disabled = false;
         document.form1.codigo.value = sigla;
     }else{
+        window.alert(sigla);
         campo2.disabled = true;
         document.form1.codigo.value = sigla;
     }       

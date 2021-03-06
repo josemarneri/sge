@@ -20,6 +20,7 @@ class Diariodebordo extends Model
     
     public function getDDB($request){
         $ddb = DB::table('diariosdebordo')
+                ->where('funcionario_id','=',$request['funcionario_id'])
                 ->where('comessa_id','=',$request['comessa_id'])
                 ->where('atividade_id','=',$request['atividade_id'])
                 ->where('data', '=', $request['data'])

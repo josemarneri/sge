@@ -62,6 +62,7 @@ Route::group(['prefix' => 'painel'], function(){
     Route::get('comessas/atualizar/{id}', [App\Http\Controllers\Painel\ComessaController::class,'Atualizar'])->name('comessas/atualizar/{id}');
     Route::get('comessas/apagar/{id}', [App\Http\Controllers\Painel\ComessaController::class,'Apagar'])->name('comessas/apagar/{id}');
     Route::get('comessas/ativardesativar/{id}', [App\Http\Controllers\Painel\ComessaController::class,'AtivarDesativar'])->name('comessas/ativardesativar/{id}');
+    Route::get('comessas/getCodigo/{id}', [App\Http\Controllers\Painel\ComessaController::class,'getCodigo'])->name('comessas/getCodigo/{id}');
     
     //DiariosdebordoController
     Route::get('diariosdebordo',[App\Http\Controllers\Painel\DiariosdebordoController::class,'index'])->name('diariosdebordo');

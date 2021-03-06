@@ -23,7 +23,7 @@
                 <th style="text-align: center">N.Horas Real</th>
                 <th style="text-align: center">N.Horas <br> Consultivar</th>
                 <th style="text-align: center">Descrição</th>
-                <th style="text-align: center">Consultivar <br>
+                <th style="text-align: center; min-width: 200px">Consultivar <br>
                     <input id="consultivadoAll" type="checkbox" name="consultivadoAll" 
                            onchange="marcarTodos(this,'consultivado')" > Todos                                                    
                 </th>

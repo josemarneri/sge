@@ -40,12 +40,12 @@
 
                             <div class="col-md-6">
                                 <select id="orcamento_id" name="orcamento_id" >
-                                    <option value="0" onblur="getCodigo(this,'',document.form1.btnSalvar)">
+                                    <option value="0" onclick="getCodigo(this,'',document.form1.btnSalvar)">
                                         Selecione um orçamento</option>
                                     @foreach($orcamentos as $orcamento)
                                         <option <?php echo ($orcamento->id == $comessa->orcamento_id) ? "selected" :" "; ?> 
                                             value="{{$orcamento->id}}" 
-                                            onblur="getCodigo(this,'{{$comessa->getCodigo($orcamento->id)}}',document.form1.btnSalvar)"> 
+                                            onclick="getCodigo(this,'{{$comessa->getCodigo($orcamento->id)}}',document.form1.btnSalvar)"> 
                                             {{$orcamento->id.' - '.$orcamento->descricao}} </option>
                                     @endforeach
 
