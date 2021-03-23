@@ -189,18 +189,22 @@ Route::group(['prefix' => 'util'], function(){
     Route::post('relatorios/gerarrelatoriohoras',[App\Http\Controllers\Util\RelatorioController::class,'GerarRelatorioHoras'])->name('relatorios/gerarrelatoriohoras');
     Route::get('relatorios/funcionarioshabilitados/{id}', [App\Http\Controllers\Util\RelatorioController::class,'getFuncionarios'])->name('relatorios/funcionarioshabilitados/{id}');
     Route::get('relatoriohoras',[App\Http\Controllers\Util\RelatorioController::class,'RelatorioHoras'])->name('relatoriohoras');
+    Route::get('relatoriohorasgeral',[App\Http\Controllers\Util\RelatorioController::class,'RelatorioHorasGeral'])->name('relatoriohorasgeral');
     Route::post('gerarPdf', [App\Http\Controllers\Util\RelatorioController::class,'gerarPDF'])->name('gerarPDF');
     
 });
-//UtilController
+//FinanceiroController
 Route::group(['prefix' => 'financeiro'], function(){ 
 
-    //RelatorioController
+    //FinanceiroController
     Route::get('consultivar',[App\Http\Controllers\Financeiro\FinanceiroController::class,'consultivarHoras'])->name('consultivar');    
-    Route::post('consultivar/filtrar',[App\Http\Controllers\Financeiro\FinanceiroController::class,'Filtrar'])->name('consultivar/filtrar');    
-    Route::get('consultivar/salvar',[App\Http\Controllers\Financeiro\FinanceiroController::class,'Salvar'])->name('consultivar/salvar');    
+    Route::post('consultivar/filtrar',[App\Http\Controllers\Financeiro\FinanceiroController::class,'ConsultivarFiltrar'])->name('consultivar/filtrar');    
+    Route::post('consultivar/salvar',[App\Http\Controllers\Financeiro\FinanceiroController::class,'ConsultivarSalvar'])->name('consultivar/salvar');    
     Route::get('consultivar/funcionarioshabilitados/{id}', [App\Http\Controllers\Financeiro\FinanceiroController::class,'getFuncionarios'])->name('consultivar/funcionarioshabilitados/{id}');
-    Route::get('faturar',[App\Http\Controllers\Financeiro\FinanceiroController::class,'faturar'])->name('faturar');
+    Route::get('faturar/funcionarioshabilitados/{id}', [App\Http\Controllers\Financeiro\FinanceiroController::class,'getFuncionarios'])->name('faturar/funcionarioshabilitados/{id}');
+    Route::get('faturar',[App\Http\Controllers\Financeiro\FinanceiroController::class,'faturarHoras'])->name('faturar');
+    Route::post('faturar/filtrar',[App\Http\Controllers\Financeiro\FinanceiroController::class,'FaturarFiltrar'])->name('faturar/filtrar');    
+    Route::post('faturar/salvar',[App\Http\Controllers\Financeiro\FinanceiroController::class,'FaturarSalvar'])->name('faturar/salvar'); 
     
 });
 

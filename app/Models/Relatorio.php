@@ -63,17 +63,24 @@ class Relatorio extends Model
         $ncols = count($campos[0]);
         //dd(aqui1);
         for ($i=0; $i<$nlines; $i++){
-            for ($j=0; $j<$nlines; $j++){
+            for ($j=0; $j<$nlines; $j++){               
                 
-                
-            }
-            
+            }            
         }
         
      return $campos;   
     }
     
     
+    public function getPeriodoMesAtual($periodo){        
+        $ano = substr($periodo, 0,4);
+        $mes = substr($periodo, 5,2);
+        $lastDay = cal_days_in_month(CAL_GREGORIAN, $mes, $ano);
+        $strDe = $ano.'-'.$mes.'-'.'01';
+        $strAte = $ano.'-'.$mes.'-'.$lastDay;
+        $periodo = ['de'=> $strDe, 'ate'=>$strAte];
+        return $periodo;
+    }
     public function getPeriodo($periodo){
         $ano = substr($periodo, 0,4);
         $mes = substr($periodo, 5,2);
@@ -96,7 +103,8 @@ class Relatorio extends Model
         $filename = 'storage/Filtro de desenhos - '. auth()->user()->name . '.xlsx';
         //$filename = 'storage/Filtro de desenhos - '. auth()->user()->name . '.pdf';
         $projeto = new Projeto();
-        $styleArrayCabecalho = [
+        if (true){
+            $styleArrayCabecalho = [
                         'font' => [
                             'bold' => true,
                         ],
@@ -119,7 +127,7 @@ class Relatorio extends Model
                             ],
                         ],
                     ];
-        $styleArrayCorpo = [
+            $styleArrayCorpo = [
                         'font' => [
                             'bold' => true,
                         ],
@@ -136,6 +144,8 @@ class Relatorio extends Model
                         ],
                         
                     ];
+        }
+        
         
         $spreadsheet = new Spreadsheet(); //instanciando uma nova planilha
         //$spreadsheet = $reader->load($arquivo);
@@ -229,15 +239,17 @@ class Relatorio extends Model
         
         
     }
-    public function getRelatorioExcel($dados, $formato){
-        $filename = 'storage/Relatorio - '. auth()->user()->name . '.'. $formato;
-        //$filename = 'storage/Filtro de desenhos - '. auth()->user()->name . '.pdf';
+    public function getRelatorioPadrao($dados, $formato){
+        $dir = 'storage';
+        $filename = $dados['nome'] . '.'. $formato;
+        $saveName = $filename;
         $projeto = new Projeto();
-        $styleArrayTitulo = [
+        if (true) {
+            $styleArrayTitulo = [
                         'font' => [
                             'bold' => true,
                             'color' => array('rgb' => 'FFFFFFFF'),
-                            'size'  => 20,
+                            'size'  => 14,
                             'name'  => 'Arial',
                         ],
                         'alignment' => [
@@ -264,7 +276,7 @@ class Relatorio extends Model
                         'font' => [
                             'bold' => true,
                             'color' => array('rgb' => 'FFFFFFFF'),
-                            'size'  => 15,
+                            'size'  => 12,
                             'name'  => 'Arial',
                         ],
                         'alignment' => [
@@ -288,7 +300,9 @@ class Relatorio extends Model
                     ];
         $styleArrayCorpo = [
                         'font' => [
-                            'bold' => true,
+                            'bold' => false,
+                            'size'  => 12,
+                            'name'  => 'Arial',
                         ],
                         'alignment' => [
                             'horizontal' => \PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER,
@@ -303,17 +317,14 @@ class Relatorio extends Model
                         ],
                         
                     ];
+        }
+        
         
         $spreadsheet = new Spreadsheet(); //instanciando uma nova planilha
         //$spreadsheet = $reader->load($arquivo);
         $spreadsheet->createSheet();
         $sheet_count = $spreadsheet->getSheetCount();
-//        dd($sheet_count);
-//        for ($i=0 ; $i < $sheet_count ; $i++) {
-//            $sheet = $spreadsheet->getSheet($i);
-//
-//            // processa os dados da planilh
-//        }
+
         $sheet = $spreadsheet->getSheet(0)->setTitle($dados['nomeAba']); //retornando a aba 0
 //        $sheet2 = $spreadsheet->getSheet(1)->setTitle("Filiação"); //retornando a aba 1
         if (!empty($dados)){
@@ -325,16 +336,20 @@ class Relatorio extends Model
                 $sheet->getColumnDimension(chr($k))->setAutoSize(true);
             }
             
-             $lastCol = chr ($ncols+65);
+             $lastCol = chr ($ncols+64);
             // Define o estilo da planilha e do Cabeçalho em seguida
              //dd($lastCol);
-            $sheet->getStyle("A1:".$lastCol.($nlines+3))->applyFromArray($styleArrayCorpo);
+            $sheet->getStyle("A1:".$lastCol.($nlines+2))->applyFromArray($styleArrayCorpo);
+            $sheet->getStyle("A".($nlines+3).":".$lastCol.($nlines+3))->applyFromArray($styleArrayCorpo);
        //dimensionar depois
        
             $sheet->getStyle("A1:".$lastCol.'1')->applyFromArray($styleArrayTitulo);
-            $sheet->getStyle("A2:".$lastCol.'2')->applyFromArray($styleArrayCabecalho);
+            $sheet->getStyle("A2:".$lastCol.'2')->applyFromArray($styleArrayCabecalho);            
             $sheet->mergeCells('A1:'.$lastCol.'1');
 //            $sheet->getRowDimension(1)->setRowHeight(35);
+//            
+            //Criar auto filtro
+            $spreadsheet->getActiveSheet()->setAutoFilter("A2:".$lastCol.'2');
 
             // Cria cabeçalho da planilha 0
             $sheet->setCellValue('A1',$dados['titulo']);
@@ -346,13 +361,23 @@ class Relatorio extends Model
             
             for ($i=0; $i<$nlines; $i++){
                 $linha = $dados['infor'][$i];
-                
+//                dd($linha);
                 if (!empty($linha)){
                     $k=65;
+//                    dd($linha);
                     foreach($linha as $l){
                         $sheet->setCellValue(chr($k).($i+3),$l);
                         $k++;
                     }
+                }
+               
+            }
+             if (!empty($dados['formulas'])){
+                 
+                foreach($dados['formulas'] as $key=>$val){
+//                        dd($dados['formulas'],$key,$val);
+                    $sheet->setCellValue($key,$val);
+                    $k++;
                 }
             }
         }
@@ -362,17 +387,21 @@ class Relatorio extends Model
         //Escolhendo formato para salvamento        
         switch ($formato) {
             case 'pdf':
+                $mime = "application/pdf";
                 //$writer = new \PhpOffice\PhpSpreadsheet\Writer\Pdf\Mpdf($spreadsheet);
                 $writer = \PhpOffice\PhpSpreadsheet\IOFactory::createWriter($spreadsheet, 'Mpdf');
-                $writer->save($filename);
+                $writer->writeAllSheets();
+//                $writer->setSheetIndex(0);
+                $writer->save($saveName);
                 break;
             case 'xlsx':
+                $mime = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
                 $writer = new \PhpOffice\PhpSpreadsheet\Writer\Xlsx($spreadsheet);
-                $writer->save($filename);
+                $writer->save($saveName);
                 break;
         }
-
-        return $filename;
+        $retorno = ['filename' => $filename, 'mime' => $mime];
+        return $retorno;
         
     }
     public function getRelatorioHoras($dados, $formato){
@@ -384,7 +413,7 @@ class Relatorio extends Model
         //$filename = 'storage/Filtro de desenhos - '. auth()->user()->name . '.pdf';
         $projeto = new Projeto();
         $math = new Math();
-        
+//        dd($dados);
         //instanciando uma nova planilha
         $spreadsheet = new Spreadsheet(); 
         //$spreadsheet->createSheet();

@@ -33,6 +33,11 @@ class Funcionario extends Model
         $funcionario = Funcionario::where('user_id', '=', $id)->get()->first();
         return $funcionario;
     }
+    public function getByUser() {
+        $user = auth()->user();
+        $funcionario = Funcionario::where('user_id', '=', $user->id)->get()->first();
+        return $funcionario;
+    }
     public function getByNome($Nome) {
         $funcionario = Funcionario::where('nome', '=', $nome)->get()->first();
         return $funcionario;

@@ -36,7 +36,7 @@
                 
                 <div class="panel-body">
                     <form name="form1" class="form-horizontal" role="form" method="POST" 
-                          action="{{ url('/financeiro/consultivar/filtrar') }}">
+                          action="{{ url('/financeiro/faturar/filtrar') }}">
                         {{ csrf_field() }}
            
                     
@@ -97,7 +97,7 @@
 
                         <div class="form-group" style="margin-top: 15px">
                             <div class="col-md-6 col-md-offset-4">
-                                <button  name="btnSalvar" type="submit" 
+                                <button  name="btnBuscar" type="submit" 
                                         class="btn btn-primary"  >
                                     Buscar
                                 </button>

@@ -36,7 +36,8 @@ class DiariosdebordoController extends Controller
         $descricao = $diariodebordo->descricao;
         $comessas = $diariodebordo->getComessas();
         $atividades = $diariodebordo->getAtividades($diariodebordo->comessa_id);
-        $diariosdebordo = $this->diariodebordo->getByUser();     
+        $diariosdebordo = $this->diariodebordo->getByUser();  
+//        dd($diariodebordo->data);
         return view('painel.diariosdebordo.listdiariosdebordo', 
                 compact('diariodebordo','horas_pendentes','comessas','diariosdebordo', 'atividades','horas', 'descricao'));
     }
@@ -50,7 +51,8 @@ class DiariosdebordoController extends Controller
             abort(403, "Acesso não autorizado para o usuário: ". auth()->user()->login);
     	}
         $diariodebordo->data = date("Y-m-d");
-        $horas = "00:00";
+        $horas = "08:30";
+        $diariodebordo->n_horas = $horas;
         $horas_pendentes = $diariodebordo->getHorasPendentes($diariodebordo->data);
         
         $comessas = $diariodebordo->getComessas();

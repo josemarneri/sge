@@ -53,19 +53,17 @@ function enableSalvar(campo1, campo2){
     }
 }
 function marcarTodos(campo1, nome){
-    var campo2 = document.getElementById(nome);
+    var campo2 = document.getElementsByName(nome);
 //    var campo2 = document.getElementByName(nome);
-    if(campo1.checked == true){        
-        campo2.checked = true;
-        
-        var proximo  = campo2.previousSibling;
-        window.alert(proximo.previousSibling);
-        while (proximo.nextSibling){
-            proximo.checked = true;
-            proximo  = proximo.nextSibling;
+    if(campo1.checked == true){ 
+        for (var i =0; i<campo2.length ; i++){
+            campo2[i].checked = true;
         }
+
     }else{
-        campo2.checked = false;
+        for (var i =0; i<campo2.length ; i++){
+            campo2[i].checked = false;
+        }
     }
 }
 function enableSalvar2(campo1, campo2, campo3){

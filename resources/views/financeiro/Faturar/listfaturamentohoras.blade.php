@@ -7,7 +7,7 @@
         Lista de lançamentos       
     </div>
     <form name="form2" class="form-horizontal" role="form" method="POST" 
-                          action="{{ url('/financeiro/consultivar/salvar') }}">
+                          action="{{ url('/financeiro/faturar/salvar') }}">
                         {{ csrf_field() }}
         <table class="table table-hover table-condensed " style="text-align: center">
 
@@ -44,7 +44,7 @@
                             <tr>                
                                 <td  >{{$ddbordo->getFuncionarioById($ddb->funcionario_id)->nome}}</td>
                                 <td >{{$ddb->data}}</td>
-                                <td >{{$ddbordo->getComessaById($ddb->comessa_id)->codigo}}  </td>
+                                <td >{{$ddbordo->getComessaById($ddb->comessa_id)->codigo}}</td>
                                 <td >{{$ddb->n_horas}}</td>
                                 <td >
                                     <input id="n_horas_consultivadas" type="time"   name="n_horas_consultivadas[{{$ddb->id}}]" 

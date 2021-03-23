@@ -15,8 +15,13 @@ class Orcamento extends Model
         'id','cliente_id','descricao','status', 'pedido', 'anexo_id',
     ];
     
-    public function getCliente($id){
-        $orcamento = $this::find($id);
+    public function getCliente($id=0){
+        if ($id == 0){
+            $orcamento = $this::find($this->id);
+        }else{
+            $orcamento = $this::find($id);
+        }
+        
         return Cliente::find($orcamento->cliente_id);
     }
     

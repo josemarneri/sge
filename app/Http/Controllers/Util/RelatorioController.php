@@ -28,17 +28,44 @@ class RelatorioController extends Controller{
     }
     
     public function RelatorioHoras(){
-        
-//        if (Gate::denies('create-relatoriohoras',$atividade)){
-//    		abort(403, "Acesso não autorizado para o usuário: ". auth()->user()->login);
-//    	}
+        $relatorio = new Relatorio();
+        $data = date('Y-m-d');
+        $periodo = $relatorio->getPeriodoMesAtual($data);
+        $comessa = new Comessa();
+        if (Gate::denies('list-relatoriohoras')){
+    		abort(403, "Acesso não autorizado para o usuário: ". auth()->user()->login);
+    	}
+        if (!Gate::denies('create-relatoriohoras')){
+            $comessas = Comessa::all();
+    	}else{
+
+            $comessas = $comessa->getByUser();
+        }
+
+        $funcionarios = Funcionario::all()->sortBy('nome');        
+        $de = $periodo['de'];
+        $ate = $periodo['ate'];
+        $titulo = 'Relatório de Horas';
+//        dd($periodo);
+        return view('util.relatorios.relatoriodehoras', compact('funcionarios','comessas','de','ate','titulo'));
+    }
+    public function RelatorioHorasGeral(){
+        if (Gate::denies('list-relatoriohoras')){
+                abort(403, "Acesso não autorizado para o usuário: ". auth()->user()->login);
+            }
+        $relatorio = new Relatorio();
+        $data = date('Y-m-d');
+        $periodo = $relatorio->getPeriodoMesAtual($data);
+        if (Gate::denies('create-relatoriohoras')){
+    		abort(403, "Acesso não autorizado para o usuário: ". auth()->user()->login);
+    	}
         $funcionarios = Funcionario::all()->sortBy('nome');
 
         $comessas = Comessa::all();
-        $de = '2021-02-01';
-        $ate = '2021-02-28';
+        $de = $periodo['de'];
+        $ate = $periodo['ate'];
         $titulo = 'Relatório de Horas';
-        //dd('here');
+//        dd($periodo);
         return view('util.relatorios.relatoriodehoras', compact('funcionarios','comessas','de','ate','titulo'));
     }
     
@@ -49,16 +76,18 @@ class RelatorioController extends Controller{
         return view('util.relatorios.selectfuncionario', compact('funcionarios'));
     }
     
+    //Gera relatório de horas detalhado, ou seja, gera as planilhas de horas
     public function GerarRelatorioHoras(Request $request){
+        
         $ddb = new Diariodebordo();
         $de = $request['de'];
         $ate = $request['ate'];
         $periodo = ['de'=>$de,'ate'=>$ate];
         $titulo = $request['titulo'];
         $formato = $request['formato'];
-        $comessa = $request['comessa'];
+        $comessa = empty($request['comessa_id'])? null : Comessa::find($request['comessa_id']);
         $relatorio = new Relatorio();
-        //dd($request);
+        $tipo = empty($request['tipo']) ? 'detalhado' : $request['tipo'];
         $funcionarios_id=$request['funcionario_id'];
         $arquivos;
         
@@ -66,29 +95,57 @@ class RelatorioController extends Controller{
         if (empty($funcionarios_id)){
             $funcionario = $ddb->getFuncionarioByUser();
             $funcionarios_id[] = $funcionario->id;
+            $request['funcionario_id'] = [$funcionario->id];
         }
         
         //Gera as planilhas e salva no servidor
-            foreach ($funcionarios_id as $f_id){
-                $dados = $ddb->getPorPeriodo($periodo,$f_id);  
-                $dados['titulo'] = $titulo;
-                //['filename' => $filename, 'mime' => $mime]
-                $arquivos[$f_id] = $relatorio->getRelatorioHoras($dados, $formato);
-            }    
-
-        if (count($funcionarios_id) > 1){
+         switch ($tipo) {
+            case 'detalhado':
+                foreach ($funcionarios_id as $f_id){
+                    $dados = $ddb->getPorPeriodo($periodo,$f_id, $comessa);  
+                    $dados['titulo'] = $titulo;
+                    $arquivos[$f_id] = $relatorio->getRelatorioHoras($dados, $formato);
+                }
+            break;
+            case 'analitico':  
+                if (Gate::denies('create-relatoriohoras')){
+                    abort(403, "Acesso não autorizado para o usuário: ". auth()->user()->login);
+                }
+                $dados = $ddb->getRelatorioAnalitico($request);  
+                $arquivos[] = $relatorio->getRelatorioPadrao($dados, $formato);
+            break; 
+            case 'sintetico':  
+                if (Gate::denies('create-relatoriohoras')){
+                    abort(403, "Acesso não autorizado para o usuário: ". auth()->user()->login);
+                }
+                $dados = $ddb->getRelatorioSintetico($request);  
+                $arquivos[] = $relatorio->getRelatorioPadrao($dados, $formato);
+            break; 
+        }
+            
+        
+        //Caso mais de um funcionário seja selecionado, será criado um arquivo zipado com
+        // todos os aruivos criados
+        if (count($funcionarios_id) > 1 && $tipo=="detalhado"){
             //        $files = array('readme.txt', 'test.html', 'image.gif');
             $fileName = $titulo.'.zip';
             $zipname = $titulo.'.zip';
 //            $zipname = 'storage/'.$titulo.'.zip';
             $zip = new ZipArchive();
             $zip->open($zipname, ZipArchive::CREATE);
+            
+            //Adiciona os arquivos ao zip
             foreach ($arquivos as $arq) {
                 $file = $arq['filename'];
 //                $file = 'storage/'.$arq['filename'];
                 $zip->addFile($file);
             }
             $zip->close();
+            //Deleta os arquivos após inserir ao zip
+            foreach ($arquivos as $arq) {
+                unlink($arq['filename']);
+            }
+            
 
 
             // Primeiro nos certificamos de que o arquivo zip foi criado.
@@ -103,35 +160,26 @@ class RelatorioController extends Controller{
         }else{
                 $fileName;
                 $mime;
-                foreach ($arquivos as $arq) {
-                    $fileName = $arq['filename'];
-                    $mime = $arq['mime'];
+                if (!empty($arquivos)){                    
+                     foreach ($arquivos as $arq) {
+                        $fileName = $arq['filename'];
+                        $mime = $arq['mime'];
+                    }
+                    //$file= Storage::disk('public')->get($arquivos['filename']);
+                    $myFile = public_path($fileName);
+    //                $myFile = public_path('storage/'.$fileName);
+                    if(file_exists($myFile)){
+                        // Forçamos o donwload do arquivo.
+                        header('Content-Type: '.$mime);
+                        header('Content-Disposition: attachment; filename="'.$fileName.'"');
+                        readfile($myFile);
+                        //removemos o arquivo zip após download
+                        unlink($myFile);
+                    } 
                 }
-                //$file= Storage::disk('public')->get($arquivos['filename']);
-                $myFile = public_path($fileName);
-//                $myFile = public_path('storage/'.$fileName);
-                if(file_exists($myFile)){
-                    // Forçamos o donwload do arquivo.
-                    header('Content-Type: '.$mime);
-                    header('Content-Disposition: attachment; filename="'.$fileName.'"');
-                    readfile($myFile);
-                    //removemos o arquivo zip após download
-                    unlink($myFile);
-                } 
-                //$headers = ['Content-Type: '.$mime];
-                //$newName = $fileName;
-                //dd($myFile, $newName, $headers);
-
-                //return response()->download($myFile, $newName, $headers);
+               
             }
-        
-        
-        //$file= Storage::disk('public')->get($arquivos['filename']);
-        
-        
 
-
-//        return (new Response($file, 200))->header('Content-Type', $retorno['mime']) ;
         
     }
     public function GerarRelatorio(){

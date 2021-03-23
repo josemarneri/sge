@@ -8,6 +8,7 @@ use Illuminate\Support\Facades\DB;
 use App\Models\Comessa;
 use App\Models\Atividade;
 use App\Models\Funcionario;
+use App\Models\Others\Math;
 
 class Diariodebordo extends Model
 {
@@ -17,6 +18,10 @@ class Diariodebordo extends Model
     protected $fillable = [
         'id','funcionario_id','comessa_id','atividade_id','data','descricao','n_horas', 
         'n_horas_consultivadas' ,'consultivado', 'faturado', 'nf'];
+    
+    public function getFillable() {
+        return $this->fillable;
+    }
     
     public function getDDB($request){
         $ddb = DB::table('diariosdebordo')
@@ -51,9 +56,17 @@ class Diariodebordo extends Model
         $funcionario = Funcionario::find($this->funcionario_id);
         return $funcionario;
     }
+    public function getFuncionarioById($id){
+        $funcionario = Funcionario::find($id);
+        return $funcionario;
+    }
     
     public function getComessa() {
         $comessa = Comessa::find($this->comessa_id);
+        return $comessa;
+    }
+    public function getComessaById($id) {
+        $comessa = Comessa::find($id);
         return $comessa;
     }
     
@@ -70,7 +83,7 @@ class Diariodebordo extends Model
         $atividade = Atividade::find($this->atividade_id);
         $resumo = null;
         if (!empty($atividade)){
-            $resumo = $atividade->codigo;;
+            $resumo = $atividade->codigo;
         }
         
         return $resumo;
@@ -104,7 +117,7 @@ class Diariodebordo extends Model
     public function getByUser(){
        $funcionario = $this->getFuncionarioByUser();
        $diariosdebordo = $this->where('funcionario_id','=',$funcionario->id)
-               ->orderBy('created_at', 'desc')
+               ->orderBy('data', 'desc')
                ->paginate(30);
        
         return $diariosdebordo;
@@ -155,11 +168,11 @@ class Diariodebordo extends Model
     }
 
 
-    public function getPorPeriodo($periodo,$funcionario_id){
+    public function getPorPeriodo($periodo,$funcionario_id, $comessa){
         $periodos = $this->separarPeriodos($periodo);
         $funcionario = Funcionario::find($funcionario_id);
         $empresa = 'NSD';
-        $cliente = 'FCA';
+        $cliente = empty($comessa) ? null : $comessa->getCliente();
         $responsavel = '-';
         $lista;
         $cabecalho = ['nome' => $funcionario->nome,
@@ -170,17 +183,176 @@ class Diariodebordo extends Model
                                 'ate' => $periodo['ate']
                 ];
         foreach ($periodos as $de=>$ate){
-            $lista[$de. ' > '. $ate] = DB::table('diariosdebordo')
-                    ->where('funcionario_id','=',$funcionario->id)
-                    ->where('data', '>=', $de)
-                    ->where('data', '<=', $ate)
-                    ->get();
-//            $lista[$mes]['de']=[$de];
-//            $lista[$mes]['ate']=[$ate];
+            $ddbs = DB::table('diariosdebordo');
+            $ddbs->where('funcionario_id','=',$funcionario->id);
+            $ddbs->where('data', '>=', $de);
+            $ddbs->where('data', '<=', $ate);
+            if (!empty($comessa)){
+                $ddbs->where('comessa_id','=',$comessa->id);
+            }
+            $lista[$de. ' > '. $ate]=$ddbs->get()->all();
+
         } 
         $dados['cabecalho']=$cabecalho;
         $dados['infor']=$lista;
         return $dados;
+    }
+    public function getRelatorioAnalitico($filtro){
+        $de = $filtro['de'];
+        $ate = $filtro['ate'];
+        $titulo = $filtro['titulo'];
+        $funcionarios_id=$filtro['funcionario_id'];
+        $lista;
+        $dados['cabecalho'] = ['Funcionario', 'Comessa', 'Atividade','Data','Descricao', 'Horas gastas',
+                                        'Horas Consultivadas', 'Consultivado','Faturado'];
+        $dados['titulo'] = $titulo;
+        $dados['nomeAba'] = 'Relatório';
+        $dados['nome'] = $titulo;
+        $tipo = $filtro['tipo'];
+
+//        if (count($funcionarios_id) > 1) {
+        if (true) {
+            foreach($funcionarios_id as $f_id){
+                $ddbs = DB::table('diariosdebordo');
+                $ddbs->where('data', '>=', $de);
+                $ddbs->where('data', '<=', $ate);
+                $ddbs->where('funcionario_id','=',$f_id);
+                if (!empty($filtro['comessa_id'])){
+                    $ddbs->where('comessa_id','=',$filtro['comessa_id']);
+                }
+                $ddbs->select('diariosdebordo.funcionario_id','diariosdebordo.comessa_id','diariosdebordo.atividade_id','diariosdebordo.data',
+                        'diariosdebordo.descricao','diariosdebordo.n_horas','diariosdebordo.n_horas_consultivadas',
+                        'diariosdebordo.consultivado','diariosdebordo.faturado');
+                $lista[$f_id]=$ddbs->get()->all();
+            }
+        }
+ 
+        foreach ($lista as $linha){
+            foreach ($linha as $l ){
+                $dados['infor'][]=$this->getInfor($l); 
+            }
+        }
+        $lastRow = count($dados['infor'])+3;
+
+        $somas['F' . $lastRow ] = '=SUM(F3:F' . ($lastRow - 1) .')';
+        $somas['G' . $lastRow ] = '=SUM(G3:G' . ($lastRow - 1) .')';
+        $dados['formulas'] = $somas;
+        return $dados;
+    }
+    public function getRelatorioSintetico($filtro){
+        $de = $filtro['de'];
+        $ate = $filtro['ate'];
+        $titulo = $filtro['titulo'];
+        $funcionarios_id=$filtro['funcionario_id'];
+        $lista;
+        $dados['cabecalho'] = ['Comessa','Funcionario','Descricao', 'Horas gastas',
+                                        'Horas Consultivadas', 'Horas Faturadas'];
+        $deFormatado = date("d/m/y", strtotime($de));
+        $ateFormatado = date("d/m/y", strtotime($ate));
+        $dados['titulo'] = "$titulo                    ($deFormatado até: $ateFormatado)" ;
+        $dados['nomeAba'] = 'Relatório';
+        $dados['nome'] = $titulo;
+        $tipo = $filtro['tipo'];
+
+//        if (count($funcionarios_id) > 1) {
+        if (true) {
+            foreach($funcionarios_id as $f_id){
+                $ddbs = DB::table('diariosdebordo');
+                $ddbs->where('data', '>=', $de);
+                $ddbs->where('data', '<=', $ate);
+                $ddbs->where('funcionario_id','=',$f_id);
+                if (!empty($filtro['comessa_id'])){
+                    $ddbs->where('comessa_id','=',$filtro['comessa_id']);
+                }
+                $ddbs->select('diariosdebordo.comessa_id','diariosdebordo.funcionario_id',
+                        'diariosdebordo.descricao','diariosdebordo.n_horas','diariosdebordo.n_horas_consultivadas',
+                        'diariosdebordo.consultivado','diariosdebordo.faturado');
+                $lista[$f_id]=$ddbs->get()->all();
+            }
+            
+        }
+        $listaComessa;
+        $horasFaturadas;
+        $horasConsultivadas;
+        $horasTrabalhadas;
+        $math = new Math();
+        $hFaturado=0;
+        $hConsultivado=0;
+        $hTrabalhadas=0;
+        foreach ($lista as $linha){
+            foreach ($linha as $l ){
+                if (!empty($horasTrabalhadas[$l->comessa_id][$l->funcionario_id])){
+                    $hTrabalhadas = $horasTrabalhadas[$l->comessa_id][$l->funcionario_id];                
+                    $hTrabalhadas = $math->somaHoras($hTrabalhadas, $l->n_horas);
+                    $horasTrabalhadas[$l->comessa_id][$l->funcionario_id] = $hTrabalhadas;
+                }else{
+                    $hTrabalhadas = $l->n_horas;
+                    $horasTrabalhadas[$l->comessa_id][$l->funcionario_id] = $hTrabalhadas;
+                }
+                if ($l->faturado == true){
+                    if (!empty($horasFaturadas[$l->comessa_id][$l->funcionario_id])){
+                        $hFaturado = $horasFaturadas[$l->comessa_id][$l->funcionario_id];                
+                        $hFaturado = $math->somaHoras($hFaturado, $l->n_horas_consultivadas);
+                        $horasFaturadas[$l->comessa_id][$l->funcionario_id] = $hFaturado;
+                    }else{
+                        $hFaturado = $l->n_horas_consultivadas;
+                        $horasFaturadas[$l->comessa_id][$l->funcionario_id] = $hFaturado;
+                    }
+                }
+
+                if ($l->consultivado == true){
+                    if (!empty($horasConsultivadas[$l->comessa_id][$l->funcionario_id])){
+                        $hConsultivado = $horasConsultivadas[$l->comessa_id][$l->funcionario_id];                
+                        $hConsultivado = $math->somaHoras($hConsultivado, $l->n_horas_consultivadas);
+                        $horasConsultivadas[$l->comessa_id][$l->funcionario_id] = $hConsultivado;
+                    }else{
+                        $hConsultivado = $l->n_horas_consultivadas;
+                        $horasConsultivadas[$l->comessa_id][$l->funcionario_id] = $hConsultivado;
+                    }
+                }            
+                                
+                $listaComessa[$l->comessa_id][$l->funcionario_id] = [$l->comessa_id, $l->funcionario_id,$l->descricao,
+                                              $hTrabalhadas, $hConsultivado,$hFaturado];
+            }  
+        }
+        foreach ($listaComessa as $lc){
+            foreach ($lc as $func){
+                // Cada func possui [comessa_id, funcionario_id, n_horas, hConsultivadas, hFaturadas]
+                $dados['infor'][] = $this->getDadosPadronizados($func);
+            }
+        }
+        $lastRow = count($dados['infor'])+3;
+
+        $somas['D' . $lastRow ] = '=SUM(D3:D' . ($lastRow - 1) .')';
+        $somas['E' . $lastRow ] = '=SUM(E3:E' . ($lastRow - 1) .')';
+        $somas['F' . $lastRow ] = '=SUM(F3:F' . ($lastRow - 1) .')';
+        $dados['formulas'] = $somas;
+        return $dados;
+    }
+    
+    public function getInfor($infor){
+        $math = new Math();
+        $infor->funcionario_id = Funcionario::find($infor->funcionario_id)->nome;
+        $infor->comessa_id = Comessa::find($infor->comessa_id)->codigo;
+        $infor->atividade_id = !empty(Atividade::find($infor->atividade_id))? Atividade::find($infor->atividade_id)->codigo : null;
+        $data = date('d/m/Y',strtotime($infor->data));
+        $infor->data = $data;
+        $infor->consultivado = ($infor->consultivado == 1) ? 'SIM' : 'NÃO' ;
+        $infor->faturado = ($infor->faturado == 1) ? 'SIM' : 'NÃO' ;
+        $infor->n_horas = $math->horasToDec($infor->n_horas);
+        $infor->n_horas_consultivadas = $math->horasToDec($infor->n_horas_consultivadas);
+        return $infor;
+    }
+    public function getDadosPadronizados($infor){
+        $math = new Math();
+        $comessa = Comessa::find($infor[0]);
+        $infor[0] = $comessa->codigo;
+        $infor[1] = Funcionario::find($infor[1])->nome;        
+        $infor[2] = $comessa->descricao;
+        $infor[3] = $math->horasToDec($infor[3]);
+        $infor[4] = $math->horasToDec($infor[4]);
+        $infor[5] = $math->horasToDec($infor[5]);
+        return $infor;
     }
     
     public function getLancamentosPendetes(){

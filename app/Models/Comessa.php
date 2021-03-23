@@ -100,6 +100,18 @@ class Comessa extends Model
                         ->get();
         return $comessas;
     }
+    public function getByUser() {
+        $funcionario = new Funcionario();
+        $funcionario = $funcionario->getByUser();
+        $comessas = DB::table('comessas')
+                ->join('comessa_funcionarios','comessa_funcionarios.comessa_id','=', 'comessas.id')
+                ->where('comessa_funcionarios.funcionario_id', '=', $funcionario->id )
+                ->orderBy('comessas.codigo')
+                ->select('comessas.*')
+                ->get()->all();
+                       
+        return $comessas;
+    }
     
     public function getCoordenador(){
         $coordenador = Funcionario::find($this->coordenador_id);
@@ -111,6 +123,11 @@ class Comessa extends Model
         return $gerente;
     }
     
+    public function getCliente(){
+        $orcamento = Orcamento::find($this->orcamento_id);
+        $cliente = $orcamento->getCliente();
+        return $cliente->nome;
+    }
     public function getOrcamento(){
         $orcamento = Orcamento::find($this->orcamento_id);
         return $orcamento;

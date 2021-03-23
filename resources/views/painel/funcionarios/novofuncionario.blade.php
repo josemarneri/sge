@@ -31,7 +31,8 @@
                             <label for="id" class="col-md-4 control-label">Registro</label>
 
                             <div class="col-md-6">
-                                <input id="id" type="text" class="form-control" name="id" value="{{ $funcionario->id ? $funcionario->id : old('id') }}" required autofocus>
+                                <input id="id" type="text" class="form-control" name="id" 
+                                       value="{{ $funcionario->id ? $funcionario->id : old('id') }}" required autofocus>
 
                                 @if ($errors->has('id'))
                                     <span class="help-block">
@@ -45,7 +46,8 @@
                             <label for="nome" class="col-md-4 control-label">Nome</label>
 
                             <div class="col-md-6">
-                                <input id="nome" type="text" class="form-control" name="nome" value="{{ $funcionario->nome ? $funcionario->nome : old('nome') }}" required>
+                                <input id="nome" type="text" class="form-control" name="nome" 
+                                       value="{{ $funcionario->nome ? $funcionario->nome : old('nome') }}" required>
 
                                 @if ($errors->has('nome'))
                                     <span class="help-block">

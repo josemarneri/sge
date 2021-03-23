@@ -51,22 +51,30 @@
                                     @endforeach
                                 </select>
                             </div>
+                            
                         </div>
-                        
-                        <div class="form-group{{ $errors->has('Funcionario') ? ' has-error' : '' }}">
-                            <label for="funcionario_id"  class="col-md-2 control-label col-md-offset-1">Funcionário</label>
-                            <div id="funcionario" class="col-md-6" >                                
-                                <select  class="col-md-6 form-control"  id="funcionario_id" name="funcionario_id[]" 
-                                         multiple size="5">
-                                    @foreach($funcionarios as $funcionario)
-                                        @if(!empty($funcionario))
-                                            <option value="{{$funcionario->id}}">{{$funcionario->nome}}</option>
-                                        @endif
-                                    @endforeach
-                                </select>
-                            </div>
-                        </div>  
-                        
+                        @can('create-relatoriohoras')
+                            <div class="form-group{{ $errors->has('Funcionario') ? ' has-error' : '' }}">
+                                <label for="funcionario_id"  class="col-md-2 control-label col-md-offset-1">Funcionário</label>
+                                <div id="funcionario" class="col-md-5" >                                
+                                    <select  class="col-md-4 form-control"  id="funcionario_id" name="funcionario_id[]" 
+                                             multiple size="5">
+                                        @foreach($funcionarios as $funcionario)
+                                            @if(!empty($funcionario))
+                                                <option value="{{$funcionario->id}}">{{$funcionario->nome}}</option>
+                                            @endif
+                                        @endforeach
+                                    </select>
+                                </div>
+                                <div class="col-md-4 ">
+                                    <label for="tipo_relatorio" class="control-label ">Tipo de relatório:  </label> <br>
+                                    <input type="radio" id="tipo" name="tipo" value="detalhado"  checked > Detalhado <br>
+                                    <input type="radio" id="tipo" name="tipo" value="analitico" > Analítico <br>
+                                    <input type="radio" id="tipo" name="tipo" value="sintetico" > Sintético
+
+                                </div>
+                            </div>  
+                        @endcan
                         <div class="form-group{{ $errors->has('de') ? ' has-error' : '' }} ">                            
                             <label for="de" class="col-md-2 control-label col-md-offset-1">De</label>                            
                             <div class="col-md-2 ">

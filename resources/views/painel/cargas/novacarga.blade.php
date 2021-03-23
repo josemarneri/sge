@@ -47,6 +47,9 @@
                                 </select>
                             </div>
                         </div>
+                        @else
+                            <input type="hidden" id="funcionario_id" name="funcionario_id" value="{{$carga->funcionario_id}}"/>
+                        @endelse
                         @endif
                    
                         <div class="form-group{{ $errors->has('comessa_id') ? ' has-error' : '' }}">

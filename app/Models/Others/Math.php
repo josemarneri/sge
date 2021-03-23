@@ -11,6 +11,9 @@ class Math extends Model
     
     //Pega uma string horas 00:00 e onverte para um inteiro minutos 
     public function horasToMin($horas){
+        if(empty($horas)){
+            return 0;
+        }
         $pos1 = strpos($horas, ':');
         $hora= substr($horas, 0,$pos1);
         $min = substr($horas, $pos1+1,$pos1+3);

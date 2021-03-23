@@ -49,7 +49,8 @@
                         @can('menu-rh')
                         <li class="dropdown">
                             <a href="#" >
-                                Gestão RH <span class="caret"></span>
+                                Gestão RH 
+                                <!--<span class="caret"></span>-->
                             </a>
 
                             <ul >
@@ -64,31 +65,9 @@
                                 @can('list-funcionario')
                                 <li>                                        
                                     <a href="{{url('/painel/funcionarios')}}" >
-                                        Funcionários
+                                        Funcionários 
                                     </a>                            
                                 </li>
-                                @endcan
-                                
-                                @can('list-util')
-                                <li>                                        
-                                    <a href="{{url('/util')}}" >
-                                        Ponto
-                                    </a>                            
-                                </li>
-                                @endcan
-                                
-                                @can('list-funcionarios')
-                                <li>                                        
-                                    <a href="{{url('/painel/posts')}}" >
-                                        Informativos
-                                    </a>                            
-                                </li>
-                                @endcan
-                                
-                                @can('list-gerentes')
-                                    <li>
-                                        <a href="/painel/funcionarios/gerentes">Gerentes</a>
-                                    </li>
                                 @endcan
                             </ul>
                         </li>
@@ -96,7 +75,7 @@
                         
                         @can('menu-financeiro')
                         <li>
-                            <a href="#">Financeiro</a>
+                            <a href="#">Financeiro </a>
                             <ul>
                                 <li><a href="{{ route('consultivar')}}">Consultivar Horas</a></li>  
                                 <li><a href="{{ route('faturar') }}">Faturar</a></li>
@@ -121,9 +100,6 @@
                                     @can('list-carga')
                                     <li><a href="/painel/cargas">Carga de Trabalho</a></li>
                                     @endcan
-                                    @can('list-equipes')
-                                    <li><a href="/painel/engenharia/equipes">Equipes</a></li>
-                                    @endcan
                                     @can('list-checklist')
                                     <li><a href="{{ route('checklists')}}">Check-List</a></li>
                                     @endcan
@@ -147,7 +123,32 @@
                         </li>
                         @endcan
                         
-                        @can('menu-sistema')
+                       
+                        
+                        @can('menu-relatorios')
+                        <li>
+                            <a href="#">Relatórios</a>
+                            <ul>
+                                <li>
+                                    @can('list-relatoriohoras')
+                                        <a href="{{ route('relatoriohoras')}}">Horas</a>
+                                    @endcan
+                                </li>
+                                <li>
+                                    @can('list-orcamento')
+                                        <a href="#">Orçamentos</a>
+                                    @endcan                                    
+                                </li>
+                                <li>
+                                    @can('list-comessa')
+                                        <a href="#">Comessas</a>
+                                    @endcan
+                                </li>                                
+
+                            </ul>
+                        </li>
+                        @endcan
+                         @can('menu-sistema')
                         <li>
                             <a href="#">Sistema</a>
                                 <ul>
@@ -157,70 +158,6 @@
                                 </ul>
                         </li>
                         @endcan
-                        
-                        @can('menu-controle')
-                        <li>
-                            <a href="#">Controle</a>
-                            <ul>
-                                
-                                <li>
-                                    <a href="#">Ponto</a>
-                                    <ul>
-                                        <li><a href="#">Registro</a></li>
-                                        <li><a href="#">Ocorrência</a></li>
-                                    </ul>
-                                </li>
-                                <li>
-                                    <a href="#">Horas</a>
-                                </li>
-                                <li>
-                                    
-                                </li>
-                            </ul>
-                        </li>
-                        @endcan
-                        
-                        @can('menu-relatorios')
-                        <li>
-                            <a href="#">Relatórios</a>
-                            <ul>
-                                <li>
-                                    @can('list-orcamento')
-                                    <a href="#">Orçamentos</a>
-                                    <li><a href="{{ route('relatorios')}}">Relatório</a></li>
-                                    <li><a href="{{ route('gerarrelatorio')}}">Gerar Relatorio</a></li>
-                                    @endcan                                    
-                                </li>
-                                <li>
-                                    @can('list-comessa')
-                                    <a href="#">Comessas</a>
-                                    @endcan
-                                </li>
-                                <li>
-                                    @can('list-atividade')
-                                    <a href="#">Atividades</a>
-                                    @endcan
-                                </li>
-                                <li>
-                                    @can('list-ponto')
-                                    <a href="#">Ponto</a>
-                                    @endcan
-                                    <ul>
-                                        <li><a href="#">Registro</a></li>
-                                        <li><a href="#">Ocorrência</a></li>
-                                    </ul>
-                                </li>
-                                <li>
-                                    <li><a href="{{ route('relatoriohoras')}}">Horas</a></li>
-                                </li>
-                                <li>
-                                    
-                                </li>
-                            </ul>
-                        </li>
-                        @endcan
-                       
-                        <li><a href="#">Sugestões</a></li>
                          
                     </ul>
                 </div>

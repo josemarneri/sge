@@ -23,7 +23,7 @@ class Desenho extends Model
     }
 
     
-    function getFillable() {
+    public function getFillable() {
         return $this->fillable;
     }
     
