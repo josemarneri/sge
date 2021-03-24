@@ -30,6 +30,12 @@ class DiariosdebordoController extends Controller
     	}
         //$data = $this->diariodebordo->formatDateToDMY($diariodebordo->data);
         //dd($diariodebordo);
+        if ($diariodebordo->consultivado == true){
+            \Session::flash('mensagem_erro','Lamento, mas este lançamento não pode ser alterado!');
+        
+        return redirect('/painel/diariosdebordo/novo/');
+        }
+        
         $data = $diariodebordo->data;
         $horas = $diariodebordo->n_horas;
         $horas_pendentes = $diariodebordo->getHorasPendentes($diariodebordo->data,$horas);
@@ -81,13 +87,10 @@ class DiariosdebordoController extends Controller
     }
     
     public function getDescricaoAtividade($atividade_id){ 
-        dd('22222');
         $atividade = Atividade::find($atividade_id);
-        dd('22222');
         $comessa = Comessa::find($atividade->comessa_id);
         
         $descricao = ' - '. $atividade->titulo;
-        dd($descricao);
         return view('painel.diariosdebordo.preencherdescricao', compact('descricao'));
     }
     

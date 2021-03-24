@@ -53,6 +53,10 @@
                         <div>
                             <input type="hidden" id="id" name="id" value="{{$diariodebordo->id}}"/>
                             <input type="hidden" id="funcionario_id" name="funcionario_id" value="{{$diariodebordo->funcionario_id}}"/>
+                            <input id="consultivado" type="hidden"   name="consultivado" 
+                                       value="{{ !empty($diariodebordo->consultivado) ? $diariodebordo->consultivado : 0 }}"  >
+                            <input id="faturado" type="hidden"   name="faturado" 
+                                       value="{{ !empty($diariodebordo->faturado) ? $diariodebordo->faturado : 0 }}"  >
                             @if(empty($diariodebordo->funcionario_id))
                                 <input type="hidden" id="funcionario_id" name="funcionario_id" value="{{$diariodebordo->getFuncionarioByUser()->id}}"/>
                             @endif

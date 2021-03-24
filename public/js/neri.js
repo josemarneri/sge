@@ -66,6 +66,20 @@ function marcarTodos(campo1, nome){
         }
     }
 }
+function preencherTodos(campo1, nome){
+    var campo2 = document.getElementsByName(nome);
+//    var campo2 = document.getElementByName(nome);
+    if(campo1.checked == true){ 
+        for (var i =1; i<campo2.length ; i++){
+            campo2[i].value = campo2[0].value;
+        }
+
+    }else{
+        for (var i =1; i<campo2.length ; i++){
+            campo2[i].value = '';
+        }
+    }
+}
 function enableSalvar2(campo1, campo2, campo3){
     if((campo1.value != 0) && (campo2.value != 0)){
         campo3.disabled = false;

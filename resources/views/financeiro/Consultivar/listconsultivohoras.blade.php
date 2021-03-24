@@ -2,7 +2,7 @@
 
 @section('lista')
 <script language="JavaScript" src="{{url('js/neri.js')}}"></script>
-<div class="area-trabalho">
+<div class="area-trabalho-interna">
     <div class="title-2">
         Lista de lançamentos       
     </div>
@@ -30,9 +30,7 @@
                         <input id="consultivadoAll" type="checkbox" name="consultivadoAll" 
                                onchange="marcarTodos(this,'consultivado[]')" > Todos                                                    
                     </th>
-                    <th style="text-align: center">Faturar <br>
-                        <input id="faturadoAll" type="checkbox" name="faturadoAll" 
-                               onchange="marcarTodos(this,'faturado[]')"> Todos                                                    
+                    <th style="text-align: center">Faturar                                                    
                     </th>
 
                 </tr>
@@ -64,7 +62,7 @@
                                             {{ ($ddb->consultivado)? 'checked' : '' }}       >                                                    
                                 </td>
                                 <td >
-                                    <input id="faturado" type="checkbox" name="faturado[]"  value="{{$ddb->id}}" 
+                                    <input id="faturado" type="checkbox" name="faturado[]" disabled value="{{$ddb->id}}" 
                                             {{ ($ddb->faturado)? 'checked' : '' }}       > 
                                 </td>
                             </tr>

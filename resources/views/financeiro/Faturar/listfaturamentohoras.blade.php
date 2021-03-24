@@ -1,8 +1,8 @@
-@extends('financeiro.consultivar.consultivarhoras')
+@extends('financeiro.faturar.faturarhoras')
 
 @section('lista')
 <script language="JavaScript" src="{{url('js/neri.js')}}"></script>
-<div class="area-trabalho">
+<div class="area-trabalho-interna">
     <div class="title-2">
         Lista de lançamentos       
     </div>
@@ -24,16 +24,18 @@
                     <th style="text-align: center">Data</th>
                     <th style="text-align: center">Comessa</th>
                     <th style="text-align: center">N.Horas Real</th>
-                    <th style="text-align: center">N.Horas <br> Consultivar</th>
+                    <th style="text-align: center">N.Horas <br> Consultivadas</th>
                     <th style="text-align: center">Descrição</th>
-                    <th style="text-align: center; min-width: 200px">Consultivar <br>
-                        <input id="consultivadoAll" type="checkbox" name="consultivadoAll" 
-                               onchange="marcarTodos(this,'consultivado[]')" > Todos                                                    
-                    </th>
-                    <th style="text-align: center">Faturar <br>
+                    <th style="text-align: center">Consultivado </th>
+                    <th style="text-align: center; min-width: 100px">Faturar <br>
                         <input id="faturadoAll" type="checkbox" name="faturadoAll" 
                                onchange="marcarTodos(this,'faturado[]')"> Todos                                                    
                     </th>
+                    <th style="text-align: center; width: 100px">Nº Nota Fiscal <br>
+                        <input id="nfAll" type="checkbox" name="nfAll" 
+                               title="Marque para repetir número da
+1ª Nota Fiscal em todos os outros campos" 
+                               onchange="preencherTodos(this,'nf[]')"> Todos</th>
 
                 </tr>
             </thead>
@@ -46,26 +48,22 @@
                                 <td >{{$ddb->data}}</td>
                                 <td >{{$ddbordo->getComessaById($ddb->comessa_id)->codigo}}</td>
                                 <td >{{$ddb->n_horas}}</td>
-                                <td >
-                                    <input id="n_horas_consultivadas" type="time"   name="n_horas_consultivadas[{{$ddb->id}}]" 
-                                           value="{{ $ddb->n_horas_consultivadas ? $ddb->n_horas_consultivadas : $ddb->n_horas }}" 
-                                           required >
-
-                                    @if ($errors->has('n_horas'))
-                                        <span class="help-block">
-                                            <strong>{{ $errors->first('n_horas') }}</strong>
-                                        </span>
-                                    @endif
-                                </td>
+                                <td >{{ $ddb->n_horas_consultivadas}} </td>
                                 <td style="text-align: left" >{{$ddb->descricao}}</td>
 
                                 <td >
-                                    <input id="consultivado" type="checkbox" name="consultivado[]"  value="{{$ddb->id}}" 
+                                    <input id="consultivado" type="checkbox" name="consultivado[]"  value="{{$ddb->id}}" disabled
                                             {{ ($ddb->consultivado)? 'checked' : '' }}       >                                                    
+                                            <input id="consultivado" type="hidden" name="consultivado[]"  value="{{$ddb->id}}" >
+                                                                                               
                                 </td>
                                 <td >
-                                    <input id="faturado" type="checkbox" name="faturado[]"  value="{{$ddb->id}}" 
-                                            {{ ($ddb->faturado)? 'checked' : '' }}       > 
+                                    <input id="faturado" type="checkbox" name="faturado[]" 
+                                           value="{{$ddb->id}}" {{ ($ddb->faturado)? 'checked' : '' }}       > 
+                                </td>
+                                <td >
+                                    <input id="nf" type="text" name="nf[]"  style=" width: 100px"
+                                           value="{{$ddb->nf}}"  {{ $ddb->nf }}> 
                                 </td>
                             </tr>
                         @endforeach

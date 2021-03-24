@@ -265,6 +265,14 @@ html, body {height:100%;}
     overflow: auto;
     float: left;
 }
+.area-trabalho-interna{
+    width: 100%;
+    height: auto;
+    min-height: 600px;
+    /*max-height: 700px;*/
+/*    height: 700px;*/
+    float: left;
+}
 
 .rodape{
     margin-top: 20px;

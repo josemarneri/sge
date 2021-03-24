@@ -26,7 +26,8 @@ class Financeiro extends Model
             $query = DB::table('diariosdebordo')
                     ->where('funcionario_id', '=', $f_id)
                     ->where('data', '>=', $de)
-                    ->where('data', '<=', $ate);
+                    ->where('data', '<=', $ate)
+                    ->where('faturado', '=', false);
             
             if(!empty($comessa_id)){
                 $query->where('comessa_id','=',$comessa_id);
@@ -70,5 +71,33 @@ class Financeiro extends Model
         return $resultado;
         //return $resultado;
         
+    }
+    
+    public function limparConsultivados($lista){
+        if (!empty($lista)){
+            
+            foreach ($lista as $id=>$l){
+                $ddb = Diariodebordo::find($id);
+                $ddb->n_horas_consultivadas = 0;
+                $ddb->consultivado = false;
+                $ddb->save();
+            }
+            return 1;
+        }
+        return 0;
+    }
+    public function limparFaturados($lista){
+        if (!empty($lista)){
+            
+            foreach ($lista as $id){
+                $ddb = Diariodebordo::find($id);
+                $ddb->faturado = false;
+                $ddb->nf = null;
+                
+                $ddb->save();
+            }
+            return 1;
+        }
+        return 0;
     }
 }

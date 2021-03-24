@@ -9,21 +9,25 @@ use App\Models\Comessa;
 use App\Models\Funcionario;
 use App\Models\Financeiro;
 use App\Models\Diariodebordo;
+use App\Models\Relatorio;
 
 class FinanceiroController extends Controller
 {
     //
-    public function index(){        
+    public function index(){  
+        $relatorio = new Relatorio();
+        $data = date('Y-m-d');
+        $periodo = $relatorio->getPeriodoMesAtual($data);
         
-//        if (Gate::denies('create-relatoriohoras',$atividade)){
-//            abort(403, "Acesso não autorizado para o usuário: ". auth()->user()->login);
-//        }
+        if (Gate::denies('list_consultivarhoras')){
+            abort(403, "Acesso não autorizado para o usuário: ". auth()->user()->login);
+        }
         
         $funcionarios = Funcionario::all()->sortBy('nome');
 
         $comessas = Comessa::all();
-        $de = '2021-02-01';
-        $ate = '2021-02-28';
+        $de = $periodo['de'];
+        $ate = $periodo['ate'];
         $titulo = 'Relatório de Horas';
         //dd('here');
         return view('util.relatorios.relatoriodehoras', 
@@ -31,7 +35,9 @@ class FinanceiroController extends Controller
     }
     
     public function consultivarHoras(){        
-        
+        $relatorio = new Relatorio();
+        $data = date('Y-m-d');
+        $periodo = $relatorio->getPeriodoMesAtual($data);
         if (Gate::denies('list_consultivarhoras')){
             abort(403, "Acesso não autorizado para o usuário: ". auth()->user()->login);
         }
@@ -39,22 +45,24 @@ class FinanceiroController extends Controller
         $funcionarios = Funcionario::all()->sortBy('nome');
 
         $comessas = Comessa::all();
-        $de = '2021-02-01';
-        $ate = '2021-02-28';
+        $de = $periodo['de'];
+        $ate = $periodo['ate'];
         //dd('here');
         return view('financeiro.consultivar.consultivarhoras', compact('funcionarios','comessas','de','ate'));
     }
     public function faturarHoras(){        
-        
-        if (Gate::denies('list_consultivarhoras')){
+        $relatorio = new Relatorio();
+        $data = date('Y-m-d');
+        $periodo = $relatorio->getPeriodoMesAtual($data);
+        if (Gate::denies('list_faturarhoras')){
             abort(403, "Acesso não autorizado para o usuário: ". auth()->user()->login);
         }
         
         $funcionarios = Funcionario::all()->sortBy('nome');
 
         $comessas = Comessa::all();
-        $de = '2021-02-01';
-        $ate = '2021-02-28';
+        $de = $periodo['de'];
+        $ate = $periodo['ate'];
         //dd('here');
         return view('financeiro.faturar.faturarhoras', compact('funcionarios','comessas','de','ate'));
     }
@@ -112,9 +120,14 @@ class FinanceiroController extends Controller
     }
     
     public function ConsultivarSalvar(Request $request){        
-        $n_horas_consultivadas = $request['n_horas_consultivadas'];
+        $n_horas_consultivadas = $request['n_horas_consultivadas'];        
         $consultivados = $request['consultivado'];
         $consultivar;
+        if (Gate::denies('create-consultivarhoras')){
+            abort(403, "Acesso não autorizado para o usuário: ". auth()->user()->login);
+        }
+        $financeiro = new Financeiro();
+        $financeiro->limparConsultivados($n_horas_consultivadas);
         
         if (!empty($consultivados)){
             foreach ($consultivados as $cons){
@@ -127,18 +140,25 @@ class FinanceiroController extends Controller
         
         return redirect('financeiro/consultivar');
     }
-    public function FaturarSalvar(Request $request){        
+    public function FaturarSalvar(Request $request){
+        $consultivados = $request['consultivado'];
+        $nfs = $request['nf'];
         $faturados = $request['faturado'];
-        
+        if (Gate::denies('create-faturarhoras')){
+            abort(403, "Acesso não autorizado para o usuário: ". auth()->user()->login);
+        }
+        $financeiro = new Financeiro();
+        $financeiro->limparFaturados($consultivados);
         if (!empty($faturados)){
-            foreach ($faturados as $fat){
+            foreach ($faturados as $id=>$fat){
                 $diariodebordo = Diariodebordo::find($fat);
                 $diariodebordo->faturado = true;
+                $diariodebordo->nf = $nfs[$id];
                 $diariodebordo->save();
             }
         }
         
-        return redirect('financeiro/consultivar');
+        return redirect('financeiro/faturar');
     }
     
     

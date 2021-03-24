@@ -37,13 +37,15 @@
                 <td style="text-align: left" >{{$ddb->descricao}}</td>
                 
                 <td >
-                    <a href="{{url("/painel/diariosdebordo/atualizar/".$ddb->id)}}" title="alterar dados do lançamento">
-                        <img src="{{url('/assets/imagens/edit.png')}}" alt="alterar dados do lançamento" /> 
-                    </a>
-                    <a href="javascript:func()" title="Remover diariodebordo"
-                       onclick="confirmacao('/painel/diariosdebordo/apagar/','{{$ddb->id}}')">
-                        <img src="{{url('/assets/imagens/delete.png')}}" alt="Remover lançamento" />
-                    </a>
+                    @if ($ddb->consultivado == 0)
+                        <a href="{{url("/painel/diariosdebordo/atualizar/".$ddb->id)}}" title="alterar dados do lançamento">
+                            <img src="{{url('/assets/imagens/edit.png')}}" alt="alterar dados do lançamento" /> 
+                        </a>
+                        <a href="javascript:func()" title="Remover diariodebordo"
+                           onclick="confirmacao('/painel/diariosdebordo/apagar/','{{$ddb->id}}')">
+                            <img src="{{url('/assets/imagens/delete.png')}}" alt="Remover lançamento" />
+                        </a>
+                    @endif
                 </td>
             </tr>
             @empty
