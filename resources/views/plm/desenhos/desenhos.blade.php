@@ -180,7 +180,7 @@
                     <td >{{$des->descricao}}</td>
                     <td style="text-align: center">{{$des->material}}</td>
                     <td style="text-align: center">{{$des->peso}}</td>
-                    <td style="text-align: center">{{$desenho->getCodigoProjeto($desenho->projeto_id)}}</td>
+                    <td style="text-align: center">{{$desenho->getCodigoProjeto($des->projeto_id)}}</td>
                     <td style="text-align: right">
                     <?php
                         $i=1;
@@ -192,15 +192,15 @@
                         }
                         echo " ]";
                     ?>
-                    <a href="{{url("arquivos/anexar/desenhos/".$desenho->id)}}" title="Adicionar anexo">
+                    <a href="{{url("arquivos/anexar/desenhos/".$des->id)}}" title="Adicionar anexo">
                         <img src="{{url('/assets/imagens/Add.png')}}" alt="Adicionar anexo" />
                     </a>
                 </td>
                     <td style="text-align: center">
-                        <a href="{{url("/plm/desenhos/atualizar/$desenho->id")}}" title="alterar dados do desenho">
+                        <a href="{{url("/plm/desenhos/atualizar/$des->id")}}" title="alterar dados do desenho">
                             <img src="{{url('/assets/imagens/Edit.png')}}" alt="alterar dados do desenho" /> 
                         </a>
-                        <a href="{{url("/plm/desenhos/apagar/$desenho->id")}}" title="Remover desenho">
+                        <a href="{{url("/plm/desenhos/apagar/$des->id")}}" title="Remover desenho">
                             <img src="{{url('/assets/imagens/Delete.png')}}" alt="Remover desenho" />
                         </a>
                     </td>

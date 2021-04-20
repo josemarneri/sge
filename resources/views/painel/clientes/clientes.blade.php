@@ -23,13 +23,13 @@
         <tbody>
             @forelse($clientes as $cliente)               
             <tr>
-                <td>{{$cliente->id}}</td>
-                <td>{{$cliente->nome}}</td>
-                <td>{{$cliente->cnpj}}</td>
-                <td>{{$cliente->endereco}}</td>
-                <td>{{$cliente->telefone}}</td>
-                <td>{{$cliente->email}}</td>
-                <td>
+                <td style="text-align: center">{{$cliente->id}}</td>
+                <td style="text-align: center">{{$cliente->nome}}</td>
+                <td style="text-align: center">{{$cliente->cnpj}}</td>
+                <td style="text-align: center">{{$cliente->endereco}}</td>
+                <td style="text-align: center">{{$cliente->telefone}}</td>
+                <td style="text-align: center">{{$cliente->email}}</td>
+                <td width="100" style="text-align: center">
                     <a href="{{url("/painel/clientes/atualizar/$cliente->id")}}" title="alterar dados do cliente">
                         <img src="{{url('/assets/imagens/Edit.png')}}" alt="alterar dados do cliente" /> 
                     </a>

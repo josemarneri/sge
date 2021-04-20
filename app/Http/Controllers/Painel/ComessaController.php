@@ -125,6 +125,7 @@ class ComessaController extends Controller
         //$data = \DateTime::createFromFormat('d/m/Y', $request['data_fim']);
         //$df = $data->format('Y-m-d');                            
         //$request['data_fim'] = $df;
+        $request['bloqueio'] = empty($request['bloqueio']) ? 0 : 1;
         if (!empty($comessa)){           
             $comessa->fill($request->all()); 
             $comessa->save();
@@ -169,30 +170,18 @@ class ComessaController extends Controller
         $equipe_I = $request['equipe_I'];
         $equipe_H = $request['equipe_H'];
         $exclusos_H = $request['exclusos_H'];
-        //dd($equipe_H, $equipe_I);
         $comessa->limpaEquipe();
         $carga->limpaEquipe($comessa_id);
-
-        //dd($comessa_id,$inclusos,$exclusos);
-//        $carga->addEquipe($comessa_id, $inclusos);
-//        $comessa->addEquipe($comessa_id, $inclusos);
-//        $comessa->addEquipe($comessa_id, $habilitados);
-//        //dd($comessa_id,$inclusos,$exclusos);
-//        $carga->addEquipe($comessa_id, $exclusos_I);
-//        $comessa->addEquipe($comessa_id, $exclusos_H);
-//        $comessa->addEquipe($comessa_id, $exclusos_I);
         $carga->addEquipe($comessa_id, $equipe_I);
         $comessa->addEquipe($comessa_id, $equipe_H);
         $comessa->addEquipe($comessa_id, $equipe_I);
-
-        //dd($comessa,$inclusos,$exclusos);
         
         return redirect('/painel/comessas');
     }
     
-    public function getCodigo($orcamento_id){        
+    public function getCodigo($orcamento_id){  
         $comessa = new Comessa();
-        $codigo = $comessa->getCodigo($orcamento_id);
-        return view('painel.comessas.inputCodigo', compact('codigo'));
+        $comessa->codigo = $comessa->getCodigo($orcamento_id);
+        return view('painel.comessas.inputCodigo', compact('comessa'));
     }
 }

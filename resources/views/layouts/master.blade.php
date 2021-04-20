@@ -44,30 +44,46 @@
                         <li>                                        
                             <a href="{{url('/')}}" >
                                 Home
-                            </a>                            
-                        </li>
-                        @can('menu-rh')
-                        <li class="dropdown">
-                            <a href="#" >
-                                Gestão RH 
-                                <!--<span class="caret"></span>-->
-                            </a>
-
+                            </a> 
                             <ul >
-                                @can('list-user')
+                                @can('list-post')
                                 <li>                                        
-                                    <a href="{{url('/painel/usuarios')}}" >
-                                        Usuários
+                                    <a href="{{url('post')}}" >
+                                        Post
                                     </a>                            
                                 </li>
                                 @endcan
-                                
+                            </ul>
+                        </li>
+                        @can('menu-rh')
+                        <li class="dropdown">
+                            <a href="#" > Gestão RH <!--<span class="caret"></span>--></a>
+                            <ul >
+                                @can('list-user')
+                                <li>                                        
+                                    <a href="{{url('/painel/usuarios')}}" > Usuários </a> 
+                                                               
+                                </li>
+                                @endcan                                
                                 @can('list-funcionario')
                                 <li>                                        
-                                    <a href="{{url('/painel/funcionarios')}}" >
-                                        Funcionários 
-                                    </a>                            
+                                    <a href="{{url('/painel/funcionarios')}}" >Funcionários </a>                            
                                 </li>
+                                @endcan
+                                @can('list-cargo')
+                                    <li> <a href="{{ route('cargos')}}" >Cargos </a> </li>
+                                @endcan                                
+                                @can('list-salario')
+                                    <li> <a href="{{ route('salarios')}}" >Salários </a> </li>
+                                @endcan                                
+                                @can('list-beneficio')
+                                    <li> <a href="{{ route('beneficios')}}" >Benefícios </a> </li>
+                                @endcan
+                                @can('list-desconto')
+                                    <li> <a href="{{ route('descontos')}}" >Descontos </a> </li>
+                                @endcan
+                                @can('list-fornecedor')
+                                    <li> <a href="{{ route('fornecedores')}}" >Fornecedores </a> </li>
                                 @endcan
                             </ul>
                         </li>
@@ -79,6 +95,16 @@
                             <ul>
                                 <li><a href="{{ route('consultivar')}}">Consultivar Horas</a></li>  
                                 <li><a href="{{ route('faturar') }}">Faturar</a></li>
+                                @can('list-despesa')
+                                    <li> <a href="{{ route('despesas')}}" >Despesas </a> </li>
+                                @endcan
+                                @can('list-pagamento')
+                                    <li> <a href="{{ route('pagamentos')}}" >Pagamentos </a> </li>
+                                @endcan
+                                @can('list-recebido')
+                                    <li> <a href="{{ route('recebidos')}}" >Recebidos </a> </li>
+                                @endcan
+                                
                             </ul>
                             
                         </li>
@@ -155,6 +181,9 @@
                                     <li><a href="{{ route('permissoes')}}">Permissões</a></li>
                                     <li><a href="{{ route('perfis')}}">Perfil de acesso</a></li>
                                     <li><a href="{{ route('arquivos')}}">Arquivos anexos</a></li>
+                                    @can('list-log')
+                                        <li> <a href="{{ route('logs')}}" >Logs do sistema </a> </li>
+                                    @endcan
                                 </ul>
                         </li>
                         @endcan

@@ -66,13 +66,13 @@
                         <div class="form-group{{ $errors->has('data') ? ' has-error' : '' }}">  
                             <label for="data" class="col-sm-1 control-label col-md-offset-1">Data</label>
                             <div class="col-sm-2 "> 
-                                <input id="data" name="data" type="date" style=" min-width: 120px;"
+                                <input id="data" name="data" type="date" style=" min-width: 80px;"
                                        value="{{ $diariodebordo->data ? $diariodebordo->data : old('data') }}" 
                                        required>
                             </div>
 
-                            <label for="n_horas" class="col-sm-1 control-label">Horas</label>
-                            <div class="col-md-1">
+                            <label for="n_horas" class="col-sm-2 control-label">Horas</label>
+                            <div class="col-md-2">
                                 <input id="n_horas" type="time"   name="n_horas" style=" min-width: 60px;"
                                        value="{{ $diariodebordo->n_horas ? $diariodebordo->n_horas : old('n_horas') }}" 
                                        required 
@@ -88,7 +88,7 @@
                             <label for="horas_pendentes" class="col-sm-2 control-label ">Horas Pendentes</label>
                             <div  id="hs_pendentes" class="col-md-1">
                                 @if(!empty($horas))
-                                <input id="horas_pendentes" type="text" class="form-control" name="horas_pendentes"  
+                                <input id="horas_pendentes" type="text"  name="horas_pendentes"  
                                        style=" min-width: 60px; border:none; background:none; color: red" readonly 
                                        value="{{$horas_pendentes}}" >
                                 @endif

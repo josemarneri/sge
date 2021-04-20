@@ -168,4 +168,10 @@ class AtividadeController extends Controller
         $atividade->save();
         return redirect()->back(); 
     }
+    
+    public function getCodigo($id){  
+        $atividade = new Atividade();
+        $atividade->codigo = $atividade->getCodigo($id);
+        return view('painel.atividades.inputCodigo', compact('atividade'));
+    }
 }

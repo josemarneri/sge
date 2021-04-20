@@ -65,6 +65,7 @@ class OrcamentoController extends Controller
     	}
         $id = $request->get('id');
         $orcamento = Orcamento::find($id);
+        $request['bloqueio'] = empty($request['bloqueio']) ? 0 : 1;
         if (!empty($orcamento)){             
             $orcamento->fill($request->all()); 
             $orcamento->save();

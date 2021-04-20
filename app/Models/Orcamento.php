@@ -9,10 +9,12 @@ use App\Models\Proposta;
 
 class Orcamento extends Model
 {
-    //
+    //  
     protected $table = 'orcamentos';
     protected $fillable = [
-        'id','cliente_id','descricao','status', 'pedido', 'anexo_id',
+        'id','cliente_id','descricao','n_horas','horas_gastas','tarifa',
+        'valor_total','valor_faturado','custo_inicial','custo_mensal',
+        'impostos','obs','gatilho','bloqueio','status', 'pedido','user_id', 'anexo_id',
     ];
     
     public function getCliente($id=0){

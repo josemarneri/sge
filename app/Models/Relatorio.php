@@ -81,6 +81,17 @@ class Relatorio extends Model
         $periodo = ['de'=> $strDe, 'ate'=>$strAte];
         return $periodo;
     }
+    public function getPeriodoMesAnterior($periodo){        
+        $ano = substr($periodo, 0,4);
+        $mes = substr($periodo, 5,2);
+        $mes = ($mes >1) ? $mes -1 : 12;
+        $mes = ($mes < 10) ? '0' . $mes : $mes;
+        $lastDay = cal_days_in_month(CAL_GREGORIAN, $mes, $ano);
+        $strDe = $ano.'-'.$mes.'-'.'01';
+        $strAte = $ano.'-'.$mes.'-'.$lastDay;
+        $periodo = ['de'=> $strDe, 'ate'=>$strAte];
+        return $periodo;
+    }
     public function getPeriodo($periodo){
         $ano = substr($periodo, 0,4);
         $mes = substr($periodo, 5,2);

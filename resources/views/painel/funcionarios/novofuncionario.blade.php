@@ -3,6 +3,16 @@
 @section('content')
 <div class="container">
     <script language="JavaScript" src="{{url('js/neri.js')}}"></script>
+    <script language="JavaScript" src="{{url('js/jquery-1.6.4.js')}}"></script>
+    <script type="text/javascript">
+    $(document).ready(function(){
+        $('#cargo_id').change(function(){
+            $('#div_salarios').load('/painel/funcionarios/getSalarios/'+$('#cargo_id').val());
+        });
+        
+    });
+    </script>
+    
     <div class="row">
         <div class="col-md-8 col-md-offset-2">
             <div class="panel panel-default">
@@ -61,7 +71,8 @@
                             <label for="cpf" class="col-md-4 control-label">CPF</label>
 
                             <div class="col-md-6">
-                                <input id="cpf" type="text" class="form-control" name="cpf" value="{{ $funcionario->cpf ? $funcionario->cpf : old('cpf') }}">
+                                <input id="cpf" type="text" class="form-control" name="cpf" 
+                                       value="{{ $funcionario->cpf ? $funcionario->cpf : old('cpf') }}">
 
                                 @if ($errors->has('cpf'))
                                     <span class="help-block">
@@ -74,7 +85,8 @@
                             <label for="rg" class="col-md-4 control-label">RG</label>
 
                             <div class="col-md-6">
-                                <input id="rg" type="text" class="form-control" name="rg" value="{{ $funcionario->rg ? $funcionario->rg : old('rg') }}">
+                                <input id="rg" type="text" class="form-control" name="rg" 
+                                       value="{{ $funcionario->rg ? $funcionario->rg : old('rg') }}">
 
                                 @if ($errors->has('rg'))
                                     <span class="help-block">
@@ -87,7 +99,8 @@
                             <label for="regCliente" class="col-md-4 control-label">Registro (Cliente)</label>
 
                             <div class="col-md-6">
-                                <input id="regCliente" type="text" class="form-control" name="regCliente" value="{{ $funcionario->regCliente ? $funcionario->regCliente : old('regCliente') }}">
+                                <input id="regCliente" type="text" class="form-control" name="regCliente" 
+                                       value="{{ $funcionario->regCliente ? $funcionario->regCliente : old('regCliente') }}">
 
                                 @if ($errors->has('regCliente'))
                                     <span class="help-block">
@@ -101,7 +114,8 @@
                             <label for="endereco" class="col-md-4 control-label">Endereço</label>
 
                             <div class="col-md-6">
-                                <input id="endereco" type="text" class="form-control" name="endereco" value="{{ $funcionario->endereco ?  $funcionario->endereco : old('endereco') }}" >
+                                <input id="endereco" type="text" class="form-control" name="endereco" 
+                                       value="{{ $funcionario->endereco ?  $funcionario->endereco : old('endereco') }}" >
 
                                 @if ($errors->has('endereco'))
                                     <span class="help-block">
@@ -115,7 +129,8 @@
                             <label for="telefone" class="col-md-4 control-label">Telefone</label>
 
                             <div class="col-md-6">
-                                <input id="telefone" type="text" class="form-control" name="telefone" value="{{ $funcionario->telefone ?  $funcionario->telefone : old('telefone') }}" >
+                                <input id="telefone" type="text" class="form-control" name="telefone" 
+                                       value="{{ $funcionario->telefone ?  $funcionario->telefone : old('telefone') }}" >
 
                                 @if ($errors->has('telefone'))
                                     <span class="help-block">
@@ -129,7 +144,8 @@
                             <label for="email" class="col-md-4 control-label">E-Mail</label>
 
                             <div class="col-md-6">
-                                <input id="email" type="email" class="form-control" name="email" value="{{ $funcionario->email ? $funcionario->email : old('email') }}" >
+                                <input id="email" type="email" class="form-control" name="email" 
+                                       value="{{ $funcionario->email ? $funcionario->email : old('email') }}" >
 
                                 @if ($errors->has('email'))
                                     <span class="help-block">
@@ -149,6 +165,19 @@
                                             value="{{$cargo->id}}">{{$cargo->nome}}</option>
                                     @endforeach
 
+                                </select>
+                            </div>
+                        </div>
+                        <div class="form-group{{ $errors->has('salario_id') ? ' has-error' : '' }}">
+                            <label for="salario_id" class="col-md-4 control-label">Salário</label>
+                            <div id="div_salarios" class="col-md-6">
+                                <select id="salario_id" name="salario_id" >
+                                    @if (!empty($salarios))
+                                        @foreach($salarios as $salario)
+                                            <option <?php echo ($salario->id == $funcionario->salario_id) ? "selected" :""; ?> 
+                                                value="{{$salario->id}}">{{'Mensal: R$'.$salario->valor_mensal .' +   R$'.$salario->valor_hora .' / hora  '}}</option>
+                                        @endforeach
+                                    @endif
                                 </select>
                             </div>
                         </div>

@@ -29,8 +29,19 @@ Route::group(['prefix' => 'painel'], function(){
     Route::get('atividades/concluir/{id}', [App\Http\Controllers\Painel\AtividadeController::class,'Concluir'])->name('atividades/concluir/{id}');
     Route::get('atividades/avaliar/{id}', [App\Http\Controllers\Painel\AtividadeController::class,'Avaliar'])->name('atividades/avaliar/{id}');
     Route::get('atividades/addnota/{id}', [App\Http\Controllers\Painel\AtividadeController::class,'addNota'])->name('atividades/addnota/{id}');
+    Route::get('atividades/getCodigo/{id}', [App\Http\Controllers\Painel\AtividadeController::class,'getCodigo'])->name('atividades/getCodigo/{id}');
     Route::get('atividades/funcionarioshabilitados/{id}', [App\Http\Controllers\Painel\AtividadeController::class,'getFuncionarios'])->name('atividades/funcionarioshabilitados/{id}');
     //Route::post('atividades/selectfuncionarios', [App\Http\Controllers\Painel\AtividadeController::class,'getFuncionarios');
+    
+//BeneficioController
+    Route::get('beneficios', [App\Http\Controllers\Painel\BeneficioController::class,'index'])->name('beneficios');
+    Route::get('beneficios/atualizar/{id}', [App\Http\Controllers\Painel\BeneficioController::class,'Atualizar'])->name('beneficios/atualizar/{id}');
+    Route::get('beneficios/apagar/{id}', [App\Http\Controllers\Painel\BeneficioController::class,'Apagar'])->name('beneficios/apagar/{id}');
+    Route::get('beneficios/novo', [App\Http\Controllers\Painel\BeneficioController::class,'Novo'])->name('beneficios/novo');
+    Route::post('beneficios/salvar', [App\Http\Controllers\Painel\BeneficioController::class,'Salvar'])->name('beneficios/salvar');
+    Route::get('beneficios/beneficiados/{id}', [App\Http\Controllers\Painel\BeneficioController::class,'NovosBeneficiados'])->name('beneficios/beneficiados/{id}');
+    Route::post('beneficiados/salvar', [App\Http\Controllers\Painel\BeneficioController::class,'SalvarBeneficiados'])->name('beneficiados/salvar');
+    Route::get('beneficios/ativardesativar/{id}', [App\Http\Controllers\Painel\BeneficioController::class,'AtivarDesativar'])->name('beneficios/ativardesativar/{id}');
     
     //ClienteController
     Route::get('clientes',[App\Http\Controllers\Painel\ClienteController::class,'index'])->name('clientes');
@@ -46,6 +57,13 @@ Route::group(['prefix' => 'painel'], function(){
     Route::get('cargas/atualizar/{id}', [App\Http\Controllers\Painel\CargaController::class,'Atualizar'])->name('cargas/atualizar/{id}');
     Route::get('cargas/apagar/{id}', [App\Http\Controllers\Painel\CargaController::class,'Apagar'])->name('cargas/apagar/{id}');
     Route::get('cargas/livre/{id}', [App\Http\Controllers\Painel\CargaController::class,'Livre'])->name('cargas/livre/{id}');
+    
+    //CargoController
+    Route::get('cargos',[App\Http\Controllers\Painel\CargoController::class,'index'])->name('cargos');
+    Route::get('cargos/novo', [App\Http\Controllers\Painel\CargoController::class,'Novo'])->name('cargos/novo');
+    Route::post('cargos/salvar', [App\Http\Controllers\Painel\CargoController::class,'Salvar'])->name('cargos/salvar');
+    Route::get('cargos/atualizar/{id}', [App\Http\Controllers\Painel\CargoController::class,'Atualizar'])->name('cargos/atualizar/{id}');
+    Route::get('cargos/apagar/{id}', [App\Http\Controllers\Painel\CargoController::class,'Apagar'])->name('cargos/apagar/{id}');
     
     //ChecklistController
     Route::get('checklists',[App\Http\Controllers\Painel\ChecklistController::class,'index'])->name('checklists');
@@ -64,6 +82,16 @@ Route::group(['prefix' => 'painel'], function(){
     Route::get('comessas/ativardesativar/{id}', [App\Http\Controllers\Painel\ComessaController::class,'AtivarDesativar'])->name('comessas/ativardesativar/{id}');
     Route::get('comessas/getCodigo/{id}', [App\Http\Controllers\Painel\ComessaController::class,'getCodigo'])->name('comessas/getCodigo/{id}');
     
+    //DescontoController
+    Route::get('descontos', [App\Http\Controllers\Painel\DescontoController::class,'index'])->name('descontos');
+    Route::get('descontos/atualizar/{id}', [App\Http\Controllers\Painel\DescontoController::class,'Atualizar'])->name('descontos/atualizar/{id}');
+    Route::get('descontos/apagar/{id}', [App\Http\Controllers\Painel\DescontoController::class,'Apagar'])->name('descontos/apagar/{id}');
+    Route::get('descontos/novo', [App\Http\Controllers\Painel\DescontoController::class,'Novo'])->name('descontos/novo');
+    Route::post('descontos/salvar', [App\Http\Controllers\Painel\DescontoController::class,'Salvar'])->name('descontos/salvar');
+    Route::get('descontos/descontados/{id}', [App\Http\Controllers\Painel\DescontoController::class,'NovosDescontados'])->name('descontos/descontados/{id}');
+    Route::post('descontados/salvar', [App\Http\Controllers\Painel\DescontoController::class,'SalvarDescontados'])->name('descontados/salvar');
+    Route::get('descontos/ativardesativar/{id}', [App\Http\Controllers\Painel\DescontoController::class,'AtivarDesativar'])->name('beneficios/ativardesativar/{id}');
+    
     //DiariosdebordoController
     Route::get('diariosdebordo',[App\Http\Controllers\Painel\DiariosdebordoController::class,'index'])->name('diariosdebordo');
     Route::get('diariosdebordo/novo', [App\Http\Controllers\Painel\DiariosdebordoController::class,'Novo'])->name('diariosdebordo/novo');
@@ -78,17 +106,30 @@ Route::group(['prefix' => 'painel'], function(){
 
     //Equipe
     Route::get('comessas/equipe/{id}', [App\Http\Controllers\Painel\ComessaController::class,'NovaEquipe'])->name('comessas/equipe/{id}');
-    Route::post('equipe/salvar', [App\Http\Controllers\Painel\ComessaController::class,'SalvarEquipe'])->name('equipe/salvar');    
+    Route::post('equipe/salvar', [App\Http\Controllers\Painel\ComessaController::class,'SalvarEquipe'])->name('equipe/salvar');  
+    
+    //FornecedorController
+    Route::get('fornecedores',[App\Http\Controllers\Painel\FornecedorController::class,'index'])->name('fornecedores');
+    Route::get('fornecedores/novo', [App\Http\Controllers\Painel\FornecedorController::class,'Novo'])->name('fornecedores/novo');
+    Route::post('fornecedores/salvar', [App\Http\Controllers\Painel\FornecedorController::class,'Salvar'])->name('fornecedores/salvar');
+    Route::get('fornecedores/atualizar/{id}', [App\Http\Controllers\Painel\FornecedorController::class,'Atualizar'])->name('fornecedores/atualizar/{id}');
+    Route::get('fornecedores/apagar/{id}', [App\Http\Controllers\Painel\FornecedorController::class,'Apagar'])->name('fornecedores/apagar/{id}');
     
     //FuncionarioController
     Route::get('funcionarios',[App\Http\Controllers\Painel\FuncionarioController::class,'index'])->name('funcionarios');
-    Route::get('funcionarios/novo', [App\Http\Controllers\Painel\FuncionarioController::class,'Novo'])->name('funcionarios/novo');
+    Route::get('funcionarios/novo', [App\Http\Controllers\Painel\FuncionarioController::class,'Novo'])->name('funcionarios/novo');    
+    Route::get('funcionarios/financeiro/{id}', [App\Http\Controllers\Painel\FuncionarioController::class,'Financeiro'])->name('funcionarios/financeiro/{id}');
     Route::get('funcionarios/ativar/{id}', [App\Http\Controllers\Painel\FuncionarioController::class,'AtivarDesativar'])->name('funcionarios/ativar/{id}');
     Route::post('funcionarios/salvar', [App\Http\Controllers\Painel\FuncionarioController::class,'Salvar'])->name('funcionarios/salvar');
     Route::get('funcionarios/atualizar/{id}', [App\Http\Controllers\Painel\FuncionarioController::class,'Atualizar'])->name('funcionarios/atualizar/{id}');
     Route::get('funcionarios/apagar/{id}', [App\Http\Controllers\Painel\FuncionarioController::class,'Apagar'])->name('funcionarios/apagar/{id}');
+    Route::get('funcionarios/apagarbeneficio/{beneficio_id}/{funcionario_id}', [App\Http\Controllers\Painel\FuncionarioController::class,'ApagarBeneficio'])->name('funcionarios/apagarbeneficio');
+    Route::get('funcionarios/apagardesconto/{desconto_id}/{funcionario_id}', [App\Http\Controllers\Painel\FuncionarioController::class,'ApagarDesconto'])->name('funcionarios/apagardespesa');
+    Route::get('funcionarios/getSalarios/{id}', [App\Http\Controllers\Painel\FuncionarioController::class,'getSalarios'])->name('funcionarios/getSalarios/{id}');
     Route::get('funcionarios/alterardadospessoais/{id}', [App\Http\Controllers\Painel\FuncionarioController::class,'AlterarDadosPessoais'])->name('funcionarios/alterardadospessoais/{id}');
     Route::post('funcionarios/salvardadospessoais', [App\Http\Controllers\Painel\FuncionarioController::class,'SalvarDadosPessoais'])->name('funcionarios/salvardadospessoais');
+    
+    
     
     //OrcamentoController
     Route::get('orcamentos',[App\Http\Controllers\Painel\OrcamentoController::class,'index'])->name('orcamentos');
@@ -120,6 +161,13 @@ Route::group(['prefix' => 'painel'], function(){
     Route::get('perfis/apagar/{id}', [App\Http\Controllers\Painel\RoleController::class,'Apagar'])->name('perfis/apagar/{id}');
     Route::get('perfis/addusuarioperfil/{id}', [App\Http\Controllers\Painel\RoleController::class,'addUsuario'])->name('perfis/addusuarioperfil/{id}');
     Route::post('perfis/salvarperfiladd', [App\Http\Controllers\Painel\RoleController::class,'SalvarPerfilAdd'])->name('perfis/salvarperfiladd');
+    
+    //SalarioController
+    Route::get('salarios', [App\Http\Controllers\Painel\SalarioController::class,'index'])->name('salarios');
+    Route::get('salarios/atualizar/{id}', [App\Http\Controllers\Painel\SalarioController::class,'Atualizar'])->name('salarios/atualizar');
+    Route::get('salarios/apagar/{id}', [App\Http\Controllers\Painel\SalarioController::class,'Apagar'])->name('salarios/apagar');
+    Route::get('salarios/novo', [App\Http\Controllers\Painel\SalarioController::class,'Novo'])->name('salarios/novo');
+    Route::post('salarios/salvar', [App\Http\Controllers\Painel\SalarioController::class,'Salvar'])->name('salarios/salvar');
     
     //UserController
     Route::get('usuarios',[App\Http\Controllers\Painel\UserController::class,'index'])->name('usuarios');
@@ -155,7 +203,7 @@ Route::group(['prefix' => 'arquivos'], function(){
     Route::get('apagar/{id}', [App\Http\Controllers\Util\ArquivoController::class,'Apagar'])->name('apagar/{id}');  
 });
 
-//ArquivoController
+//PlmController
 Route::group(['prefix' => 'plm'], function(){    
 Route::get('desenhos',[App\Http\Controllers\Plm\DesenhoController::class,'index'])->name('desenhos');
     Route::get('desenhos/novo', [App\Http\Controllers\Plm\DesenhoController::class,'Novo'])->name('desenhos/novo');
@@ -201,10 +249,40 @@ Route::group(['prefix' => 'financeiro'], function(){
     Route::post('consultivar/filtrar',[App\Http\Controllers\Financeiro\FinanceiroController::class,'ConsultivarFiltrar'])->name('consultivar/filtrar');    
     Route::post('consultivar/salvar',[App\Http\Controllers\Financeiro\FinanceiroController::class,'ConsultivarSalvar'])->name('consultivar/salvar');    
     Route::get('consultivar/funcionarioshabilitados/{id}', [App\Http\Controllers\Financeiro\FinanceiroController::class,'getFuncionarios'])->name('consultivar/funcionarioshabilitados/{id}');
-    Route::get('faturar/funcionarioshabilitados/{id}', [App\Http\Controllers\Financeiro\FinanceiroController::class,'getFuncionarios'])->name('faturar/funcionarioshabilitados/{id}');
+    
     Route::get('faturar',[App\Http\Controllers\Financeiro\FinanceiroController::class,'faturarHoras'])->name('faturar');
     Route::post('faturar/filtrar',[App\Http\Controllers\Financeiro\FinanceiroController::class,'FaturarFiltrar'])->name('faturar/filtrar');    
-    Route::post('faturar/salvar',[App\Http\Controllers\Financeiro\FinanceiroController::class,'FaturarSalvar'])->name('faturar/salvar'); 
+    Route::post('faturar/salvar',[App\Http\Controllers\Financeiro\FinanceiroController::class,'FaturarSalvar'])->name('faturar/salvar');
+    Route::get('faturar/funcionarioshabilitados/{id}', [App\Http\Controllers\Financeiro\FinanceiroController::class,'getFuncionarios'])->name('faturar/funcionarioshabilitados/{id}');
+    
+    //DespesaController
+    Route::get('despesas',[App\Http\Controllers\Financeiro\DespesaController::class,'index'])->name('despesas');
+    Route::get('despesas/novo',[App\Http\Controllers\Financeiro\DespesaController::class,'Novo'])->name('despesas/novo');    
+    Route::get('despesas/atualizar/{id}',[App\Http\Controllers\Financeiro\DespesaController::class,'Atualizar'])->name('despesas/atualizar');    
+    Route::get('despesas/apagar/{id}',[App\Http\Controllers\Financeiro\DespesaController::class,'Apagar'])->name('despesas/apagar');    
+    Route::post('despesas/filtrar',[App\Http\Controllers\Financeiro\DespesaController::class,'Filtrar'])->name('despesas/filtrar');    
+    Route::post('despesas/salvar',[App\Http\Controllers\Financeiro\DespesaController::class,'Salvar'])->name('despesas/salvar');
+    
+    //PagamentoController
+    Route::get('pagamentos',[App\Http\Controllers\Financeiro\PagamentoController::class,'index'])->name('pagamentos');
+    Route::get('pagamentos/novo',[App\Http\Controllers\Financeiro\PagamentoController::class,'Novo'])->name('pagamentos/novo');    
+    Route::get('pagamentos/novosalario',[App\Http\Controllers\Financeiro\PagamentoController::class,'NovoSalario'])->name('pagamentos/novosalario');    
+    Route::get('pagamentos/atualizar/{id}',[App\Http\Controllers\Financeiro\PagamentoController::class,'Atualizar'])->name('pagamentos/atualizar');    
+    Route::get('pagamentos/atualizarsalario/{id}',[App\Http\Controllers\Financeiro\PagamentoController::class,'AtualizarSalario'])->name('pagamentos/atualizarsalario');    
+    Route::get('pagamentos/apagar/{id}',[App\Http\Controllers\Financeiro\PagamentoController::class,'Apagar'])->name('pagamentos/apagar');    
+    Route::post('pagamentos/filtrar',[App\Http\Controllers\Financeiro\PagamentoController::class,'Filtrar'])->name('pagamentos/filtrar');    
+    Route::get('pagamentos/preencherdadossalario/{id}/{inicio}/{fim}',[App\Http\Controllers\Financeiro\PagamentoController::class,'PreencherDados'])->name('pagamentos/preencherdadossalario');    
+    Route::post('pagamentos/salvar',[App\Http\Controllers\Financeiro\PagamentoController::class,'Salvar'])->name('pagamentos/salvar');
+    
+    //RecebidoController
+    Route::get('recebidos',[App\Http\Controllers\Financeiro\RecebidoController::class,'index'])->name('recebidos');
+    Route::get('recebidos/novo',[App\Http\Controllers\Financeiro\RecebidoController::class,'Novo'])->name('recebidos/novo');    
+    Route::get('recebidos/atualizar/{id}',[App\Http\Controllers\Financeiro\RecebidoController::class,'Atualizar'])->name('recebidos/atualizar');    
+    Route::get('recebidos/apagar/{id}',[App\Http\Controllers\Financeiro\RecebidoController::class,'Apagar'])->name('recebidos/apagar');    
+    Route::post('recebidos/filtrar',[App\Http\Controllers\Financeiro\RecebidoController::class,'Filtrar'])->name('recebidos/filtrar');    
+    Route::post('recebidos/salvar',[App\Http\Controllers\Financeiro\RecebidoController::class,'Salvar'])->name('recebidos/salvar');
+    
+    
     
 });
 
@@ -244,7 +322,14 @@ Route::get('/func/{id?}', [App\Http\Controllers\Painel\UserController::class,'ge
 Route::get('/test/{id?}', [App\Http\Controllers\Util\ExcelController::class,'test'])->name('/test/{id?}');
 
 
-//Auth::routes();
+
 Auth::routes();
+
 Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
 Route::get('/', [App\Http\Controllers\SiteController::class, 'index'])->name('/');
+
+//SiteController;
+Route::group(['prefix' => 'sistema'], function(){
+    Route::get('/', [App\Http\Controllers\SiteController::class, 'index'])->name('/');
+    Route::get('logs', [App\Http\Controllers\SiteController::class, 'Logs'])->name('logs');
+});

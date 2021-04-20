@@ -16,7 +16,9 @@
                 <th style="text-align: center">Id</th>
                 <th style="text-align: center">Cliente</th>
                 <th style="text-align: center">Descricao</th>
-                <th style="text-align: center">Propostas</th>
+                <th style="text-align: center">Nº Horas</th>
+                <th style="text-align: center">Horas <br> faturadas</th>
+                <th style="text-align: center">Saldo de<br> Horas</th>
                 <th style="text-align: center">Situação</th>
                 <th style="text-align: center">Pedido</th>
                 <th width="100" style="text-align: center">Anexos </th>
@@ -29,22 +31,9 @@
                 <td >{{$orcamento->id}}</td>
                 <td >{{$orcamento->getcliente($orcamento->id)->sigla}}</td>
                 <td >{{$orcamento->descricao}}</td>
-                <td >
-                    <?php
-                    $i=1;
-                    echo "[ ";
-                    foreach($orcamento->getPropostas($orcamento->id) as $proposta){
-                        echo "<a href=\"".url("/painel/orcamentos/verproposta/".$proposta->id)."\" title=\"Abrir proposta\">";
-                           echo "$i </a>";
-                           $i++;
-                    }
-                    echo " ]";
-                    ?>
-                    <a href="{{url("/painel/orcamentos/novaproposta/".$orcamento->id)}}" title="Adicionar proposta">
-                        <img src="{{url('/assets/imagens/Add.png')}}" alt="Adicionar proposta" />
-                    </a>
-
-                </td>
+                <td >{{$orcamento->n_horas}}</td>
+                <td >{{$orcamento->horas_gastas}}</td>
+                <td >{{$orcamento->n_horas - $orcamento->horas_gastas}}</td>
                 <td >{{$orcamento->status}}</td>
                 <td >{{$orcamento->pedido}}</td>
                 <td >

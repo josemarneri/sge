@@ -10,6 +10,7 @@
     $(document).ready(function(){
         $('#comessa_id').change(function(){
             $('#funcionario').load('/painel/atividades/funcionarioshabilitados/'+$('#comessa_id').val());
+            $('#div_codigo').load('/painel/atividades/getCodigo/'+$('#comessa_id').val());
         });
         
     });
@@ -47,12 +48,11 @@
                             <label for="Comessa_id" class="col-sm-1 control-label col-md-offset-1">Comessa</label>
                             <div class="col-sm-2 ">
                                 <select id="comessa_id" name="comessa_id" >
-                                    <option value="0" onclick="getCodigo(this,'',document.form1.btnSalvar)">
+                                    <option value="0" >
                                         Selecione </option>
                                     @foreach($comessas as $comessa)
                                         <option <?php echo ($comessa->id == $atividade->comessa_id) ? "selected" :" "; ?> 
-                                            value="{{$comessa->id}}" 
-                                            onclick="getCodigo(this,'{{$atividade->getCodigo($comessa->id)}}',document.form1.btnSalvar)"> 
+                                            value="{{$comessa->id}}" > 
                                             {{$comessa->codigo}} </option>
                                     @endforeach
 
@@ -60,7 +60,7 @@
                             </div>
                             
                             <label for="codigo" class="col-sm-1 control-label">Código</label>
-                            <div class="col-sm-2">
+                            <div id="div_codigo" class="col-sm-2">
                                 <input id="codigo" type="text" size="12" class="form-control" readonly name="codigo" 
                                        value="{{ $atividade->codigo ? $atividade->codigo : old('codigo') }}" required>
 
@@ -90,7 +90,7 @@
                             
                             <label for="horasprev" class="col-sm-1 control-label col-md-offset-1">Horas</label>
                             <div class="col-md-1">
-                                <input id="horasprev" type="text" class="form-control" name="horasprev" 
+                                <input id="horasprev" type="number" class="form-control" name="horasprev" 
                                        value="{{ $atividade->horasprev ? $atividade->horasprev : old('horasprev') }}" 
                                        style="width: 100px" required>
 

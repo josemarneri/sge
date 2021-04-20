@@ -14,7 +14,9 @@ class Comessa extends Model
 {
     use HasFactory;
     protected $fillable = [
-        'id','orcamento_id','codigo','descricao','n_horas','data_inicio','data_fim','gerente_id', 'coordenador_id', 'ativa',
+        'id','orcamento_id','codigo','descricao','n_horas','horas_gastas',
+        'custo_horario','obs','gatilho','bloqueio', 'user_id',
+        'data_inicio','data_fim','gerente_id', 'coordenador_id', 'ativa',
     ];
     
     public function getFuncionario($id){

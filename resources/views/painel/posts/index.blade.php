@@ -1,4 +1,4 @@
-@extends('layouts.tpainel')
+@extends('layouts.master')
 
 @section('content')
 

@@ -84,10 +84,12 @@
                         </div>  
                         
                         <div class="form-group{{ $errors->has('peso') ? ' has-error' : '' }}">
-                            <label for="peso" class="col-md-4 control-label">Peso</label>
+                            <label for="peso" class="col-md-4 control-label">Peso (kg)</label>
 
                             <div class="col-md-6">
-                                <input id="peso" type="text" class="form-control" name="peso" value="{{ $desenho->peso ? $desenho->peso : old('peso') }}" >
+                                <input id="peso" type="text" class="form-control" name="peso" placeholder="0.000"
+                                       onkeydown ="return(mascaraMoeda(this, event ,3))"
+                                       value="{{ $desenho->peso ? $desenho->peso : old('peso') }}" >
 
                                 @if ($errors->has('peso'))
                                     <span class="help-block">

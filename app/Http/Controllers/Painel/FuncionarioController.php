@@ -11,6 +11,9 @@ use App\Others\PontoExcel;
 use App\Models\User;
 use App\Models\Cargo;
 use App\Models\Funcao;
+use App\Models\Salario;
+use App\Models\Beneficio;
+use App\Models\Desconto;
 
 class FuncionarioController extends Controller
 {
@@ -30,6 +33,7 @@ class FuncionarioController extends Controller
         return view('painel.funcionarios.funcionarios', compact('funcionarios'));
     }
     
+    
     public function Atualizar($idfuncionario){
         $keepId = $idfuncionario;
         $func = new Funcionario();
@@ -43,8 +47,12 @@ class FuncionarioController extends Controller
     	}
         $cargos = Cargo::all();
         $funcoes = Funcao::all();
-        return view('painel.funcionarios.novofuncionario', compact('funcionario','users','cargos','funcoes','keepId'));
+        $salario = new Salario();
+        $salarios = $salario->getSalarios($funcionario->cargo_id);
+        return view('painel.funcionarios.novofuncionario', 
+                compact('funcionario','users','cargos','funcoes','keepId','salarios'));
     }
+    
     
     public function Novo(){
         $users = auth()->user()->all();
@@ -55,8 +63,8 @@ class FuncionarioController extends Controller
         $funcoes = Funcao::all();
         $funcionario = new Funcionario();
         $keepId=$funcionario->id;
-        
-        return view('painel.funcionarios.novofuncionario', compact('funcionario','users','cargos','funcoes','keepId'));
+        $salarios = null;
+        return view('painel.funcionarios.novofuncionario', compact('funcionario','users','cargos','funcoes','keepId','salarios'));
     }
     
     public function Apagar($idfuncionario){
@@ -83,7 +91,7 @@ class FuncionarioController extends Controller
         if (Gate::denies('save-funcionario')){
     		abort(403, "Acesso não autorizado para o usuário: ". auth()->user()->login);
     	}
-        $funcionario = Funcionario::find($request['keepId']);
+        $funcionario = Funcionario::find($request['keepId']); // para editar o mesmo registro, caso digite outro no formulario
         if (!empty($funcionario)){ 
             if(empty($request['cargo_id'])){
                  $request['cargo_id'] = null;
@@ -92,6 +100,7 @@ class FuncionarioController extends Controller
                  $request['funcao_id'] = null;
               }
             $funcionario->fill($request->all()); 
+//            dd($funcionario, $request);
             $funcionario->save();
             \Session::flash('mensagem_sucesso', "Funcionario ".$funcionario->nome." atualizado com sucesso ");
         }else {
@@ -135,5 +144,45 @@ class FuncionarioController extends Controller
         \Session::flash('mensagem_sucesso', $funcionario->nome.", seus dados foram atualizado com sucesso ");
         return \Redirect::back();
     }
+    public function getSalarios($cargo_id){        
+        $salario = new Salario();
+        $salarios = $salario->getSalarios($cargo_id);
+
+        return view('painel.funcionarios.salarios', compact('salarios'));
+    }
+    
+    public function Financeiro($funcionario_id){
+        $funcionario = Funcionario::find($funcionario_id);
+        
+        if (Gate::denies('list-beneficios', $funcionario)){
+    		abort(403, "Acesso não autorizado para o usuário: ". auth()->user()->login);
+    	}
+        $beneficio = new Beneficio();
+        $desconto = new Desconto();
+        $beneficios = $funcionario->getBeneficios();
+        $descontos = $funcionario->getDescontos();
+        return view('painel.funcionarios.financeiro', 
+                compact('funcionario','beneficios','descontos'));
+    }
+
+    public function ApagarDesconto($desconto_id,$funcionario_id){
+    //df = despesa_funcionarios        
+        $funcionario = new Funcionario();
+        $funcionario = $funcionario->apagarDesconto($desconto_id,$funcionario_id);
+
+        return \Redirect::back();
+    }
+    public function ApagarBeneficio($beneficio_id,$funcionario_id){
+    //df = despesa_funcionarios        
+        $funcionario = new Funcionario();
+        $funcionario = $funcionario->apagarBeneficio($beneficio_id,$funcionario_id);
+
+        return \Redirect::back();
+    }
+
+    
+ 
+    
+    
 
 }

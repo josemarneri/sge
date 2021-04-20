@@ -226,12 +226,21 @@ class Diariodebordo extends Model
                 $lista[$f_id]=$ddbs->get()->all();
             }
         }
- 
-        foreach ($lista as $linha){
-            foreach ($linha as $l ){
-                $dados['infor'][]=$this->getInfor($l); 
+        if (!empty($lista)){
+            foreach ($lista as $linha){
+                if (!empty($linha)){
+                    foreach ($linha as $l ){
+                        $dados['infor'][]=$this->getInfor($l); 
+                    }
+                }else{
+                    $dados['infor'][] = null;
+                }
+                
             }
+        }else{
+            $dados['infor'][] = null;
         }
+        
         $lastRow = count($dados['infor'])+3;
 
         $somas['F' . $lastRow ] = '=SUM(F3:F' . ($lastRow - 1) .')';
@@ -240,6 +249,7 @@ class Diariodebordo extends Model
         return $dados;
     }
     public function getRelatorioSintetico($filtro){
+        
         $de = $filtro['de'];
         $ate = $filtro['ate'];
         $titulo = $filtro['titulo'];
@@ -250,10 +260,11 @@ class Diariodebordo extends Model
         $deFormatado = date("d/m/y", strtotime($de));
         $ateFormatado = date("d/m/y", strtotime($ate));
         $dados['titulo'] = "$titulo                    ($deFormatado até: $ateFormatado)" ;
+        
         $dados['nomeAba'] = 'Relatório';
         $dados['nome'] = $titulo;
         $tipo = $filtro['tipo'];
-
+        
 //        if (count($funcionarios_id) > 1) {
         if (true) {
             foreach($funcionarios_id as $f_id){
@@ -271,6 +282,7 @@ class Diariodebordo extends Model
             }
             
         }
+        
         $listaComessa;
         $horasFaturadas;
         $horasConsultivadas;
@@ -315,11 +327,19 @@ class Diariodebordo extends Model
                                               $hTrabalhadas, $hConsultivado,$hFaturado];
             }  
         }
-        foreach ($listaComessa as $lc){
-            foreach ($lc as $func){
-                // Cada func possui [comessa_id, funcionario_id, n_horas, hConsultivadas, hFaturadas]
-                $dados['infor'][] = $this->getDadosPadronizados($func);
+        if (!empty($listaComessa)){
+            foreach ($listaComessa as $lc){
+                if (!empty($lc)){
+                    foreach ($lc as $func){
+                        // Cada func possui [comessa_id, funcionario_id, n_horas, hConsultivadas, hFaturadas]
+                        $dados['infor'][] = $this->getDadosPadronizados($func);
+                    }
+                }else{
+                    $dados['infor'][] = null;
+                }               
             }
+        }else{
+            $dados['infor'][] = null;
         }
         $lastRow = count($dados['infor'])+3;
 

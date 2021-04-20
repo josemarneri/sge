@@ -14,15 +14,16 @@ class AddColunasFuncionarios extends Migration
     public function up()
     {
         Schema::table('funcionarios', function (Blueprint $table) {
-             $table->string('cpf') // Nome da coluna
+             $table->string('cpf',11) // Nome da coluna
                     ->nullable() // Preenchimento não obrigatório
-                    ->after('nome'); // Ordenado após a coluna "nome"
-             $table->string('rg') // Nome da coluna
+                    ->after('nome'); // Ordenado após a coluna "cpf"
+             $table->string('rg',11) // Nome da coluna
                     ->nullable() // Preenchimento não obrigatório
                     ->after('cpf'); // Ordenado após a coluna "cpf"
-             $table->string('regCliente') // Nome da coluna
+             $table->string('regCliente',20) // Nome da coluna
                     ->nullable() // Preenchimento não obrigatório
                     ->after('rg'); // Ordenado após a coluna "cpf"
+
 
         });
     }

@@ -152,6 +152,137 @@ function mascaraData( campo, e ){
     }
 }
 
+function mascaraPercentual( campo, e , ndec = 2){
+    var kC = (window.event) ? event.keyCode : e.keyCode;
+//    var kC = (window.event) ? window.alert(event.type) : e.keyCode;
+    var decimalChar = '.';
+    var valor = campo.value;
+    if( kC == 9 ){
+        return true;
+    }
+    if( kC!=46 )
+    {
+        if( kC == 8 && valor.length > 0)
+            {
+                var pos = valor.indexOf(decimalChar);
+                
+                var v1 = valor.substring(0,(pos - 1));
+                if (parseInt(v1) < 10){
+                    v1 = '0' + parseInt(v1);
+                }
+                var v2 = valor.substring((pos - 1),pos);
+                var v3 = valor.substring(pos+1);
+                campo.value = v1 + decimalChar + v2 +  v3;
+                return true;
+            }
+//        window.alert(valor + '-' +campo.length+ '-' + (kC));
+        if((kC>=48 && kC<=57) || (kC>=96 && kC<=105)){            
+            if( valor.length == 0 )
+            {
+                var valor = '0'+decimalChar;
+                for (i = 1; i<ndec; i++){
+                    valor += '0';
+                }
+                campo.value = valor;
+                return true;
+            }            
+
+            if( valor.length >= 4 )
+            {
+                var pos = valor.indexOf(decimalChar);
+                var v1 = valor.substring(0,pos);
+                var v2 = valor.substring(pos+1,pos+2);
+                var inteiro = parseInt(v1 + v2);
+                if (inteiro < 10){
+                    inteiro = '0' + inteiro;
+                }
+                var v3 = valor.substring(pos+2);
+                valor = inteiro + decimalChar + v3;
+                var valorFinal = valor + (kC % 48);
+                valorFinal = parseFloat(valorFinal);
+                if (valorFinal >100){
+                    window.alert("O valor deve ser menor do que 100% ");
+                    return false;
+                }              
+                  campo.value = valor;
+                  return true;
+            }
+        }else{
+            return false;
+
+        }       
+        
+    }{
+        return false;
+    }
+}
+function mascaraMoeda( campo, e , ndec = 2){
+    //ndec = numero de casas decimais
+    var kC = (window.event) ? event.keyCode : e.keyCode;
+//    var kC = (window.event) ? window.alert(event.type) : e.keyCode;
+    var decimalChar = '.';
+    if( kC == 9 ){
+        return true;
+    }
+    var valor = campo.value;	
+    if( kC!=46 )
+    {
+        if( kC == 8 && valor.length > 0)
+            {
+                var pos = valor.indexOf(decimalChar);
+                
+                var v1 = valor.substring(0,(pos - 1));
+                if (parseInt(v1) < 10){
+                    v1 = '0' + parseInt(v1);
+                }
+                var v2 = valor.substring((pos - 1),pos);
+                var v3 = valor.substring(pos+1,pos+ndec+1);
+                campo.value = v1 + decimalChar + v2 +  v3;
+                return true;
+            }
+//        window.alert(valor + '-' +campo.length+ '-' + (kC));
+        if((kC>=48 && kC<=57) || (kC>=96 && kC<=105)){            
+            if( valor.length == 0 )
+            {
+                var valor = '0'+decimalChar;
+                for (i = 1; i<ndec; i++){
+                    valor += '0';
+                }
+                campo.value = valor;
+                return true;
+            }            
+
+            if( valor.length >= (ndec+2) )
+            {
+                var pos = valor.indexOf(decimalChar);
+                var v1 = valor.substring(0,pos);
+                var v2 = valor.substring(pos+1,pos+2);
+                var inteiro = parseInt(v1 + v2);
+                if (inteiro < 10){
+                    inteiro = '0' + inteiro;
+                }
+                var v3 = valor.substring(pos+2,pos+ndec+1);
+                valor = inteiro + decimalChar + v3;            
+                  campo.value = valor;
+                  return true;
+            }
+        }else{
+            return false;
+        }
+        
+    }{
+        return false;
+    }
+}
+
+function cutLast(campo){
+    var valor = campo.value;
+    var le = valor.length;
+    var sub = valor.substring(0,le);
+    window.alert(sub);
+    campo.value = sub;
+}
+
     function HoraToMin(valor){
         var pos = valor.indexOf (":");
         var hora = valor.substring(0,pos);
